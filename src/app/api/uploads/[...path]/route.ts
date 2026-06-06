@@ -25,7 +25,9 @@ export async function GET(
   // Prevent path traversal.
   const base = path.join(process.cwd(), '.uploads');
   const filePath = path.normalize(path.join(base, rel));
-  if (!filePath.startsWith(base)) {
+  // Must stay strictly within .uploads (the trailing separator prevents a
+  // sibling dir like ".uploadsSECRET" from passing a bare prefix check).
+  if (filePath !== base && !filePath.startsWith(base + path.sep)) {
     return new Response('Not found', { status: 404 });
   }
   try {

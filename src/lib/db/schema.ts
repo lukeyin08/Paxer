@@ -11,6 +11,7 @@ import {
   real,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
 import type { AdapterAccountType } from 'next-auth/adapters';
@@ -368,7 +369,9 @@ export const benchmarks = pgTable(
     source: benchmarkSource('source').default('SEED').notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  (t) => [index('benchmarks_code_region_idx').on(t.cptHcpcsCode, t.region)],
+  // Unique per (code, region) so SEED and AGGREGATE can't create duplicate rows;
+  // recompute upserts onto this constraint.
+  (t) => [uniqueIndex('benchmarks_code_region_idx').on(t.cptHcpcsCode, t.region)],
 );
 
 // ---------------------------------------------------------------------------

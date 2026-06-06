@@ -7,6 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 /** Format a number as USD. Used by the Money primitive and elsewhere. */
 export function formatUsd(amount: number, opts?: { cents?: boolean }): string {
+  if (!Number.isFinite(amount)) return '—';
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',

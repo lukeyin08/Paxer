@@ -2,13 +2,14 @@
 
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { db } from '@/lib/db';
-import { disputes } from '@/lib/db/schema';
+import { cases, disputes, findings } from '@/lib/db/schema';
 import { requireUser } from '@/lib/auth/session';
 import { generateDraft } from '@/lib/disputes/generate';
 import { sanitizeLetterHtml } from '@/lib/disputes/sanitize';
 import { createDispute, getDisputeForUser, addDisputeEvent } from '@/lib/disputes/repo';
+import { recomputeEstimatedRecoverable } from '@/lib/cases/repo';
 import { writeAuditLog } from '@/lib/audit-log';
 import type { Dispute } from '@/lib/db/schema';
 
@@ -123,24 +124,55 @@ export async function simulatedSendAction(disputeId: string): Promise<{ ok: bool
   return { ok: true };
 }
 
+const RESPONSE_LOGGABLE = new Set<Dispute['status']>(['SIMULATED_SENT', 'RESPONSE_RECEIVED']);
+
 export async function logResponseAction(
   disputeId: string,
   outcome: 'WON' | 'PARTIAL' | 'DENIED',
 ): Promise<{ ok: boolean }> {
   const user = await requireUser();
-  await authorize(user.id, disputeId);
+  const dispute = await authorize(user.id, disputeId);
+  // Guard: only a sent/received dispute can have a response logged.
+  if (!RESPONSE_LOGGABLE.has(dispute.status)) return { ok: false };
+
   await db
     .update(disputes)
     .set({ status: outcome, updatedAt: new Date() })
     .where(eq(disputes.id, disputeId));
   await addDisputeEvent(disputeId, 'RESPONSE_LOGGED', { outcome });
+
+  // A denial returns the findings to OPEN so they re-enter the recoverable total
+  // and can be re-disputed, dismissed, or escalated — they must not stay stuck
+  // in DISPUTING forever.
+  if (outcome === 'DENIED' && dispute.findingIds.length > 0) {
+    await db
+      .update(findings)
+      .set({ status: 'OPEN' })
+      .where(
+        and(
+          eq(findings.caseId, dispute.caseId),
+          inArray(findings.id, dispute.findingIds),
+          eq(findings.status, 'DISPUTING'),
+        ),
+      );
+    // The case has actionable findings again.
+    await db
+      .update(cases)
+      .set({ status: 'AUDITED', updatedAt: new Date() })
+      .where(and(eq(cases.id, dispute.caseId), eq(cases.status, 'IN_DISPUTE')));
+    await recomputeEstimatedRecoverable(dispute.caseId);
+  }
+
   revalidatePath(`/app/disputes/${disputeId}`);
   return { ok: true };
 }
 
+const ESCALATABLE = new Set<Dispute['status']>(['SIMULATED_SENT', 'RESPONSE_RECEIVED', 'DENIED']);
+
 export async function escalateDisputeAction(disputeId: string): Promise<{ ok: boolean }> {
   const user = await requireUser();
-  await authorize(user.id, disputeId);
+  const dispute = await authorize(user.id, disputeId);
+  if (!ESCALATABLE.has(dispute.status)) return { ok: false };
   await db
     .update(disputes)
     .set({ status: 'ESCALATED', updatedAt: new Date() })

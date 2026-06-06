@@ -51,31 +51,32 @@ export async function recomputeBenchmarks(): Promise<{ codesUpdated: number; lin
   for (const [key, amounts] of groups) {
     const [code, region] = key.split('|') as [string, string];
     amounts.sort((a, b) => a - b);
-    const median = percentile(amounts, 0.5);
-    const p25 = percentile(amounts, 0.25);
-    const p75 = percentile(amounts, 0.75);
-
-    const [existing] = await db
-      .select()
-      .from(benchmarks)
-      .where(and(eq(benchmarks.cptHcpcsCode, code), eq(benchmarks.region, region)))
-      .limit(1);
 
     const values = {
       cptHcpcsCode: code,
       region,
       sampleSize: amounts.length,
-      medianCharge: median.toFixed(2),
-      p25: p25.toFixed(2),
-      p75: p75.toFixed(2),
+      medianCharge: percentile(amounts, 0.5).toFixed(2),
+      p25: percentile(amounts, 0.25).toFixed(2),
+      p75: percentile(amounts, 0.75).toFixed(2),
       source: 'AGGREGATE' as const,
       updatedAt: new Date(),
     };
-    if (existing) {
-      await db.update(benchmarks).set(values).where(eq(benchmarks.id, existing.id));
-    } else {
-      await db.insert(benchmarks).values(values);
-    }
+    // Upsert onto the unique (code, region) constraint — no duplicate rows.
+    await db
+      .insert(benchmarks)
+      .values(values)
+      .onConflictDoUpdate({
+        target: [benchmarks.cptHcpcsCode, benchmarks.region],
+        set: {
+          sampleSize: values.sampleSize,
+          medianCharge: values.medianCharge,
+          p25: values.p25,
+          p75: values.p75,
+          source: 'AGGREGATE',
+          updatedAt: values.updatedAt,
+        },
+      });
     updated++;
   }
 

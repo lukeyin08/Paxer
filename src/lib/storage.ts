@@ -6,6 +6,28 @@ export interface StoredFile {
 }
 
 /**
+ * Resolve a relative pathname under the local .uploads dir, refusing anything
+ * that escapes it (path traversal). Throws on an out-of-bounds path.
+ */
+async function resolveLocalPath(pathname: string): Promise<string> {
+  const path = await import('node:path');
+  const base = path.join(process.cwd(), '.uploads');
+  const resolved = path.normalize(path.join(base, pathname));
+  if (resolved !== base && !resolved.startsWith(base + path.sep)) {
+    throw new Error('Invalid storage path.');
+  }
+  return resolved;
+}
+
+/** Build a collision-resistant, traversal-safe local pathname from a key. */
+function localPathname(key: string): string {
+  // Collapse any path separators / traversal in the key into a flat, safe name.
+  const flat = key.replace(/[^a-zA-Z0-9._-]+/g, '_').replace(/\.{2,}/g, '_');
+  const rand = `${Math.round(performance.now()).toString(36)}${Math.random().toString(36).slice(2, 10)}`;
+  return `${rand}-${flat}`.slice(0, 200);
+}
+
+/**
  * File storage. Uses Vercel Blob when BLOB_READ_WRITE_TOKEN is configured (prod /
  * preview), and falls back to local disk for local development so uploads work
  * with zero cloud config. On Vercel the filesystem is read-only, so the token
@@ -28,13 +50,12 @@ export async function putFile(
   }
 
   // Local dev fallback: write under .uploads and serve via /api/uploads/[...path].
+  // The pathname is flattened (no separators / traversal) and the resolved path
+  // is verified to stay within .uploads.
   const { mkdir, writeFile } = await import('node:fs/promises');
   const path = await import('node:path');
-  const safeKey = key.replace(/[^a-zA-Z0-9._/-]/g, '_');
-  const rand = Math.round(performance.now()).toString(36);
-  const pathname = `${rand}-${safeKey}`;
-  const dir = path.join(process.cwd(), '.uploads');
-  const filePath = path.join(dir, pathname);
+  const pathname = localPathname(key);
+  const filePath = await resolveLocalPath(pathname);
   await mkdir(path.dirname(filePath), { recursive: true });
   await writeFile(filePath, Buffer.from(data));
   return { url: `/api/uploads/${pathname}`, pathname };
@@ -48,9 +69,8 @@ export async function putFile(
 export async function getFileBytes(url: string): Promise<Buffer> {
   if (url.startsWith('/api/uploads/')) {
     const { readFile } = await import('node:fs/promises');
-    const path = await import('node:path');
     const pathname = url.replace('/api/uploads/', '');
-    return readFile(path.join(process.cwd(), '.uploads', pathname));
+    return readFile(await resolveLocalPath(pathname));
   }
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
@@ -67,9 +87,8 @@ export async function deleteFile(url: string): Promise<void> {
     }
     if (url.startsWith('/api/uploads/')) {
       const { unlink } = await import('node:fs/promises');
-      const path = await import('node:path');
       const pathname = url.replace('/api/uploads/', '');
-      await unlink(path.join(process.cwd(), '.uploads', pathname));
+      await unlink(await resolveLocalPath(pathname));
     }
   } catch (err) {
     console.error('[storage] delete failed', err);

@@ -79,6 +79,11 @@ export function ConnectForm({ payers }: { payers: { id: string; name: string }[]
             try {
               await connectMockPayer(payerId);
             } catch (e) {
+              // A successful server action redirects by throwing NEXT_REDIRECT;
+              // re-throw it so navigation proceeds instead of showing a fake error.
+              if (e && typeof e === 'object' && 'digest' in e && typeof e.digest === 'string' && e.digest.startsWith('NEXT_REDIRECT')) {
+                throw e;
+              }
               setError(e instanceof Error ? e.message : 'Connection failed.');
             }
           })

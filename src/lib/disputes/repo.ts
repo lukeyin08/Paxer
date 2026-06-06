@@ -9,6 +9,7 @@ import {
   type DisputeEvent,
   type Finding,
 } from '@/lib/db/schema';
+import { recomputeEstimatedRecoverable } from '@/lib/cases/repo';
 
 /** Suggest whether a dispute over these findings should target the provider or insurer. */
 const INSURER_TYPES = new Set<Finding['type']>([
@@ -40,32 +41,44 @@ export async function createDispute(input: {
   modelId?: string | null;
   promptVersion?: string | null;
 }): Promise<Dispute> {
-  const [row] = await db
-    .insert(disputes)
-    .values({
-      caseId: input.caseId,
-      findingIds: input.findingIds,
-      target: input.target,
-      channel: 'MAIL',
-      letterHtml: input.letterHtml,
-      status: 'DRAFT',
-      modelId: input.modelId ?? null,
-      promptVersion: input.promptVersion ?? null,
-    })
-    .returning();
-  await db.insert(disputeEvents).values({
-    disputeId: row!.id,
-    type: 'CREATED',
-    payloadJson: { findingIds: input.findingIds, target: input.target },
+  const row = await db.transaction(async (tx) => {
+    const [created] = await tx
+      .insert(disputes)
+      .values({
+        caseId: input.caseId,
+        findingIds: input.findingIds,
+        target: input.target,
+        channel: 'MAIL',
+        letterHtml: input.letterHtml,
+        status: 'DRAFT',
+        modelId: input.modelId ?? null,
+        promptVersion: input.promptVersion ?? null,
+      })
+      .returning();
+    await tx.insert(disputeEvents).values({
+      disputeId: created!.id,
+      type: 'CREATED',
+      payloadJson: { findingIds: input.findingIds, target: input.target },
+    });
+    // Mark the findings as DISPUTING (scoped to this case for safety).
+    if (input.findingIds.length > 0) {
+      await tx
+        .update(findings)
+        .set({ status: 'DISPUTING' })
+        .where(and(eq(findings.caseId, input.caseId), inArray(findings.id, input.findingIds)));
+    }
+    // Move the case into the IN_DISPUTE state.
+    await tx
+      .update(cases)
+      .set({ status: 'IN_DISPUTE', updatedAt: new Date() })
+      .where(eq(cases.id, input.caseId));
+    return created!;
   });
-  // Mark the findings as DISPUTING.
-  if (input.findingIds.length > 0) {
-    await db
-      .update(findings)
-      .set({ status: 'DISPUTING' })
-      .where(inArray(findings.id, input.findingIds));
-  }
-  return row!;
+
+  // DISPUTING dollars stay "in play", so the estimate is unchanged — but recompute
+  // to keep it consistent if anything changed.
+  await recomputeEstimatedRecoverable(input.caseId);
+  return row;
 }
 
 export async function getDisputeForUser(

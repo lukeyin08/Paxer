@@ -9,7 +9,7 @@ import { writeAuditLog } from '@/lib/audit-log';
 const schema = z.object({
   caseId: z.string().uuid(),
   disputeId: z.string().uuid().nullable().optional(),
-  amount: z.coerce.number().min(0.01, 'Enter the recovered amount.'),
+  amount: z.coerce.number().finite().min(0.01, 'Enter the recovered amount.').max(10_000_000),
   kind: z.enum(['BILL_REDUCTION', 'REFUND', 'CLAIM_PAID']),
   notes: z.string().optional(),
 });

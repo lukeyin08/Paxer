@@ -57,10 +57,9 @@ async function seedDemoUser(): Promise<string> {
 }
 
 async function seedBenchmarks(): Promise<void> {
-  // Idempotent: clear seeded rows for the region, then reinsert.
-  await db
-    .delete(benchmarks)
-    .where(and(eq(benchmarks.region, BENCHMARK_REGION), eq(benchmarks.source, 'SEED')));
+  // Idempotent: clear ALL rows for the region (SEED and any AGGREGATE produced
+  // by an earlier recompute), then reinsert the SEED baseline.
+  await db.delete(benchmarks).where(eq(benchmarks.region, BENCHMARK_REGION));
   await db.insert(benchmarks).values(
     BENCHMARK_SEEDS.map((b) => ({
       cptHcpcsCode: b.code,

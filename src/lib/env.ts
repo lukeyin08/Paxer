@@ -15,8 +15,16 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().optional(),
   RESEND_FROM: z.string().optional(),
   CRON_SECRET: z.string().optional(),
-  PAXER_FEE_RATE: z.coerce.number().min(0).max(1).default(0.25),
-  PAXER_DAILY_AI_BUDGET_USD: z.coerce.number().min(0).default(10),
+  // Treat an empty string as unset so the default applies (z.coerce.number('')
+  // would otherwise become 0 — a 0% fee / $0 AI budget).
+  PAXER_FEE_RATE: z.preprocess(
+    (v) => (v === '' || v === undefined ? undefined : v),
+    z.coerce.number().min(0).max(1).default(0.25),
+  ),
+  PAXER_DAILY_AI_BUDGET_USD: z.preprocess(
+    (v) => (v === '' || v === undefined ? undefined : v),
+    z.coerce.number().min(0).default(10),
+  ),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 });
 

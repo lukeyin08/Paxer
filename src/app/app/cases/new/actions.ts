@@ -10,6 +10,7 @@ import {
   addLineItems,
   createCase,
   recomputeCaseTotals,
+  updateCaseProvider,
   upsertPlanBenefits,
 } from '@/lib/cases/repo';
 import { lineItemInputSchema, planBenefitsInputSchema } from '@/lib/domain/line-item';
@@ -135,6 +136,7 @@ export async function connectMockPayer(payerId: string): Promise<void> {
     notes: result.note,
   });
 
+  let providerName: string | null = null;
   for (const doc of result.documents) {
     const document = await addDocument({
       caseId: created.id,
@@ -143,12 +145,13 @@ export async function connectMockPayer(payerId: string): Promise<void> {
       ingestStatus: 'DONE', // connector returns already-structured data
     });
     await addLineItems(created.id, doc.lineItems, document.id);
-    // Capture provider on the case if not set.
-    if (doc.providerName && !created.providerName) {
-      created.providerName = doc.providerName;
-    }
+    if (doc.providerName && !providerName) providerName = doc.providerName;
   }
   if (result.planBenefits) await upsertPlanBenefits(created.id, result.planBenefits);
+  // Persist the captured provider name (the connector spans providers; record the first).
+  if (providerName) {
+    await updateCaseProvider(created.id, providerName);
+  }
   await recomputeCaseTotals(created.id);
 
   await writeAuditLog({

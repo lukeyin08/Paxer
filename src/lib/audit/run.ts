@@ -6,6 +6,7 @@ import type { AuditContext, DetectorFinding } from './types';
 import { runAiAuditPass } from '@/lib/ai/audit';
 import { aiConfigured } from '@/lib/ai/client';
 import { writeAuditLog } from '@/lib/audit-log';
+import { recomputeEstimatedRecoverable } from '@/lib/cases/repo';
 
 export interface AuditOutcome {
   findingCount: number;
@@ -99,64 +100,70 @@ export async function runAudit(userId: string, caseId: string): Promise<AuditOut
     }
   }
 
-  // Replace prior OPEN findings; keep user-actioned ones.
-  await db
-    .delete(findings)
-    .where(and(eq(findings.caseId, caseId), eq(findings.status, 'OPEN')));
-
-  if (detectorFindings.length > 0) {
-    await db.insert(findings).values(
-      detectorFindings.map((f) => ({
-        caseId,
-        lineItemId: f.lineItemId,
-        type: f.type,
-        severity: f.severity,
-        title: f.title,
-        explanationPlain: f.explanationPlain,
-        evidenceJson: {
-          ...f.evidence,
-          recommendedNextStep: f.recommendedNextStep ?? null,
-        },
-        estimatedRecovery: f.estimatedRecovery === null ? null : f.estimatedRecovery.toFixed(2),
-        confidence: f.confidence,
-        detector: f.detector,
-        status: 'OPEN' as const,
-        modelId: f.detector === 'RULE' ? null : modelId,
-        promptVersion: f.detector === 'RULE' ? null : promptVersion,
-      })),
-    );
-  }
-
-  // Roll up estimated recoverable from all OPEN findings, capped at what the
-  // patient was actually charged. Multiple findings can flag the same dollars
-  // (e.g. a cost-share error and a surprise bill on one line); summing them
-  // unchecked would overstate recovery, which the honesty rules forbid (Section 9).
-  const openFindings = await db
-    .select()
-    .from(findings)
-    .where(and(eq(findings.caseId, caseId), eq(findings.status, 'OPEN')));
-  const rawSum = openFindings.reduce((s, f) => s + Number(f.estimatedRecovery ?? 0), 0);
-  const totalPatient = items.reduce((s, li) => s + (Number(li.patientResponsibility) || 0), 0);
-  const totalBilled = items.reduce((s, li) => s + (Number(li.chargeAmount) || 0), 0);
-  const cap = totalPatient > 0 ? totalPatient : totalBilled;
-  const estimatedRecoverable = cap > 0 ? Math.min(rawSum, cap) : rawSum;
-
-  await db
-    .update(cases)
-    .set({
-      status: 'AUDITED',
-      estimatedRecoverable: estimatedRecoverable.toFixed(2),
-      updatedAt: new Date(),
+  // Dedupe against findings the user has already actioned: a detector re-emits
+  // the same issue every run, so if it already exists as DISPUTING / DISMISSED /
+  // RECOVERED we must NOT re-insert an OPEN duplicate (Section 9). Keyed by
+  // type + line item + title.
+  const existingNonOpen = await db
+    .select({
+      type: findings.type,
+      lineItemId: findings.lineItemId,
+      title: findings.title,
     })
-    .where(eq(cases.id, caseId));
+    .from(findings)
+    .where(and(eq(findings.caseId, caseId), ne(findings.status, 'OPEN'), isNull(findings.deletedAt)));
+  const keyOf = (t: string, li: string | null, title: string) => `${t}|${li ?? ''}|${title}`;
+  const actionedKeys = new Set(existingNonOpen.map((f) => keyOf(f.type, f.lineItemId, f.title)));
+  const toInsert = detectorFindings.filter(
+    (f) => !actionedKeys.has(keyOf(f.type, f.lineItemId, f.title)),
+  );
+
+  // Replace prior OPEN findings; keep user-actioned ones. Atomic so a failed
+  // insert can't leave the case with its findings deleted and not rebuilt.
+  await db.transaction(async (tx) => {
+    await tx
+      .delete(findings)
+      .where(and(eq(findings.caseId, caseId), eq(findings.status, 'OPEN')));
+
+    if (toInsert.length > 0) {
+      await tx.insert(findings).values(
+        toInsert.map((f) => ({
+          caseId,
+          lineItemId: f.lineItemId,
+          type: f.type,
+          severity: f.severity,
+          title: f.title,
+          explanationPlain: f.explanationPlain,
+          evidenceJson: {
+            ...f.evidence,
+            recommendedNextStep: f.recommendedNextStep ?? null,
+          },
+          estimatedRecovery: f.estimatedRecovery === null ? null : f.estimatedRecovery.toFixed(2),
+          confidence: f.confidence,
+          detector: f.detector,
+          status: 'OPEN' as const,
+          modelId: f.detector === 'RULE' ? null : modelId,
+          promptVersion: f.detector === 'RULE' ? null : promptVersion,
+        })),
+      );
+    }
+
+    await tx
+      .update(cases)
+      .set({ status: 'AUDITED', updatedAt: new Date() })
+      .where(eq(cases.id, caseId));
+  });
+
+  // Roll up the case estimate from all findings still in play (shared helper).
+  const estimatedRecoverable = await recomputeEstimatedRecoverable(caseId);
 
   await writeAuditLog({
     userId,
     entity: 'case',
     entityId: caseId,
     action: 'case.audited',
-    diff: { findingCount: detectorFindings.length, estimatedRecoverable, usedAi },
+    diff: { findingCount: toInsert.length, estimatedRecoverable, usedAi },
   });
 
-  return { findingCount: detectorFindings.length, estimatedRecoverable, usedAi };
+  return { findingCount: toInsert.length, estimatedRecoverable, usedAi };
 }

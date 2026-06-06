@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import {
   cases,
@@ -99,6 +99,14 @@ export async function createCase(input: {
   return row!;
 }
 
+/** Set a case's provider name (used by the connector import path). */
+export async function updateCaseProvider(caseId: string, providerName: string): Promise<void> {
+  await db
+    .update(cases)
+    .set({ providerName, updatedAt: new Date() })
+    .where(eq(cases.id, caseId));
+}
+
 export async function addDocument(input: {
   caseId: string;
   kind: Document['kind'];
@@ -194,6 +202,42 @@ export async function recomputeCaseTotals(caseId: string): Promise<void> {
       updatedAt: new Date(),
     })
     .where(eq(cases.id, caseId));
+}
+
+/**
+ * Recompute a case's `estimatedRecoverable` from findings that are still in play
+ * (OPEN or DISPUTING), capped at what the patient was actually charged. Findings
+ * that are RECOVERED or DISMISSED are excluded so recovered dollars don't also
+ * count as still-recoverable (Section 9). This is the single source of truth —
+ * called after audit, dispute creation, dismissal, recovery, and denial.
+ */
+export async function recomputeEstimatedRecoverable(caseId: string): Promise<number> {
+  const inPlay = await db
+    .select({ amt: findings.estimatedRecovery })
+    .from(findings)
+    .where(
+      and(
+        eq(findings.caseId, caseId),
+        inArray(findings.status, ['OPEN', 'DISPUTING']),
+        isNull(findings.deletedAt),
+      ),
+    );
+  const items = await db
+    .select({ pr: lineItems.patientResponsibility, charge: lineItems.chargeAmount })
+    .from(lineItems)
+    .where(and(eq(lineItems.caseId, caseId), isNull(lineItems.deletedAt)));
+
+  const rawSum = inPlay.reduce((s, f) => s + (Number(f.amt) || 0), 0);
+  const totalPatient = items.reduce((s, i) => s + (Number(i.pr) || 0), 0);
+  const totalBilled = items.reduce((s, i) => s + (Number(i.charge) || 0), 0);
+  const cap = totalPatient > 0 ? totalPatient : totalBilled;
+  const total = cap > 0 ? Math.min(rawSum, cap) : rawSum;
+
+  await db
+    .update(cases)
+    .set({ estimatedRecoverable: total.toFixed(2), updatedAt: new Date() })
+    .where(eq(cases.id, caseId));
+  return total;
 }
 
 export async function softDeleteCase(userId: string, caseId: string): Promise<boolean> {
