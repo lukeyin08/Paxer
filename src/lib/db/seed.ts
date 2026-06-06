@@ -4,7 +4,7 @@ import { and, eq } from 'drizzle-orm';
 config({ path: '.env' });
 
 import { db } from './index';
-import { users, cases, benchmarks } from './schema';
+import { users, cases, benchmarks, findings, disputes } from './schema';
 import { hashPassword } from '@/lib/auth/password';
 import { DEMO_EMAIL, DEMO_NAME, DEMO_PASSWORD } from '@/lib/auth/demo';
 import { SCENARIOS } from '@/lib/synthetic/scenarios';
@@ -17,6 +17,9 @@ import {
   recomputeCaseTotals,
 } from '@/lib/cases/repo';
 import { runAudit } from '@/lib/audit/run';
+import { generateDraft } from '@/lib/disputes/generate';
+import { createDispute, addDisputeEvent } from '@/lib/disputes/repo';
+import { recordRecovery } from '@/lib/recoveries/repo';
 
 const RESET = process.argv.includes('--reset');
 
@@ -101,6 +104,94 @@ async function seedScenarioCases(userId: string): Promise<void> {
   }
 }
 
+/**
+ * Pre-generate disputes + a recovery so the deployed demo is immediately rich
+ * (Section 10): one DRAFT, one SIMULATED_SENT (with a live deadline), and one
+ * WON dispute with a recorded recovery.
+ */
+async function seedDisputes(userId: string): Promise<void> {
+  const all = await db.select().from(cases).where(eq(cases.userId, userId));
+  const pick = (s: string) => all.find((c) => c.title.includes(s));
+  const openFindings = (caseId: string) =>
+    db
+      .select()
+      .from(findings)
+      .where(and(eq(findings.caseId, caseId), eq(findings.status, 'OPEN')));
+
+  // 1) DRAFT dispute on the ER duplicate/unbundling case.
+  const er = pick('Emergency room');
+  if (er) {
+    const f = (await openFindings(er.id))
+      .filter((x) => x.type === 'DUPLICATE_CHARGE' || x.type === 'UNBUNDLING_NCCI')
+      .slice(0, 2);
+    if (f.length) {
+      const draft = await generateDraft({ userId, caseId: er.id, findingIds: f.map((x) => x.id) });
+      await createDispute({
+        caseId: er.id,
+        findingIds: draft.findingIds,
+        target: draft.target,
+        letterHtml: draft.letterHtml,
+        modelId: draft.modelId,
+        promptVersion: draft.promptVersion,
+      });
+      console.log('✓ Draft dispute created (ER case)');
+    }
+  }
+
+  // 2) SIMULATED_SENT dispute with a live deadline on the cost-share case.
+  const mri = pick('MRI');
+  if (mri) {
+    const f = (await openFindings(mri.id)).filter((x) => x.type === 'COST_SHARE_ERROR');
+    if (f.length) {
+      const draft = await generateDraft({ userId, caseId: mri.id, findingIds: f.map((x) => x.id) });
+      const d = await createDispute({
+        caseId: mri.id,
+        findingIds: draft.findingIds,
+        target: draft.target,
+        letterHtml: draft.letterHtml,
+        modelId: draft.modelId,
+        promptVersion: draft.promptVersion,
+      });
+      const deadline = new Date();
+      deadline.setDate(deadline.getDate() + 20);
+      await db.update(disputes).set({ status: 'SIMULATED_SENT', deadlineAt: deadline }).where(eq(disputes.id, d.id));
+      await addDisputeEvent(d.id, 'APPROVED');
+      await addDisputeEvent(d.id, 'SIMULATED_SENT', { simulated: true, deadlineAt: deadline });
+      console.log('✓ Simulated-sent dispute created (MRI case, deadline in 20 days)');
+    }
+  }
+
+  // 3) WON dispute + recorded recovery on the denial case.
+  const denial = pick('denied');
+  if (denial) {
+    const f = await openFindings(denial.id);
+    if (f.length) {
+      const draft = await generateDraft({ userId, caseId: denial.id, findingIds: f.map((x) => x.id) });
+      const d = await createDispute({
+        caseId: denial.id,
+        findingIds: draft.findingIds,
+        target: draft.target,
+        letterHtml: draft.letterHtml,
+        modelId: draft.modelId,
+        promptVersion: draft.promptVersion,
+      });
+      await db.update(disputes).set({ status: 'WON' }).where(eq(disputes.id, d.id));
+      await addDisputeEvent(d.id, 'SIMULATED_SENT', { simulated: true });
+      await addDisputeEvent(d.id, 'RESPONSE_LOGGED', { outcome: 'WON' });
+      const amount = Number(f[0]!.estimatedRecovery ?? 0) || 540;
+      await recordRecovery({
+        userId,
+        caseId: denial.id,
+        disputeId: d.id,
+        amount,
+        kind: 'CLAIM_PAID',
+        notes: 'Appeal approved on first level (synthetic).',
+      });
+      console.log(`✓ Won dispute + recovery recorded ($${amount})`);
+    }
+  }
+}
+
 async function seed() {
   if (RESET && process.env.NODE_ENV === 'production') {
     throw new Error('seed:reset is disabled in production.');
@@ -117,6 +208,7 @@ async function seed() {
   const fresh = await db.select({ id: cases.id }).from(cases).where(eq(cases.userId, userId));
   if (fresh.length === 0) {
     await seedScenarioCases(userId);
+    await seedDisputes(userId);
   } else {
     console.log(`• Demo already has ${fresh.length} case(s); skipping (use --reset to rebuild).`);
   }
