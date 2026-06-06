@@ -91,7 +91,9 @@ multi-tenant orgs; dark mode toggle; i18n. Each is left as a documented seam.
       (magic link via Resend + seeded demo credentials), onboarding/consent, audit_log,
       protected dashboard.
 - [ ] Phase 2 — Cases + uploads
-- [ ] Phase 2 — Cases + uploads
+- [x] **Phase 2** — Cases + uploads: case CRUD + data-access layer, file upload (Vercel
+      Blob with local-disk dev fallback), document records, manual line-item entry,
+      `MockFhirConnector` (synthetic EOBs), tabbed new-case UI, case detail page.
 - [ ] Phase 3 — Ingestion engine
 - [ ] Phase 4 — Audit engine
 - [ ] Phase 5 — Disputes
