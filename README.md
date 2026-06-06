@@ -94,7 +94,12 @@ multi-tenant orgs; dark mode toggle; i18n. Each is left as a documented seam.
 - [x] **Phase 2** — Cases + uploads: case CRUD + data-access layer, file upload (Vercel
       Blob with local-disk dev fallback), document records, manual line-item entry,
       `MockFhirConnector` (synthetic EOBs), tabbed new-case UI, case detail page.
-- [ ] Phase 3 — Ingestion engine
+- [x] **Phase 3** — Ingestion engine: centralized `runStructured` Anthropic client
+      (adaptive thinking, effort, retry/timeout, daily spend guard, usage logging),
+      versioned prompts, native PDF/image extraction with Zod-validated structured
+      output + per-field confidence, low-confidence review step, `/api/ingest`,
+      and `pnpm eval:extract` (renders synthetic fixture PDFs, scores field accuracy).
+      Live extraction requires `ANTHROPIC_API_KEY`.
 - [ ] Phase 4 — Audit engine
 - [ ] Phase 5 — Disputes
 - [ ] Phase 6 — Recoveries, fees, benchmarks, cron

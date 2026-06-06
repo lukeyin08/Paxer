@@ -40,6 +40,23 @@ export async function putFile(
   return { url: `/api/uploads/${pathname}`, pathname };
 }
 
+/**
+ * Read a stored file's bytes server-side. For local dev uploads it reads from
+ * disk directly (the /api/uploads route requires a session cookie that a
+ * server-to-server fetch won't have); for Blob it fetches the public URL.
+ */
+export async function getFileBytes(url: string): Promise<Buffer> {
+  if (url.startsWith('/api/uploads/')) {
+    const { readFile } = await import('node:fs/promises');
+    const path = await import('node:path');
+    const pathname = url.replace('/api/uploads/', '');
+    return readFile(path.join(process.cwd(), '.uploads', pathname));
+  }
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch file: ${res.status}`);
+  return Buffer.from(await res.arrayBuffer());
+}
+
 /** Delete a stored file (best-effort). Used by data-deletion (Section 9). */
 export async function deleteFile(url: string): Promise<void> {
   try {

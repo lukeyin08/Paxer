@@ -8,11 +8,11 @@ import { StatBlock } from '@/components/brand/stat-block';
 import { Money } from '@/components/brand/money';
 import { StatusPill } from '@/components/brand/status-pill';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { LineItemsTable } from '@/components/line-items-table';
 import { Disclaimer } from '@/components/brand/disclaimer';
 import { formatDate, formatUsd } from '@/lib/utils';
-import { FileText } from 'lucide-react';
+import { aiConfigured } from '@/lib/ai/client';
+import { DocumentsSection } from './documents-section';
 
 export default async function CaseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
@@ -21,6 +21,8 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
   if (!detail) notFound();
 
   const { case: c, documents, lineItems, planBenefits: plan } = detail;
+  const aiEnabled = aiConfigured();
+  const needsReviewDocs = documents.some((d) => d.ingestStatus === 'NEEDS_REVIEW');
 
   return (
     <div className="flex flex-col gap-10 animate-fade-up">
@@ -74,34 +76,23 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
       {/* Documents */}
       <section className="flex flex-col gap-4">
         <h2 className="font-serif text-xl font-semibold">Documents</h2>
-        {documents.length === 0 ? (
-          <p className="text-sm text-muted">No documents attached to this case.</p>
-        ) : (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {documents.map((d) => (
-              <Card key={d.id}>
-                <CardContent className="flex items-center justify-between gap-3 pt-6">
-                  <div className="flex items-center gap-3">
-                    <FileText className="h-5 w-5 text-muted" />
-                    <div>
-                      <p className="text-sm font-medium text-ink">{d.fileName ?? 'Document'}</p>
-                      <p className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
-                        {d.kind.replace(/_/g, ' ')} · {d.ingestStatus}
-                      </p>
-                    </div>
-                  </div>
-                  {d.blobUrl && (
-                    <Button asChild variant="outline" size="sm">
-                      <a href={d.blobUrl} target="_blank" rel="noreferrer">
-                        View
-                      </a>
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+        {needsReviewDocs && (
+          <div className="rounded-md border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-warning">
+            Some extracted values are low-confidence. Please review the line items below and choose
+            &ldquo;Confirm values&rdquo; on the document once they look right.
           </div>
         )}
+        <DocumentsSection
+          aiConfigured={aiEnabled}
+          docs={documents.map((d) => ({
+            id: d.id,
+            fileName: d.fileName,
+            kind: d.kind,
+            ingestStatus: d.ingestStatus,
+            blobUrl: d.blobUrl,
+            hasFile: Boolean(d.blobUrl && d.mimeType),
+          }))}
+        />
       </section>
 
       {/* Plan benefits */}
