@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Paxer brand tokens — black & blue theme. Hex source values:
+ *   ink (text) #E6EBF2   paper (bg) #0A0E14   accent (blue) #3B82F6
+ *   accent2 (sky) #60A5FA   muted #8B97A8   rule #1E2A3A   soft #131A24
+ *   card #111722   success #34D399   danger #F87171   warning #FBBF24
+ * The palette is dark by default: "paper" is near-black, "ink" is light.
+ * Stored as HSL triplets so Tailwind can apply opacity modifiers.
+ */
+@layer base {
+  :root {
+    --ink: 215 33% 92%;
+    --paper: 215 33% 6%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 210 40% 98%;
+    --accent2: 213 94% 68%;
+    --muted: 213 14% 60%;
+    --muted-foreground: 213 14% 60%;
+    --rule: 213 32% 17%;
+    --soft: 213 30% 11%;
+    --success: 160 64% 52%;
+    --danger: 0 91% 71%;
+    --warning: 43 96% 56%;
+
+    /* shadcn semantic aliases mapped onto brand tokens */
+    --background: var(--paper);
+    --foreground: var(--ink);
+    --card: 215 33% 9%;
+    --card-foreground: var(--ink);
+    --popover: 215 33% 9%;
+    --popover-foreground: var(--ink);
+    --primary: var(--accent);
+    --primary-foreground: var(--accent-foreground);
+    --secondary: var(--soft);
+    --secondary-foreground: var(--ink);
+    --destructive: var(--danger);
+    --destructive-foreground: 215 33% 6%;
+    --border: var(--rule);
+    --input: var(--rule);
+    --ring: var(--accent);
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-feature-settings: 'liga' 1, 'calt' 1;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  /* Mono kicker label, uppercase letter-spaced (Section 5) */
+  .kicker {
+    @apply font-mono text-xs uppercase tracking-[0.18em] text-muted;
+  }
+  .hairline {
+    @apply border-rule;
+  }
+}
