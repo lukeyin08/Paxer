@@ -11,6 +11,7 @@ import { formatDate } from '@/lib/utils';
 import {
   saveLetterAction,
   approveDisputeAction,
+  reopenDraftAction,
   simulatedSendAction,
   logResponseAction,
   escalateDisputeAction,
@@ -126,7 +127,7 @@ export function DisputeWorkspace({
             <Button onClick={() => run(() => simulatedSendAction(dispute.id), 'SIMULATED_SENT')} disabled={pending}>
               Confirm & simulate send
             </Button>
-            <Button onClick={() => run(() => approveDisputeAction(dispute.id), 'DRAFT')} variant="ghost" disabled={pending}>
+            <Button onClick={() => run(() => reopenDraftAction(dispute.id), 'DRAFT')} variant="ghost" disabled={pending}>
               Keep editing
             </Button>
           </>

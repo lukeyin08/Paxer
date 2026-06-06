@@ -94,6 +94,16 @@ export async function runStructured<T extends z.ZodTypeAny>(
   });
   const latencyMs = Date.now() - start;
 
+  // Surface non-normal stops as clear errors rather than opaque JSON failures.
+  if (response.stop_reason === 'refusal') {
+    throw new Error('The model declined to respond to this request.');
+  }
+  if (response.stop_reason === 'max_tokens') {
+    throw new Error(
+      `Model output was truncated at the ${input.maxTokens ?? 8000}-token limit. Try a smaller document or raise maxTokens.`,
+    );
+  }
+
   // Extract the JSON text block and validate again with Zod (Section 8).
   const textBlock = response.content.find((b) => b.type === 'text');
   if (!textBlock || textBlock.type !== 'text') {
@@ -105,7 +115,13 @@ export async function runStructured<T extends z.ZodTypeAny>(
   } catch {
     throw new Error('Model output was not valid JSON.');
   }
-  const data = input.schema.parse(parsedJson) as z.infer<T>;
+  let data: z.infer<T>;
+  try {
+    data = input.schema.parse(parsedJson) as z.infer<T>;
+  } catch (err) {
+    const detail = err instanceof z.ZodError ? err.issues[0]?.message : 'schema mismatch';
+    throw new Error(`Model output failed validation: ${detail}`);
+  }
 
   const usage = {
     input_tokens: response.usage.input_tokens,

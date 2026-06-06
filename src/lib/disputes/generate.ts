@@ -5,6 +5,7 @@ import { aiConfigured } from '@/lib/ai/client';
 import { generateDraftWithAi } from '@/lib/ai/draft';
 import { buildLetterContext } from './letter-context';
 import { renderTemplateLetter } from './draft-template';
+import { sanitizeLetterHtml } from './sanitize';
 import { getFindingsByIds, suggestTarget } from './repo';
 import type { Dispute } from '@/lib/db/schema';
 
@@ -50,7 +51,7 @@ export async function generateDraft(input: {
     try {
       const ai = await generateDraftWithAi(ctx);
       return {
-        letterHtml: ai.letterHtml,
+        letterHtml: sanitizeLetterHtml(ai.letterHtml),
         target,
         findingIds: found.map((f) => f.id),
         modelId: ai.modelId,
@@ -62,7 +63,7 @@ export async function generateDraft(input: {
   }
 
   return {
-    letterHtml: renderTemplateLetter(ctx),
+    letterHtml: sanitizeLetterHtml(renderTemplateLetter(ctx)),
     target,
     findingIds: found.map((f) => f.id),
     modelId: null,

@@ -270,7 +270,15 @@ export function detectCrossProviderDuplicates(ctx: AuditContext): DetectorFindin
 // ---------------------------------------------------------------------------
 export function detectBenchmarkOvercharge(ctx: AuditContext): DetectorFinding[] {
   if (ctx.benchmarks.length === 0) return [];
-  const byCode = new Map(ctx.benchmarks.map((b) => [b.cptHcpcsCode, b]));
+  // Prefer the region-specific benchmark over the national ('US') fallback when
+  // both exist for a code (the query may return both).
+  const byCode = new Map<string, (typeof ctx.benchmarks)[number]>();
+  for (const b of ctx.benchmarks) {
+    const existing = byCode.get(b.cptHcpcsCode);
+    if (!existing || (b.region === ctx.region && existing.region !== ctx.region)) {
+      byCode.set(b.cptHcpcsCode, b);
+    }
+  }
   const findings: DetectorFinding[] = [];
   for (const li of ctx.lineItems) {
     if (!li.cptHcpcsCode) continue;

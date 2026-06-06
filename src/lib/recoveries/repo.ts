@@ -39,17 +39,26 @@ export async function recordRecovery(input: {
     })
     .returning();
 
-  // Mark the dispute's findings RECOVERED.
+  // Mark the dispute's findings RECOVERED — but only for a dispute on THIS case
+  // (which we already verified the user owns), preventing cross-tenant tampering.
   if (input.disputeId) {
-    const [d] = await db.select().from(disputes).where(eq(disputes.id, input.disputeId)).limit(1);
+    const [d] = await db
+      .select()
+      .from(disputes)
+      .where(and(eq(disputes.id, input.disputeId), eq(disputes.caseId, input.caseId)))
+      .limit(1);
     if (d && d.findingIds.length > 0) {
       await db
         .update(findings)
         .set({ status: 'RECOVERED' })
-        .where(inArray(findings.id, d.findingIds));
+        .where(and(inArray(findings.id, d.findingIds), eq(findings.caseId, input.caseId)));
     }
   } else if (input.findingId) {
-    await db.update(findings).set({ status: 'RECOVERED' }).where(eq(findings.id, input.findingId));
+    // Scope the finding update to the owned case as well.
+    await db
+      .update(findings)
+      .set({ status: 'RECOVERED' })
+      .where(and(eq(findings.id, input.findingId), eq(findings.caseId, input.caseId)));
   }
 
   // If no open findings remain, mark the case RESOLVED.

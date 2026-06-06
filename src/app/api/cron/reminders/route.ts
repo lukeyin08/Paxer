@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, inArray, isNull } from 'drizzle-orm';
 import { db } from '@/lib/db';
-import { cases, disputes, users } from '@/lib/db/schema';
+import { cases, disputes, disputeEvents, users } from '@/lib/db/schema';
 import { authorizeCron } from '@/lib/cron';
 import { addDisputeEvent } from '@/lib/disputes/repo';
 import { sendEmail } from '@/lib/email';
@@ -28,6 +28,24 @@ export async function GET(req: NextRequest) {
     .innerJoin(users, eq(users.id, cases.userId))
     .where(and(eq(disputes.status, 'SIMULATED_SENT'), isNull(disputes.deletedAt)));
 
+  // Disputes that already got a reminder — avoid re-emailing every day in-window.
+  const alreadyReminded = new Set<string>();
+  if (open.length > 0) {
+    const reminded = await db
+      .select({ disputeId: disputeEvents.disputeId })
+      .from(disputeEvents)
+      .where(
+        and(
+          eq(disputeEvents.type, 'REMINDER_SENT'),
+          inArray(
+            disputeEvents.disputeId,
+            open.map((o) => o.dispute.id),
+          ),
+        ),
+      );
+    for (const r of reminded) alreadyReminded.add(r.disputeId);
+  }
+
   const now = Date.now();
   let reminders = 0;
   let escalated = 0;
@@ -50,7 +68,7 @@ export async function GET(req: NextRequest) {
         text: `The response deadline (${formatDate(deadline)}) has passed with no logged response. Paxer suggests escalating to the next level. Open the dispute to continue.`,
       });
       escalated++;
-    } else if (msLeft <= REMINDER_WINDOW_DAYS * DAY_MS) {
+    } else if (msLeft <= REMINDER_WINDOW_DAYS * DAY_MS && !alreadyReminded.has(row.dispute.id)) {
       await addDisputeEvent(row.dispute.id, 'REMINDER_SENT', { deadlineAt: deadline });
       await sendEmail({
         to: row.email,

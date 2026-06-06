@@ -7,6 +7,7 @@ import { db } from '@/lib/db';
 import { disputes } from '@/lib/db/schema';
 import { requireUser } from '@/lib/auth/session';
 import { generateDraft } from '@/lib/disputes/generate';
+import { sanitizeLetterHtml } from '@/lib/disputes/sanitize';
 import { createDispute, getDisputeForUser, addDisputeEvent } from '@/lib/disputes/repo';
 import { writeAuditLog } from '@/lib/audit-log';
 import type { Dispute } from '@/lib/db/schema';
@@ -62,7 +63,11 @@ export async function saveLetterAction(
 ): Promise<{ ok: boolean }> {
   const user = await requireUser();
   await authorize(user.id, disputeId);
-  await db.update(disputes).set({ letterHtml, updatedAt: new Date() }).where(eq(disputes.id, disputeId));
+  const clean = sanitizeLetterHtml(letterHtml);
+  await db
+    .update(disputes)
+    .set({ letterHtml: clean, updatedAt: new Date() })
+    .where(eq(disputes.id, disputeId));
   await addDisputeEvent(disputeId, 'EDITED');
   revalidatePath(`/app/disputes/${disputeId}`);
   return { ok: true };
@@ -76,6 +81,23 @@ export async function approveDisputeAction(disputeId: string): Promise<{ ok: boo
     .set({ status: 'AWAITING_USER_APPROVAL', updatedAt: new Date() })
     .where(eq(disputes.id, disputeId));
   await addDisputeEvent(disputeId, 'APPROVED');
+  revalidatePath(`/app/disputes/${disputeId}`);
+  return { ok: true };
+}
+
+/** Return an awaiting-approval dispute to DRAFT so the letter is editable again. */
+export async function reopenDraftAction(disputeId: string): Promise<{ ok: boolean }> {
+  const user = await requireUser();
+  const dispute = await authorize(user.id, disputeId);
+  // Only meaningful before a (simulated) send.
+  if (dispute.status !== 'AWAITING_USER_APPROVAL' && dispute.status !== 'DRAFT') {
+    return { ok: false };
+  }
+  await db
+    .update(disputes)
+    .set({ status: 'DRAFT', updatedAt: new Date() })
+    .where(eq(disputes.id, disputeId));
+  await addDisputeEvent(disputeId, 'EDITED', { reopened: true });
   revalidatePath(`/app/disputes/${disputeId}`);
   return { ok: true };
 }

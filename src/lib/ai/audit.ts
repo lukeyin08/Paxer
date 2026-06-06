@@ -81,7 +81,9 @@ export async function runAiAuditPass(input: {
 
   // Merge enrichment into rule findings.
   const merged: DetectorFinding[] = input.ruleFindings.map((f) => ({ ...f }));
+  const inRange = (i: number, len: number) => Number.isInteger(i) && i >= 0 && i < len;
   for (const e of data.enrichedFindings) {
+    if (!inRange(e.index, merged.length)) continue;
     const target = merged[e.index];
     if (target) {
       target.explanationPlain = e.explanationPlain || target.explanationPlain;
@@ -92,15 +94,21 @@ export async function runAiAuditPass(input: {
 
   // Append AI-only upcoding findings.
   for (const u of data.upcoding) {
+    if (!inRange(u.lineItemIndex, input.lineItems.length)) continue;
     const li = input.lineItems[u.lineItemIndex];
     if (!li) continue;
+    // Sanity-bound the model-supplied recovery estimate (non-negative).
+    const est =
+      typeof u.estimatedRecovery === 'number' && u.estimatedRecovery >= 0
+        ? u.estimatedRecovery
+        : null;
     merged.push({
       type: 'UPCODING',
       severity: 'LOW',
       title: u.title,
       explanationPlain: u.explanationPlain,
       evidence: { description: li.description, code: li.cptHcpcsCode, charge: money(li.chargeAmount) },
-      estimatedRecovery: u.estimatedRecovery,
+      estimatedRecovery: est,
       confidence: Math.min(0.5, clampConfidence(u.confidence)), // upcoding stays low-confidence
       detector: 'AI',
       lineItemId: li.id,
