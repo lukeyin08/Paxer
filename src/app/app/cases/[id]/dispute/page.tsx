@@ -1,21 +1,65 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { requireUser } from '@/lib/auth/session';
-import { ComingSoon } from '@/components/brand/coming-soon';
+import { getCaseForUser } from '@/lib/cases/repo';
+import { Kicker } from '@/components/brand/kicker';
+import { EmptyState } from '@/components/brand/empty-state';
 import { Button } from '@/components/ui/button';
+import { DraftForm } from './draft-form';
 
-export default async function DisputeDraftPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireUser();
+export default async function DisputeDraftPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ findingIds?: string }>;
+}) {
+  const user = await requireUser();
   const { id } = await params;
+  const { findingIds } = await searchParams;
+  const detail = await getCaseForUser(user.id, id);
+  if (!detail) notFound();
+
+  const open = detail.findings.filter((f) => f.status === 'OPEN');
+  const preselected = (findingIds ?? '').split(',').filter(Boolean);
+
   return (
-    <div className="flex flex-col gap-6">
-      <ComingSoon
-        title="Draft dispute"
-        phase="Phase 5"
-        description="Generate a dispute letter or insurer appeal from the selected findings, edit it, export a PDF, and submit for your review."
-      />
-      <Button asChild variant="outline" className="self-start">
-        <Link href={`/app/cases/${id}`}>← Back to case</Link>
-      </Button>
+    <div className="mx-auto flex max-w-3xl flex-col gap-8 animate-fade-up">
+      <div>
+        <Link href={`/app/cases/${id}`} className="text-sm text-accent hover:underline">
+          ← Back to case
+        </Link>
+        <Kicker className="mb-2 mt-3">New dispute</Kicker>
+        <h1 className="font-serif text-3xl font-semibold">Draft a dispute</h1>
+        <p className="mt-1 text-muted">
+          Choose the findings to include. Paxer drafts a letter you can edit and approve before any
+          (simulated) send.
+        </p>
+      </div>
+
+      {open.length === 0 ? (
+        <EmptyState
+          title="No open findings to dispute"
+          description="Run the audit on this case, or all findings have already been disputed or dismissed."
+          action={
+            <Button asChild variant="outline">
+              <Link href={`/app/cases/${id}`}>Back to case</Link>
+            </Button>
+          }
+        />
+      ) : (
+        <DraftForm
+          caseId={id}
+          preselected={preselected}
+          findings={open.map((f) => ({
+            id: f.id,
+            type: f.type,
+            severity: f.severity,
+            title: f.title,
+            estimatedRecovery: f.estimatedRecovery === null ? null : Number(f.estimatedRecovery),
+          }))}
+        />
+      )}
     </div>
   );
 }

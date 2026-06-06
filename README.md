@@ -106,6 +106,10 @@ multi-tenant orgs; dark mode toggle; i18n. Each is left as a documented seam.
       confidence + capped estimated recovery, findings review UI (FindingCard, cost-share
       recompute table, benchmark widget), run/dismiss actions. Rule findings work without
       an API key; the seed produces all 7 rule-detectable finding types.
-- [ ] Phase 5 — Disputes
+- [x] **Phase 5** — Disputes: draft generation (Opus when configured, deterministic
+      template fallback so the loop works with no key), provider-vs-insurer target
+      suggestion, editable letter workspace, PDF export (`/api/disputes/[id]/pdf`),
+      approval → simulated-send (clearly labeled, no real party contacted) → response
+      logging → escalation lifecycle, dispute events timeline, disputes list.
 - [ ] Phase 6 — Recoveries, fees, benchmarks, cron
 - [ ] Phase 7 — Polish, seed, tests, deploy

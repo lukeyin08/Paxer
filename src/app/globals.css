@@ -69,4 +69,17 @@
   .hairline {
     @apply border-rule;
   }
+  /* Dispute letter editor / preview typography */
+  .dispute-prose p {
+    @apply mb-3;
+  }
+  .dispute-prose ol {
+    @apply mb-3 list-decimal space-y-2 pl-6;
+  }
+  .dispute-prose ul {
+    @apply mb-3 list-disc space-y-2 pl-6;
+  }
+  .dispute-prose strong {
+    @apply font-semibold text-ink;
+  }
 }
