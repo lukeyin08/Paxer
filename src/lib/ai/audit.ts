@@ -92,11 +92,15 @@ export async function runAiAuditPass(input: {
     }
   }
 
-  // Append AI-only upcoding findings.
+  // Append AI-only upcoding findings — at most one per line item, so a finding's
+  // identity (type, lineItemId) stays unique and the audit re-run dedup is exact.
+  const upcodedLineItems = new Set<string>();
   for (const u of data.upcoding) {
     if (!inRange(u.lineItemIndex, input.lineItems.length)) continue;
     const li = input.lineItems[u.lineItemIndex];
     if (!li) continue;
+    if (upcodedLineItems.has(li.id)) continue;
+    upcodedLineItems.add(li.id);
     // Sanity-bound the model-supplied recovery estimate (non-negative).
     const est =
       typeof u.estimatedRecovery === 'number' && u.estimatedRecovery >= 0

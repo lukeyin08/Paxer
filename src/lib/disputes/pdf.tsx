@@ -2,18 +2,20 @@ import { createElement as h } from 'react';
 import { Document, Page, View, Text, StyleSheet, renderToBuffer } from '@react-pdf/renderer';
 
 interface Block {
-  kind: 'p' | 'li';
+  kind: 'p' | 'li' | 'h';
   text: string;
 }
 
 /** Convert the dispute letter HTML into ordered text blocks for PDF rendering. */
 export function htmlToBlocks(html: string): Block[] {
   const blocks: Block[] = [];
-  // Match <p>...</p> and <li>...</li> in document order.
-  const re = /<(p|li)\b[^>]*>([\s\S]*?)<\/\1>/gi;
+  // Match block-level text elements in document order (matches the tags the
+  // sanitizer allows so nothing is silently dropped from the PDF).
+  const re = /<(p|li|h[1-6]|blockquote)\b[^>]*>([\s\S]*?)<\/\1>/gi;
   let m: RegExpExecArray | null;
   while ((m = re.exec(html)) !== null) {
-    const kind = m[1]!.toLowerCase() === 'li' ? 'li' : 'p';
+    const tag = m[1]!.toLowerCase();
+    const kind: Block['kind'] = tag === 'li' ? 'li' : /^h[1-6]$/.test(tag) ? 'h' : 'p';
     const text = stripTags(m[2]!);
     if (text.trim()) blocks.push({ kind, text });
   }
@@ -40,8 +42,12 @@ const styles = StyleSheet.create({
   page: { padding: 56, fontSize: 11, fontFamily: 'Times-Roman', lineHeight: 1.5, color: '#16202E' },
   p: { marginBottom: 10 },
   li: { marginBottom: 8, paddingLeft: 14 },
+  h: { marginBottom: 10, fontSize: 13, fontFamily: 'Times-Bold' },
   footer: { marginTop: 24, fontSize: 8, color: '#888', borderTop: '1 solid #ccc', paddingTop: 8 },
 });
+
+const blockStyle = (kind: 'p' | 'li' | 'h') =>
+  kind === 'li' ? styles.li : kind === 'h' ? styles.h : styles.p;
 
 const DISCLAIMER =
   'Paxer is a prototype. This letter is a draft for the patient to review before any use. It is not legal advice.';
@@ -50,11 +56,7 @@ const DISCLAIMER =
 export async function renderLetterPdf(letterHtml: string): Promise<Buffer> {
   const blocks = htmlToBlocks(letterHtml);
   const els = blocks.map((b, i) =>
-    h(
-      Text,
-      { key: String(i), style: b.kind === 'li' ? styles.li : styles.p },
-      (b.kind === 'li' ? '•  ' : '') + b.text,
-    ),
+    h(Text, { key: String(i), style: blockStyle(b.kind) }, (b.kind === 'li' ? '•  ' : '') + b.text),
   );
   const doc = h(
     Document,

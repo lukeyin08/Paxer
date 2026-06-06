@@ -56,9 +56,10 @@ export async function recordRecovery(input: {
             .set({ status: 'RECOVERED' })
             .where(and(inArray(findings.id, d.findingIds), eq(findings.caseId, input.caseId)));
         }
-        // Keep the dispute consistent: a recorded recovery means it was won (unless
-        // it was already marked PARTIAL via the response step).
-        if (d.status !== 'PARTIAL') {
+        // Keep the dispute consistent: only auto-mark WON when it was actually
+        // out for a response. Don't overwrite a PARTIAL (set via the response
+        // step) or rewrite a DENIED/ESCALATED outcome's history.
+        if (d.status === 'SIMULATED_SENT' || d.status === 'RESPONSE_RECEIVED') {
           await tx.update(disputes).set({ status: 'WON', updatedAt: new Date() }).where(eq(disputes.id, d.id));
         }
       }

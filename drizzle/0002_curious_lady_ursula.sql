@@ -1,0 +1,1 @@
+CREATE INDEX "findings_case_status_idx" ON "findings" USING btree ("case_id","status");

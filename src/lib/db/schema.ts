@@ -289,7 +289,11 @@ export const findings = pgTable(
     ...timestamps,
     deletedAt: timestamp('deleted_at', { withTimezone: true }),
   },
-  (t) => [index('findings_case_id_idx').on(t.caseId)],
+  (t) => [
+    index('findings_case_id_idx').on(t.caseId),
+    // Supports the hot recompute/dedup/remaining-findings filters (caseId + status).
+    index('findings_case_status_idx').on(t.caseId, t.status),
+  ],
 );
 
 // ---------------------------------------------------------------------------
