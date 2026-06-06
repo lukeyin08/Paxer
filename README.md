@@ -111,5 +111,9 @@ multi-tenant orgs; dark mode toggle; i18n. Each is left as a documented seam.
       suggestion, editable letter workspace, PDF export (`/api/disputes/[id]/pdf`),
       approval → simulated-send (clearly labeled, no real party contacted) → response
       logging → escalation lifecycle, dispute events timeline, disputes list.
-- [ ] Phase 6 — Recoveries, fees, benchmarks, cron
+- [x] **Phase 6** — Recoveries, fees, benchmarks, cron: recovery logging with success-fee
+      computation + invoice preview (Stripe seam marked), findings→RECOVERED / case→RESOLVED
+      transitions, benchmark explorer + anonymized aggregate recompute (the moat),
+      CRON_SECRET-guarded cron routes (`/api/cron/reminders`, `/api/cron/recompute-benchmarks`),
+      `vercel.json` cron schedules, dashboard wired to real recovered totals + deadlines.
 - [ ] Phase 7 — Polish, seed, tests, deploy
