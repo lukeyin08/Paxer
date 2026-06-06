@@ -12,7 +12,9 @@ import { LineItemsTable } from '@/components/line-items-table';
 import { Disclaimer } from '@/components/brand/disclaimer';
 import { formatDate, formatUsd } from '@/lib/utils';
 import { aiConfigured } from '@/lib/ai/client';
+import { FindingCard } from '@/components/finding-card';
 import { DocumentsSection } from './documents-section';
+import { RunAuditButton } from './run-audit-button';
 
 export default async function CaseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
@@ -20,7 +22,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
   const detail = await getCaseForUser(user.id, id);
   if (!detail) notFound();
 
-  const { case: c, documents, lineItems, planBenefits: plan } = detail;
+  const { case: c, documents, lineItems, planBenefits: plan, findings } = detail;
   const aiEnabled = aiConfigured();
   const needsReviewDocs = documents.some((d) => d.ingestStatus === 'NEEDS_REVIEW');
 
@@ -133,13 +135,43 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
         <LineItemsTable items={lineItems} />
       </section>
 
-      {/* Findings placeholder (Phase 4) */}
-      <section className="flex flex-col gap-3">
-        <h2 className="font-serif text-xl font-semibold">Findings</h2>
-        <p className="text-sm text-muted">
-          The audit engine and findings review arrive in the next phase. Documents uploaded here are
-          extracted into line items in Phase 3, then audited in Phase 4.
-        </p>
+      {/* Findings */}
+      <section className="flex flex-col gap-4">
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="font-serif text-xl font-semibold">Findings</h2>
+          {lineItems.length > 0 && (
+            <RunAuditButton caseId={c.id} hasFindings={findings.length > 0} />
+          )}
+        </div>
+        {findings.length === 0 ? (
+          <p className="text-sm text-muted">
+            {lineItems.length === 0
+              ? 'Add or extract line items, then run the audit to surface findings.'
+              : 'No findings yet. Run the audit to check this case for billing errors.'}
+          </p>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {findings.map((f) => (
+              <FindingCard
+                key={f.id}
+                finding={{
+                  id: f.id,
+                  caseId: c.id,
+                  type: f.type,
+                  severity: f.severity,
+                  title: f.title,
+                  explanationPlain: f.explanationPlain,
+                  estimatedRecovery:
+                    f.estimatedRecovery === null ? null : Number(f.estimatedRecovery),
+                  confidence: f.confidence,
+                  detector: f.detector,
+                  status: f.status,
+                  evidence: (f.evidenceJson as Record<string, unknown> | null) ?? null,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       <Disclaimer />

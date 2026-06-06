@@ -3,10 +3,12 @@ import { db } from '@/lib/db';
 import {
   cases,
   documents,
+  findings,
   lineItems,
   planBenefits,
   type Case,
   type Document,
+  type Finding,
   type LineItem,
   type PlanBenefit,
 } from '@/lib/db/schema';
@@ -26,7 +28,11 @@ export interface CaseDetail {
   documents: Document[];
   lineItems: LineItem[];
   planBenefits: PlanBenefit | null;
+  findings: Finding[];
 }
+
+// Sort order for findings: highest severity first.
+const SEVERITY_RANK: Record<Finding['severity'], number> = { HIGH: 0, MED: 1, LOW: 2 };
 
 /** A single case with its documents, line items, and plan benefits — ownership enforced. */
 export async function getCaseForUser(
@@ -40,7 +46,7 @@ export async function getCaseForUser(
     .limit(1);
   if (!row) return null;
 
-  const [docs, items, [benefit]] = await Promise.all([
+  const [docs, items, [benefit], caseFindings] = await Promise.all([
     db
       .select()
       .from(documents)
@@ -52,9 +58,21 @@ export async function getCaseForUser(
       .where(and(eq(lineItems.caseId, caseId), isNull(lineItems.deletedAt)))
       .orderBy(lineItems.createdAt),
     db.select().from(planBenefits).where(eq(planBenefits.caseId, caseId)).limit(1),
+    db
+      .select()
+      .from(findings)
+      .where(and(eq(findings.caseId, caseId), isNull(findings.deletedAt))),
   ]);
 
-  return { case: row, documents: docs, lineItems: items, planBenefits: benefit ?? null };
+  caseFindings.sort((a, b) => SEVERITY_RANK[a.severity] - SEVERITY_RANK[b.severity]);
+
+  return {
+    case: row,
+    documents: docs,
+    lineItems: items,
+    planBenefits: benefit ?? null,
+    findings: caseFindings,
+  };
 }
 
 export async function createCase(input: {

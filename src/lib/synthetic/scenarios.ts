@@ -51,12 +51,14 @@ export const SCENARIOS: Scenario[] = [
           // Duplicate of the CT line (same code, date, amount)
           li({ description: 'CT scan, head, without contrast', cptHcpcsCode: '70450', chargeAmount: 1240, dateOfService: '2025-11-12' }),
           li({ description: 'Metabolic panel, comprehensive', cptHcpcsCode: '80053', chargeAmount: 220, dateOfService: '2025-11-12' }),
+          // Basic metabolic panel billed separately alongside the comprehensive panel (unbundling).
+          li({ description: 'Metabolic panel, basic', cptHcpcsCode: '80048', chargeAmount: 130, dateOfService: '2025-11-12' }),
           li({ description: 'IV infusion, hydration, first hour', cptHcpcsCode: '96360', chargeAmount: 410, dateOfService: '2025-11-12' }),
         ],
       },
     ],
     planBenefits: { deductible: 2000, deductibleMet: 2000, coinsuranceRate: 0.2, copay: 0, oopMax: 8000, oopMet: 3200, inNetwork: true },
-    expectedFindings: ['DUPLICATE_CHARGE'],
+    expectedFindings: ['DUPLICATE_CHARGE', 'UNBUNDLING_NCCI'],
   },
   {
     key: 'cost-share-error',
@@ -110,8 +112,10 @@ export const SCENARIOS: Scenario[] = [
         ],
       },
     ],
-    planBenefits: { deductible: 1500, deductibleMet: 1500, coinsuranceRate: 0.2, copay: 0, oopMax: 6000, oopMet: 2400, inNetwork: false },
-    expectedFindings: ['BALANCE_BILLING_NSA'],
+    // OOP already near the cap, so this large balance bill also pushes the
+    // patient past their out-of-pocket maximum.
+    planBenefits: { deductible: 1500, deductibleMet: 1500, coinsuranceRate: 0.2, copay: 0, oopMax: 6000, oopMet: 4200, inNetwork: false },
+    expectedFindings: ['BALANCE_BILLING_NSA', 'OOP_MAX_OVERRUN'],
   },
   {
     key: 'oon-denial',
@@ -138,6 +142,34 @@ export const SCENARIOS: Scenario[] = [
     ],
     planBenefits: { deductible: 1500, deductibleMet: 900, coinsuranceRate: 0.2, copay: 0, oopMax: 6000, oopMet: 1800, inNetwork: false },
     expectedFindings: ['NON_COVERED_BILLED_TO_PATIENT'],
+  },
+  {
+    // Same CT head (70450) on the same date as the St. Marin ER visit, billed by
+    // a separate radiology group — a cross-provider duplicate for one encounter.
+    key: 'cross-provider-radiology',
+    title: 'Radiology read, Bay Imaging Partners',
+    providerName: 'Bay Imaging Partners',
+    payerName: 'Brightpath Health',
+    dateOfService: '2025-11-12',
+    documents: [
+      {
+        kind: 'EOB',
+        fileName: 'brightpath-eob-radiology.pdf',
+        lineItems: [
+          li({
+            description: 'CT scan, head, without contrast (professional read)',
+            cptHcpcsCode: '70450',
+            chargeAmount: 980,
+            allowedAmount: 600,
+            planPaid: 480,
+            patientResponsibility: 120,
+            dateOfService: '2025-11-12',
+          }),
+        ],
+      },
+    ],
+    planBenefits: { deductible: 2000, deductibleMet: 2000, coinsuranceRate: 0.2, copay: 0, oopMax: 8000, oopMet: 3200, inNetwork: true },
+    expectedFindings: ['CROSS_PROVIDER_DUPLICATE'],
   },
 ];
 

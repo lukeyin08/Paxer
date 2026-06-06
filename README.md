@@ -100,7 +100,12 @@ multi-tenant orgs; dark mode toggle; i18n. Each is left as a documented seam.
       output + per-field confidence, low-confidence review step, `/api/ingest`,
       and `pnpm eval:extract` (renders synthetic fixture PDFs, scores field accuracy).
       Live extraction requires `ANTHROPIC_API_KEY`.
-- [ ] Phase 4 — Audit engine
+- [x] **Phase 4** — Audit engine: deterministic detectors (duplicate, cost-share recompute,
+      OOP overrun, balance-billing/NSA, unbundling/NCCI seed, cross-provider duplicate,
+      benchmark overcharge) + AI explanation/upcoding pass, findings persisted with
+      confidence + capped estimated recovery, findings review UI (FindingCard, cost-share
+      recompute table, benchmark widget), run/dismiss actions. Rule findings work without
+      an API key; the seed produces all 7 rule-detectable finding types.
 - [ ] Phase 5 — Disputes
 - [ ] Phase 6 — Recoveries, fees, benchmarks, cron
 - [ ] Phase 7 — Polish, seed, tests, deploy
