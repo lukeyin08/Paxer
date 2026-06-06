@@ -56,6 +56,19 @@ pnpm dev               # http://localhost:3000
 See [`.env.example`](.env.example). All secrets are server-side only and are never
 shipped to the client.
 
+### Local Postgres
+
+Any Postgres works. With Homebrew: `brew install postgresql@16 && brew services start
+postgresql@16 && createdb paxer`, then set `DATABASE_URL=postgresql://<you>@localhost:5432/paxer`
+in `.env`. Run `pnpm db:migrate` then `pnpm seed`.
+
+### Auth note (stated deviation)
+
+The spec calls for database sessions, but NextAuth v5's Credentials provider (the seeded
+demo account, required for one-click review) only works with JWT sessions. Paxer therefore
+uses `session: { strategy: 'jwt' }` while keeping the Drizzle adapter for user/account/
+verification-token persistence. Demo login: `demo@paxer.app` / `paxer-demo`.
+
 ## Stubbed seams (built as interfaces, not faked as working)
 
 - **Real payer FHIR / CMS Patient Access ingestion** — `MockFhirConnector` returns
@@ -74,7 +87,10 @@ multi-tenant orgs; dark mode toggle; i18n. Each is left as a documented seam.
 
 - [x] **Phase 0** — Scaffold: Next.js + TS strict + Tailwind + brand system (black & blue),
       base primitives, landing page.
-- [ ] Phase 1 — Data model + auth
+- [x] **Phase 1** — Data model + auth: full Drizzle schema + migrations, Auth.js v5
+      (magic link via Resend + seeded demo credentials), onboarding/consent, audit_log,
+      protected dashboard.
+- [ ] Phase 2 — Cases + uploads
 - [ ] Phase 2 — Cases + uploads
 - [ ] Phase 3 — Ingestion engine
 - [ ] Phase 4 — Audit engine
