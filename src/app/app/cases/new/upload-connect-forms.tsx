@@ -24,7 +24,7 @@ export function UploadForm() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="u-title">Case title</Label>
-          <Input id="u-title" name="title" placeholder="Hospital bill, March 2025" />
+          <Input id="u-title" name="title" placeholder="Hospital bill, March 2025" required />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="u-provider">Provider (optional)</Label>

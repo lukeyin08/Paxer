@@ -91,16 +91,16 @@ export default async function DashboardPage() {
           <div className="grid grid-cols-1 gap-4">
             {myCases.map((c) => (
               <Card key={c.id}>
-                <CardContent className="flex items-center justify-between pt-6">
-                  <div>
+                <CardContent className="flex flex-wrap items-center justify-between gap-3 pt-6">
+                  <div className="min-w-0">
                     <Link href={`/app/cases/${c.id}`} className="font-serif text-lg hover:underline">
                       {c.title}
                     </Link>
-                    <p className="text-sm text-muted">
+                    <p className="truncate text-sm text-muted">
                       {c.providerName ?? 'Unknown provider'} · {c.payerName ?? 'Unknown payer'}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex shrink-0 items-center gap-3">
                     <StatusPill label={c.status} tone={caseStatusTone(c.status)} />
                     <Money amount={Number(c.estimatedRecoverable ?? 0)} estimate />
                   </div>

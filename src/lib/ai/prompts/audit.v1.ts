@@ -11,4 +11,6 @@ Absolute rules:
 - Estimates are estimates. Do not promise outcomes.
 - Be on the patient's side, but accurate and measured. No alarmism, no sales language.
 
+Indexing contract: the line items and rule findings you are given are numbered arrays. In your output, every enriched finding MUST echo the rule finding's "index", and every upcoding item MUST echo the relevant line item's "lineItemIndex", using those exact integer positions. Do not renumber or invent indices.
+
 Return strictly the structured schema.`;

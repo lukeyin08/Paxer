@@ -13,38 +13,40 @@ const NAV = [
   { href: '/app/disputes', label: 'Disputes' },
   { href: '/app/recoveries', label: 'Recoveries' },
   { href: '/app/benchmarks', label: 'Benchmarks' },
+  { href: '/app/settings', label: 'Settings' },
 ];
 
 export function AppNav({ email }: { email?: string | null }) {
   const pathname = usePathname();
+
+  const links = NAV.map((item) => {
+    const active = item.href === '/app' ? pathname === '/app' : pathname.startsWith(item.href);
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={cn(
+          'whitespace-nowrap rounded-md px-3 py-1.5 text-sm transition-colors',
+          active ? 'bg-soft text-ink' : 'text-muted hover:text-ink',
+        )}
+      >
+        {item.label}
+      </Link>
+    );
+  });
+
   return (
     <header className="sticky top-0 z-20 border-b border-rule bg-paper/90 backdrop-blur">
-      <div className="container flex h-16 items-center justify-between gap-6">
-        <div className="flex items-center gap-8">
+      <div className="container flex h-16 items-center justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-8">
           <Wordmark href="/app" />
-          <nav className="hidden items-center gap-1 md:flex">
-            {NAV.map((item) => {
-              const active =
-                item.href === '/app' ? pathname === '/app' : pathname.startsWith(item.href);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    'rounded-md px-3 py-1.5 text-sm transition-colors',
-                    active ? 'bg-soft text-ink' : 'text-muted hover:text-ink',
-                  )}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
+          {/* Desktop nav */}
+          <nav className="hidden items-center gap-1 md:flex">{links}</nav>
         </div>
         <div className="flex items-center gap-3">
-          <Link href="/app/settings" className="hidden text-sm text-muted hover:text-ink sm:block">
-            {email ?? 'Settings'}
-          </Link>
+          {email && (
+            <span className="hidden max-w-[14ch] truncate text-sm text-muted lg:block">{email}</span>
+          )}
           <form action={signOutAction}>
             <Button type="submit" variant="outline" size="sm">
               Sign out
@@ -52,6 +54,10 @@ export function AppNav({ email }: { email?: string | null }) {
           </form>
         </div>
       </div>
+      {/* Mobile nav: horizontally scrollable strip so every section is reachable */}
+      <nav className="flex items-center gap-1 overflow-x-auto border-t border-rule px-4 py-2 md:hidden">
+        {links}
+      </nav>
     </header>
   );
 }

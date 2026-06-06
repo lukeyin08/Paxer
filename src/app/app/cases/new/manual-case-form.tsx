@@ -122,13 +122,13 @@ export function ManualCaseForm() {
                     <Input value={r.cptHcpcsCode} onChange={(e) => setRow(i, { cptHcpcsCode: e.target.value })} placeholder="70450" className="w-24" />
                   </td>
                   <td className="p-1.5">
-                    <Input value={r.units} onChange={(e) => setRow(i, { units: e.target.value })} className="w-16" />
+                    <Input inputMode="numeric" value={r.units} onChange={(e) => setRow(i, { units: e.target.value })} className="w-16" />
                   </td>
                   <td className="p-1.5">
-                    <Input value={r.chargeAmount} onChange={(e) => setRow(i, { chargeAmount: e.target.value })} placeholder="1240" className="w-24" />
+                    <Input inputMode="decimal" value={r.chargeAmount} onChange={(e) => setRow(i, { chargeAmount: e.target.value })} placeholder="1240" className="w-24" />
                   </td>
                   <td className="p-1.5">
-                    <Input value={r.patientResponsibility} onChange={(e) => setRow(i, { patientResponsibility: e.target.value })} placeholder="248" className="w-24" />
+                    <Input inputMode="decimal" value={r.patientResponsibility} onChange={(e) => setRow(i, { patientResponsibility: e.target.value })} placeholder="248" className="w-24" />
                   </td>
                   <td className="p-1.5">
                     <Button type="button" variant="ghost" size="icon" onClick={() => removeRow(i)} disabled={rows.length === 1} aria-label="Remove row">

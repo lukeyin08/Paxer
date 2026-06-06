@@ -19,6 +19,8 @@ export async function completeOnboarding(
   formData: FormData,
 ): Promise<{ error: string }> {
   const user = await requireUser();
+  const [row] = await db.select().from(users).where(eq(users.id, user.id)).limit(1);
+  if (!row || row.deletedAt) redirect('/login');
   const parsed = schema.safeParse({
     name: formData.get('name'),
     state: formData.get('state') || undefined,

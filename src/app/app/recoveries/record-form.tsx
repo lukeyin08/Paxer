@@ -61,7 +61,13 @@ export function RecordRecoveryForm({
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="amount">Amount recovered</Label>
-            <Input id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="240.00" />
+            <Input
+              id="amount"
+              inputMode="decimal"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="240.00"
+            />
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="kind">Type</Label>
@@ -69,7 +75,7 @@ export function RecordRecoveryForm({
               id="kind"
               value={kind}
               onChange={(e) => setKind(e.target.value as typeof kind)}
-              className="h-10 rounded-md border border-input bg-card px-3 text-sm"
+              className="h-10 rounded-md border border-input bg-card px-3 text-sm text-ink ring-offset-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               {KINDS.map((k) => (
                 <option key={k.value} value={k.value}>

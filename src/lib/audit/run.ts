@@ -105,18 +105,14 @@ export async function runAudit(userId: string, caseId: string): Promise<AuditOut
   // RECOVERED we must NOT re-insert an OPEN duplicate (Section 9). Keyed by
   // type + line item + title.
   const existingNonOpen = await db
-    .select({
-      type: findings.type,
-      lineItemId: findings.lineItemId,
-      title: findings.title,
-    })
+    .select({ type: findings.type, lineItemId: findings.lineItemId })
     .from(findings)
     .where(and(eq(findings.caseId, caseId), ne(findings.status, 'OPEN'), isNull(findings.deletedAt)));
-  const keyOf = (t: string, li: string | null, title: string) => `${t}|${li ?? ''}|${title}`;
-  const actionedKeys = new Set(existingNonOpen.map((f) => keyOf(f.type, f.lineItemId, f.title)));
-  const toInsert = detectorFindings.filter(
-    (f) => !actionedKeys.has(keyOf(f.type, f.lineItemId, f.title)),
-  );
+  // Key on (type, lineItem) — a stable identity per issue. Titles are
+  // AI-generated and vary run-to-run, so they must not be part of the key.
+  const keyOf = (t: string, li: string | null) => `${t}|${li ?? ''}`;
+  const actionedKeys = new Set(existingNonOpen.map((f) => keyOf(f.type, f.lineItemId)));
+  const toInsert = detectorFindings.filter((f) => !actionedKeys.has(keyOf(f.type, f.lineItemId)));
 
   // Replace prior OPEN findings; keep user-actioned ones. Atomic so a failed
   // insert can't leave the case with its findings deleted and not rebuilt.
@@ -148,10 +144,14 @@ export async function runAudit(userId: string, caseId: string): Promise<AuditOut
       );
     }
 
+    // Only advance to AUDITED from a pre-dispute status — never clobber a case
+    // that is already IN_DISPUTE / RESOLVED / CLOSED just because it was re-audited.
     await tx
       .update(cases)
       .set({ status: 'AUDITED', updatedAt: new Date() })
-      .where(eq(cases.id, caseId));
+      .where(
+        and(eq(cases.id, caseId), inArray(cases.status, ['DRAFT', 'INGESTING', 'AUDITED'])),
+      );
   });
 
   // Roll up the case estimate from all findings still in play (shared helper).

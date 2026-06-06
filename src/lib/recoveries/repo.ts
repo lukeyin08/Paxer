@@ -49,11 +49,18 @@ export async function recordRecovery(input: {
         .from(disputes)
         .where(and(eq(disputes.id, input.disputeId), eq(disputes.caseId, input.caseId)))
         .limit(1);
-      if (d && d.findingIds.length > 0) {
-        await tx
-          .update(findings)
-          .set({ status: 'RECOVERED' })
-          .where(and(inArray(findings.id, d.findingIds), eq(findings.caseId, input.caseId)));
+      if (d) {
+        if (d.findingIds.length > 0) {
+          await tx
+            .update(findings)
+            .set({ status: 'RECOVERED' })
+            .where(and(inArray(findings.id, d.findingIds), eq(findings.caseId, input.caseId)));
+        }
+        // Keep the dispute consistent: a recorded recovery means it was won (unless
+        // it was already marked PARTIAL via the response step).
+        if (d.status !== 'PARTIAL') {
+          await tx.update(disputes).set({ status: 'WON', updatedAt: new Date() }).where(eq(disputes.id, d.id));
+        }
       }
     } else if (input.findingId) {
       await tx

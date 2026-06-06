@@ -11,7 +11,8 @@ import { OnboardingForm } from './onboarding-form';
 export default async function OnboardingPage() {
   const user = await requireUser();
   const [row] = await db.select().from(users).where(eq(users.id, user.id)).limit(1);
-  if (row?.consentAt) redirect('/app');
+  if (!row || row.deletedAt) redirect('/login');
+  if (row.consentAt) redirect('/app');
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 py-12">
