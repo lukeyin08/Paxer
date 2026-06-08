@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
+import { API_BUYERS } from '@/lib/marketing';
 
 export const metadata: Metadata = {
   title: 'Developers — Audit API',
@@ -93,9 +94,16 @@ export default function DevelopersPage() {
           <div className="container py-14">
             <Kicker className="mb-3">Who it’s for</Kicker>
             <p className="max-w-3xl text-lg text-ink">
-              Patient-billing &amp; payment platforms, HSA/FSA administrators, care-navigation and
-              advocacy tools, fintechs, and clinics — anywhere a bill needs an instant “is this
-              correct?” check before someone pays it.
+              Built for the buyers whose incentives align with the patient — {API_BUYERS} — plus
+              care-navigation and advocacy tools. Anywhere a bill needs an instant “is this correct?”
+              check before someone pays it.
+            </p>
+            <p className="mt-3 max-w-3xl text-sm text-muted">
+              We don’t sell this to health plans as the primary buyer — the aligned parties are the
+              ones who win when a bill is corrected, not when a claim is denied.{' '}
+              <Link href="/pricing" className="text-accent hover:underline">
+                See pricing →
+              </Link>
             </p>
           </div>
         </section>

@@ -114,15 +114,15 @@ export default function PricingPage() {
               href="/login"
             />
             <Tier
-              name="Employers & health plans"
+              name="Employers & TPAs"
               price="Let’s talk"
-              sub="For teams covering many members."
+              sub="Bill review as an employee benefit — self-insured employers, TPAs, and benefit platforms."
               features={[
                 'Offer bill review as an employee benefit',
                 'Per-member pricing (PEPM) or shared savings',
                 'Bulk / programmatic access',
                 'Dedicated support',
-                'Early access — in design',
+                'Design-partner program — in design',
               ]}
               cta="Contact us"
               href="mailto:ly3569@princeton.edu?subject=Paxer%20for%20employers"

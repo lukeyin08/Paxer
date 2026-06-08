@@ -22,6 +22,16 @@ export const PROCESS_STEPS = [
   },
 ] as const;
 
+/**
+ * The B2B buyers the Audit API is sold to, named explicitly. Chosen because
+ * their incentives align with the patient — they win when a bill is corrected,
+ * not when a claim is denied — unlike health plans, which stay a "contact" lane
+ * and are never the wedge. Shared across landing / developers / pricing so the
+ * positioning can't drift.
+ */
+export const API_BUYERS =
+  'patient-billing platforms, TPAs, self-insured employers, and HSA/FSA admins';
+
 export const ERROR_TYPES = [
   {
     title: 'Duplicate & unbundled charges',

@@ -7,7 +7,7 @@ import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
 import { DEMO_ENABLED } from '@/lib/auth/demo';
 import { defaultFeeRate } from '@/lib/audit/fees';
-import { PROCESS_STEPS, ERROR_TYPES } from '@/lib/marketing';
+import { PROCESS_STEPS, ERROR_TYPES, API_BUYERS } from '@/lib/marketing';
 
 // The instant demo only exists in non-production (the Credentials provider is
 // disabled in prod). So the public CTA points to the real sign-in there instead
@@ -127,8 +127,8 @@ export default function LandingPage() {
                 The same audit engine, as an API.
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">
-                Patient-billing platforms, HSA/FSA admins, and clinics can check a bill for errors
-                with one API call. Free for individuals; usage-based for businesses.
+                For {API_BUYERS} — the parties whose incentives line up with the patient. Check a
+                bill for errors with one API call. Free for individuals; usage-based for businesses.
               </p>
             </div>
             <div className="flex shrink-0 gap-3">
