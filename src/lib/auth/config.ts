@@ -76,8 +76,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // Anti-abuse: cap magic-link sends per email (prevents email-bombing a
         // victim's inbox and login-enumeration spam). 5 per 15 minutes.
         await enforceRateLimit(`magic-link:${identifier.toLowerCase()}`, 5, 900, 'sign-in emails');
+        // Link to our confirmation page, not straight to the Auth.js callback:
+        // email security scanners (Microsoft Safe Links, etc.) pre-fetch links,
+        // and a GET on the callback burns the one-time token before the user
+        // clicks. The interstitial doesn't touch the token; the real callback
+        // fires only on a genuine click. See src/app/auth/confirm/page.tsx.
+        const confirmUrl = new URL('/auth/confirm', url);
+        confirmUrl.searchParams.set('u', url);
+        const link = confirmUrl.toString();
         if (!env.RESEND_API_KEY) {
-          console.log(`\n🔗 Paxer magic link for ${identifier}:\n${url}\n`);
+          console.log(`\n🔗 Paxer magic link for ${identifier}:\n${link}\n`);
           return;
         }
         const { Resend: ResendClient } = await import('resend');
@@ -86,7 +94,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           from: env.RESEND_FROM ?? DEFAULT_EMAIL_FROM,
           to: identifier,
           subject: 'Sign in to Paxer',
-          text: `Sign in to Paxer:\n${url}\n\nIf you did not request this, you can ignore it.`,
+          text: `Sign in to Paxer:\n${link}\n\nIf you did not request this, you can ignore it.`,
         });
       },
     }),
