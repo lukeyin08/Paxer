@@ -8,6 +8,36 @@ import { requireUser } from '@/lib/auth/session';
 import { signOut } from '@/lib/auth/config';
 import { deleteFile } from '@/lib/storage';
 import { writeAuditLog } from '@/lib/audit-log';
+import { createApiKey, revokeApiKey } from '@/lib/api-keys/repo';
+
+/** Create an API key for the embedded audit API. Returns the plaintext ONCE. */
+export async function createApiKeyAction(
+  name: string,
+): Promise<{ ok: boolean; plaintext?: string; error?: string }> {
+  const user = await requireUser();
+  const clean = name.trim().slice(0, 60);
+  if (!clean) return { ok: false, error: 'Give the key a name.' };
+  const { record, plaintext } = await createApiKey(user.id, clean);
+  await writeAuditLog({
+    userId: user.id,
+    entity: 'user',
+    entityId: user.id,
+    action: 'api_key.created',
+    diff: { id: record.id, name: clean },
+  });
+  revalidatePath('/app/settings');
+  return { ok: true, plaintext };
+}
+
+export async function revokeApiKeyAction(id: string): Promise<{ ok: boolean }> {
+  const user = await requireUser();
+  const ok = await revokeApiKey(user.id, id);
+  if (ok) {
+    await writeAuditLog({ userId: user.id, entity: 'user', entityId: user.id, action: 'api_key.revoked', diff: { id } });
+    revalidatePath('/app/settings');
+  }
+  return { ok };
+}
 
 export async function updateStateAction(state: string): Promise<{ ok: boolean }> {
   const user = await requireUser();

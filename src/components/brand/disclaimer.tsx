@@ -1,15 +1,14 @@
 import { cn } from '@/lib/utils';
 
 /**
- * The persistent prototype disclaimer (Section 9). Rendered in the footer and
- * on every findings page, dispute draft, and fee estimate. The copy must not
- * change without reason; honesty is non-negotiable.
+ * The persistent product disclaimer (Section 9). Rendered in the footer and on
+ * every findings page, dispute draft, and fee estimate. The copy must not change
+ * without reason; honesty is non-negotiable. Paxer assists patients but does not
+ * provide legal, medical, or financial advice, and every estimate/draft is the
+ * patient's to review and act on.
  */
 export const DISCLAIMER_TEXT =
-  'Paxer is a prototype. Estimates are not guarantees. Drafts must be reviewed by you before any use. This is not legal, medical, or financial advice.';
-
-export const SYNTHETIC_DATA_NOTICE =
-  'This build runs on synthetic data only. Do not enter real patient information.';
+  'Estimates are not guarantees. Dispute letters are drafts you must review before sending. Paxer does not provide legal, medical, or financial advice.';
 
 export function Disclaimer({
   className,

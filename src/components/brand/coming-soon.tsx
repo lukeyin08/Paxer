@@ -7,7 +7,7 @@ export function ComingSoon({ title, phase, description }: { title: string; phase
     <div className="flex flex-col gap-8">
       <div>
         <Kicker className="mb-2">{title}</Kicker>
-        <h1 className="font-serif text-3xl font-semibold">{title}</h1>
+        <h1 className="font-sans text-3xl font-semibold">{title}</h1>
       </div>
       <EmptyState kicker={phase} title={`${title} is coming soon`} description={description} />
     </div>

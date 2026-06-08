@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { runStructured } from './client';
 import { MODELS } from './models';
-import { DRAFT_SYSTEM, DRAFT_PROMPT_VERSION } from './prompts/draft.v1';
+import { DRAFT_SYSTEM, DRAFT_PROMPT_VERSION } from './prompts/draft.v2';
 import { contextForPrompt, type LetterContext } from '@/lib/disputes/letter-context';
 
 const draftSchema = z.object({
@@ -21,7 +21,10 @@ export interface DraftResult {
  * case's real evidence; the system prompt forbids fabrication and limits cited
  * rules. Returns editable HTML plus model metadata to store on the dispute.
  */
-export async function generateDraftWithAi(ctx: LetterContext): Promise<DraftResult> {
+export async function generateDraftWithAi(
+  ctx: LetterContext,
+  userId?: string | null,
+): Promise<DraftResult> {
   const content = [
     {
       type: 'text' as const,
@@ -37,6 +40,7 @@ export async function generateDraftWithAi(ctx: LetterContext): Promise<DraftResu
     effort: 'high', // high stakes (Section 8)
     maxTokens: 8000,
     label: 'draft',
+    userId,
   });
   return { letterHtml: data.letterHtml, modelId, promptVersion };
 }

@@ -36,6 +36,7 @@ export function RecordRecoveryForm({
   const amt = Number(amount) || 0;
   const fee = Math.round(amt * feeRate * 100) / 100;
   const net = amt - fee;
+  const isFree = feeRate === 0;
 
   function submit() {
     setError(null);
@@ -56,7 +57,7 @@ export function RecordRecoveryForm({
       <CardContent className="flex flex-col gap-5 pt-6">
         <div>
           <Kicker className="mb-1">Record a recovery</Kicker>
-          <h2 className="font-serif text-xl font-semibold">Money returned to you</h2>
+          <h2 className="font-sans text-xl font-semibold">Money returned to you</h2>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
@@ -90,18 +91,31 @@ export function RecordRecoveryForm({
           <Input id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Insurer reprocessed claim on appeal" />
         </div>
 
-        {/* Fee / invoice preview — Stripe is a stubbed seam (Section 2, 7.10) */}
+        {/* Summary — payment processing is not wired up in v1 */}
         <div className="rounded-md border border-rule bg-soft/40 p-4">
-          <p className="kicker mb-2">Invoice preview</p>
-          <div className="flex flex-col gap-1 text-sm">
-            <Row label="Recovered for you" value={formatUsd(amt)} />
-            <Row label={`Paxer success fee (${Math.round(feeRate * 100)}%)`} value={`- ${formatUsd(fee)}`} />
-            <div className="my-1 h-px bg-rule" />
-            <Row label="You keep" value={formatUsd(net)} strong />
-          </div>
-          <p className="mt-3 font-mono text-[0.65rem] uppercase tracking-wider text-accent2">
-            Preview only — no payment is processed (Stripe is a stubbed seam).
-          </p>
+          <p className="kicker mb-2">Summary</p>
+          {isFree ? (
+            <>
+              <div className="flex flex-col gap-1 text-sm">
+                <Row label="Recovered for you" value={formatUsd(amt)} strong />
+              </div>
+              <p className="mt-3 font-mono text-[0.65rem] uppercase tracking-wider text-accent2">
+                Paxer is free — you keep 100%.
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="flex flex-col gap-1 text-sm">
+                <Row label="Recovered for you" value={formatUsd(amt)} />
+                <Row label={`Paxer success fee (${Math.round(feeRate * 100)}%)`} value={`- ${formatUsd(fee)}`} />
+                <div className="my-1 h-px bg-rule" />
+                <Row label="You keep" value={formatUsd(net)} strong />
+              </div>
+              <p className="mt-3 font-mono text-[0.65rem] uppercase tracking-wider text-accent2">
+                Preview only — no payment is processed yet.
+              </p>
+            </>
+          )}
         </div>
 
         {error && <p className="text-sm text-danger">{error}</p>}

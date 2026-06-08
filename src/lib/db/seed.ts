@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray, isNull } from 'drizzle-orm';
 
 config({ path: '.env' });
 
@@ -15,6 +15,7 @@ import {
   addLineItems,
   upsertPlanBenefits,
   recomputeCaseTotals,
+  recomputeEstimatedRecoverable,
 } from '@/lib/cases/repo';
 import { runAudit } from '@/lib/audit/run';
 import { generateDraft } from '@/lib/disputes/generate';
@@ -177,6 +178,13 @@ async function seedDisputes(userId: string): Promise<void> {
       await db.update(disputes).set({ status: 'WON' }).where(eq(disputes.id, d.id));
       await addDisputeEvent(d.id, 'SIMULATED_SENT', { simulated: true });
       await addDisputeEvent(d.id, 'RESPONSE_LOGGED', { outcome: 'WON' });
+      // Resolve findings + case the way logResponseAction(WON) would — the seed
+      // sets the dispute status directly, so it must mirror that resolution to
+      // avoid leaving findings DISPUTING / the case IN_DISPUTE.
+      await db
+        .update(findings)
+        .set({ status: 'RECOVERED' })
+        .where(and(eq(findings.caseId, denial.id), inArray(findings.id, draft.findingIds)));
       const amount = Number(f[0]!.estimatedRecovery ?? 0) || 540;
       await recordRecovery({
         userId,
@@ -186,6 +194,20 @@ async function seedDisputes(userId: string): Promise<void> {
         kind: 'CLAIM_PAID',
         notes: 'Appeal approved on first level (synthetic).',
       });
+      await recomputeEstimatedRecoverable(denial.id);
+      const stillInPlay = await db
+        .select({ id: findings.id })
+        .from(findings)
+        .where(
+          and(
+            eq(findings.caseId, denial.id),
+            inArray(findings.status, ['OPEN', 'DISPUTING']),
+            isNull(findings.deletedAt),
+          ),
+        );
+      if (stillInPlay.length === 0) {
+        await db.update(cases).set({ status: 'RESOLVED' }).where(eq(cases.id, denial.id));
+      }
       console.log(`✓ Won dispute + recovery recorded ($${amount})`);
     }
   }

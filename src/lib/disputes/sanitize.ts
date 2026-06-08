@@ -21,7 +21,11 @@ export function sanitizeLetterHtml(html: string): string {
 
   // 2) Filter every remaining tag against the allowlist; strip all attributes
   //    (so on* handlers / style / etc. cannot survive) except a safe <a href>.
-  out = out.replace(/<(\/?)([a-zA-Z][a-zA-Z0-9]*)\b([^>]*)>/g, (_m, slash: string, rawName: string, attrs: string) => {
+  //    The attribute group consumes quoted strings as units, so a '>' inside a
+  //    quoted attribute value doesn't terminate the tag early and leak residue.
+  out = out.replace(
+    /<(\/?)([a-zA-Z][a-zA-Z0-9]*)((?:"[^"]*"|'[^']*'|[^>])*)>/g,
+    (_m, slash: string, rawName: string, attrs: string) => {
     const name = rawName.toLowerCase();
     if (!ALLOWED_TAGS.has(name)) return ''; // drop the tag markup, keep inner text
     if (slash === '/') return `</${name}>`;

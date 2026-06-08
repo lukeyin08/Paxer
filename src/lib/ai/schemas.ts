@@ -1,22 +1,27 @@
 import { z } from 'zod';
 
 /**
- * Structured-output schemas for AI calls (Section 8). Fields that may be absent
- * are `.nullable()` (required-but-null) rather than `.optional()`, so the model
- * must explicitly return null instead of guessing (Section 9). All numeric
+ * Structured-output schemas for AI calls (Section 8). Fields the model must
+ * weigh in on use `.nullable()` (required-but-null) so it explicitly returns
+ * null rather than guessing (Section 9). A few low-signal fields are `.optional()`
+ * (omittable) instead — this keeps the schema under Anthropic's structured-output
+ * cap of 16 union-typed parameters (each `.nullable()` is one union). All numeric
  * confidences are 0..1.
  */
 
 export const extractedLineItemSchema = z.object({
   description: z.string(),
   cptHcpcsCode: z.string().nullable(),
-  revenueCode: z.string().nullable(),
+  revenueCode: z.string().optional(),
   units: z.number(),
   chargeAmount: z.number().nullable(),
   allowedAmount: z.number().nullable(),
   planPaid: z.number().nullable(),
   patientResponsibility: z.number().nullable(),
   dateOfService: z.string().nullable(),
+  // EOB adjustment / reason codes printed for this line, e.g. ["PR-22", "CO-45"].
+  // Optional (omittable) so it adds no union to the structured-output schema.
+  adjustmentCodes: z.array(z.string()).optional(),
   confidence: z.number(),
 });
 
@@ -27,7 +32,7 @@ export const extractedPlanBenefitsSchema = z.object({
   copay: z.number().nullable(),
   oopMax: z.number().nullable(),
   oopMet: z.number().nullable(),
-  inNetwork: z.boolean().nullable(),
+  inNetwork: z.boolean().optional(),
 });
 
 export const documentExtractionSchema = z.object({
@@ -37,8 +42,8 @@ export const documentExtractionSchema = z.object({
   dateOfService: z.string().nullable(),
   overallConfidence: z.number(),
   lineItems: z.array(extractedLineItemSchema),
-  planBenefits: extractedPlanBenefitsSchema.nullable(),
-  notes: z.string().nullable(),
+  planBenefits: extractedPlanBenefitsSchema.optional(),
+  notes: z.string().optional(),
 });
 
 export type DocumentExtraction = z.infer<typeof documentExtractionSchema>;

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireUser } from '@/lib/auth/session';
 import { processDocumentIngestion } from '@/lib/cases/ingest';
+import { RateLimitError } from '@/lib/rate-limit';
 
 // Node runtime (Anthropic SDK + PDF handling). Section 13.
 export const runtime = 'nodejs';
@@ -20,6 +21,12 @@ export async function POST(req: NextRequest) {
     const result = await processDocumentIngestion(user.id, parsed.data.documentId);
     return NextResponse.json(result);
   } catch (err) {
+    if (err instanceof RateLimitError) {
+      return NextResponse.json(
+        { error: err.message },
+        { status: 429, headers: { 'Retry-After': String(err.retryAfterSec) } },
+      );
+    }
     return NextResponse.json(
       { error: err instanceof Error ? err.message : 'Extraction failed.' },
       { status: 500 },

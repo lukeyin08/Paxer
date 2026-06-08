@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import Link from 'next/link';
 import { DISCLAIMER_TEXT } from '@/components/brand/disclaimer';
 import { completeOnboarding } from './actions';
 
@@ -34,7 +35,26 @@ export function OnboardingForm({ defaultName }: { defaultName?: string }) {
       <label className="flex items-start gap-3 rounded-md border border-rule bg-soft/40 p-3 text-sm">
         <Checkbox id="consent" name="consent" className="mt-0.5" />
         <span className="text-muted">
-          I understand this is a prototype running on synthetic data. {DISCLAIMER_TEXT}
+          I agree to Paxer&rsquo;s{' '}
+          <Link
+            href="/terms"
+            className="text-accent hover:underline"
+            target="_blank"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Terms of Service
+          </Link>{' '}
+          and{' '}
+          <Link
+            href="/privacy"
+            className="text-accent hover:underline"
+            target="_blank"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Privacy Policy
+          </Link>
+          , and consent to Paxer processing my medical billing information to audit my bills.{' '}
+          {DISCLAIMER_TEXT}
         </span>
       </label>
       <Submit />

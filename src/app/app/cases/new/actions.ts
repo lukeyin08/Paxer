@@ -10,11 +10,9 @@ import {
   addLineItems,
   createCase,
   recomputeCaseTotals,
-  updateCaseProvider,
   upsertPlanBenefits,
 } from '@/lib/cases/repo';
 import { lineItemInputSchema, planBenefitsInputSchema } from '@/lib/domain/line-item';
-import { mockFhirConnector } from '@/lib/connectors/mock-fhir';
 import type { Document } from '@/lib/db/schema';
 
 const ACCEPTED = ['application/pdf', 'image/png', 'image/jpeg'];
@@ -76,17 +74,26 @@ function kindForName(name: string): Document['kind'] {
   return 'OTHER';
 }
 
-export async function createCaseFromUpload(formData: FormData): Promise<void> {
+export async function createCaseFromUpload(
+  _prev: { ok: boolean; error?: string } | null,
+  formData: FormData,
+): Promise<{ ok: boolean; error?: string }> {
   const user = await requireUser();
   const title = String(formData.get('title') ?? '').trim() || 'Uploaded case';
   const files = formData.getAll('files').filter((f): f is File => f instanceof File && f.size > 0);
 
+  // Return validation errors as state (rendered inline) instead of throwing,
+  // which would otherwise surface as a full-page error boundary.
   if (files.length === 0) {
-    throw new Error('Please attach at least one file.');
+    return { ok: false, error: 'Please attach at least one file.' };
   }
   for (const f of files) {
-    if (!ACCEPTED.includes(f.type)) throw new Error(`Unsupported file type: ${f.type}`);
-    if (f.size > MAX_BYTES) throw new Error(`File too large: ${f.name}`);
+    if (!ACCEPTED.includes(f.type)) {
+      return { ok: false, error: `Unsupported file type for "${f.name}". Use PDF, PNG, or JPEG.` };
+    }
+    if (f.size > MAX_BYTES) {
+      return { ok: false, error: `"${f.name}" is too large. Maximum size is 12 MB.` };
+    }
   }
 
   const created = await createCase({
@@ -116,50 +123,6 @@ export async function createCaseFromUpload(formData: FormData): Promise<void> {
     entityId: created.id,
     action: 'case.created.upload',
     diff: { files: files.length },
-  });
-
-  redirect(`/app/cases/${created.id}`);
-}
-
-// ---------------------------------------------------------------------------
-// Path 3: Connect insurer (stubbed MockFhirConnector)
-// ---------------------------------------------------------------------------
-export async function connectMockPayer(payerId: string): Promise<void> {
-  const user = await requireUser();
-  const result = await mockFhirConnector.connect(payerId);
-
-  const created = await createCase({
-    userId: user.id,
-    title: `Imported claims from ${result.payerName}`,
-    payerName: result.payerName,
-    status: 'AUDITED',
-    notes: result.note,
-  });
-
-  let providerName: string | null = null;
-  for (const doc of result.documents) {
-    const document = await addDocument({
-      caseId: created.id,
-      kind: doc.kind,
-      fileName: doc.fileName,
-      ingestStatus: 'DONE', // connector returns already-structured data
-    });
-    await addLineItems(created.id, doc.lineItems, document.id);
-    if (doc.providerName && !providerName) providerName = doc.providerName;
-  }
-  if (result.planBenefits) await upsertPlanBenefits(created.id, result.planBenefits);
-  // Persist the captured provider name (the connector spans providers; record the first).
-  if (providerName) {
-    await updateCaseProvider(created.id, providerName);
-  }
-  await recomputeCaseTotals(created.id);
-
-  await writeAuditLog({
-    userId: user.id,
-    entity: 'case',
-    entityId: created.id,
-    action: 'case.created.connector',
-    diff: { connector: mockFhirConnector.id, documents: result.documents.length },
   });
 
   redirect(`/app/cases/${created.id}`);

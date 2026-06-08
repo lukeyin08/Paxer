@@ -2,10 +2,15 @@
 
 import { AuthError } from 'next-auth';
 import { signIn } from '@/lib/auth/config';
-import { DEMO_EMAIL, DEMO_PASSWORD } from '@/lib/auth/demo';
+import { DEMO_EMAIL, DEMO_PASSWORD, DEMO_ENABLED } from '@/lib/auth/demo';
 
-/** Sign in as the seeded demo account (Section 7.1). */
+/** Sign in as the seeded demo account (dev-only — Section 7.1). */
 export async function signInDemo() {
+  // The Credentials provider isn't registered in production; refuse explicitly
+  // so this can never become a real-patient login path.
+  if (!DEMO_ENABLED) {
+    throw new Error('Demo sign-in is disabled.');
+  }
   await signIn('credentials', {
     email: DEMO_EMAIL,
     password: DEMO_PASSWORD,
@@ -24,11 +29,18 @@ export async function sendMagicLink(
   }
   try {
     await signIn('resend', { email, redirectTo: '/app', redirect: false });
+    // The console-fallback hint is only true in dev (no RESEND_API_KEY); never
+    // show it to real users in production.
+    const devHint =
+      process.env.NODE_ENV === 'production'
+        ? ''
+        : ' (In dev, the link is printed to the server console.)';
     return {
       ok: true,
-      message: 'Check your email for a sign-in link. (In dev, the link is printed to the server console.)',
+      message: `Check your email for a sign-in link.${devHint}`,
     };
   } catch (err) {
+    console.error('[magic-link] signIn failed:', err);
     if (err instanceof AuthError) {
       return { ok: false, message: 'Could not send the link. Please try again.' };
     }

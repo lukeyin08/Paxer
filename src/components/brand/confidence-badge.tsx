@@ -30,7 +30,7 @@ export function ConfidenceBadge({
       title={`Confidence: ${pct}%`}
     >
       <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-current" />
-      {pct}% conf
+      {pct}% confidence
     </span>
   );
 }

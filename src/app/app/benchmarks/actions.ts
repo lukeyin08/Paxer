@@ -1,12 +1,13 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { requireUser } from '@/lib/auth/session';
+import { requireAdmin } from '@/lib/auth/session';
 import { recomputeBenchmarks } from '@/lib/benchmarks/recompute';
 import { writeAuditLog } from '@/lib/audit-log';
 
 export async function recomputeBenchmarksAction(): Promise<{ ok: boolean; message: string }> {
-  const user = await requireUser();
+  // Operational action over global, cross-user data — admin only.
+  const user = await requireAdmin();
   const res = await recomputeBenchmarks();
   await writeAuditLog({
     userId: user.id,

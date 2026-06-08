@@ -11,7 +11,43 @@
  * Stored as HSL triplets so Tailwind can apply opacity modifiers.
  */
 @layer base {
+  /* LIGHT theme (default for users who prefer / select it) */
   :root {
+    color-scheme: light;
+    --ink: 222 47% 11%;
+    --paper: 0 0% 100%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    --accent2: 217 91% 45%;
+    --muted: 215 16% 42%;
+    --muted-foreground: 215 16% 42%;
+    --rule: 214 25% 90%;
+    --soft: 210 40% 97%;
+    --success: 160 84% 30%;
+    --danger: 0 72% 48%;
+    --warning: 30 90% 38%;
+
+    --background: var(--paper);
+    --foreground: var(--ink);
+    --card: 0 0% 100%;
+    --card-foreground: var(--ink);
+    --popover: 0 0% 100%;
+    --popover-foreground: var(--ink);
+    --primary: var(--accent);
+    --primary-foreground: var(--accent-foreground);
+    --secondary: var(--soft);
+    --secondary-foreground: var(--ink);
+    --destructive: var(--danger);
+    --destructive-foreground: 0 0% 100%;
+    --border: var(--rule);
+    --input: var(--rule);
+    --ring: var(--accent);
+    --radius: 0.5rem;
+  }
+
+  /* DARK theme (brand default — applied via the `dark` class on <html>) */
+  .dark {
+    color-scheme: dark;
     --ink: 215 33% 92%;
     --paper: 215 33% 6%;
     --accent: 217 91% 60%;
@@ -25,7 +61,6 @@
     --danger: 0 91% 71%;
     --warning: 43 96% 56%;
 
-    /* shadcn semantic aliases mapped onto brand tokens */
     --background: var(--paper);
     --foreground: var(--ink);
     --card: 215 33% 9%;
@@ -57,7 +92,7 @@
   h2,
   h3,
   h4 {
-    @apply font-serif;
+    @apply font-sans font-semibold tracking-tight;
   }
 }
 

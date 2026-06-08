@@ -11,7 +11,7 @@ export default async function DisputePage({ params }: { params: Promise<{ id: st
   const detail = await getDisputeForUser(user.id, id);
   if (!detail) notFound();
 
-  const { dispute, events } = detail;
+  const { dispute, events, findings } = detail;
   const pastDeadline = dispute.deadlineAt ? new Date(dispute.deadlineAt) < new Date() : false;
 
   return (
@@ -21,7 +21,7 @@ export default async function DisputePage({ params }: { params: Promise<{ id: st
           ← Back to case
         </Link>
         <Kicker className="mb-2 mt-3">Dispute</Kicker>
-        <h1 className="font-serif text-3xl font-semibold">
+        <h1 className="font-sans text-3xl font-semibold">
           {dispute.target === 'INSURER' ? 'Insurer appeal' : 'Provider letter'}
         </h1>
       </div>
@@ -38,6 +38,11 @@ export default async function DisputePage({ params }: { params: Promise<{ id: st
           promptVersion: dispute.promptVersion,
         }}
         events={events.map((e) => ({ type: e.type, occurredAt: e.occurredAt.toISOString() }))}
+        findings={findings.map((f) => ({
+          id: f.id,
+          title: f.title,
+          estimatedRecovery: Number(f.estimatedRecovery ?? 0),
+        }))}
         pastDeadline={pastDeadline}
       />
     </div>

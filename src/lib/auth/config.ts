@@ -8,6 +8,8 @@ import { db } from '@/lib/db';
 import { users, accounts, sessions, verificationTokens } from '@/lib/db/schema';
 import { verifyPassword } from './password';
 import { env } from '@/lib/env';
+import { checkRateLimit, enforceRateLimit } from '@/lib/rate-limit';
+import { DEMO_ENABLED } from './demo';
 
 // Expose id + role on the session (Section 6).
 declare module 'next-auth' {
@@ -38,29 +40,42 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
   pages: { signIn: '/login' },
   providers: [
-    Credentials({
-      id: 'credentials',
-      name: 'Demo account',
-      credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
-      },
-      async authorize(raw) {
-        const parsed = credsSchema.safeParse(raw);
-        if (!parsed.success) return null;
-        const { email, password } = parsed.data;
-        const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
-        if (!user?.passwordHash || user.deletedAt) return null;
-        const ok = await verifyPassword(password, user.passwordHash);
-        if (!ok) return null;
-        return { id: user.id, email: user.email, name: user.name, role: user.role };
-      },
-    }),
+    // Password (demo) login is dev-only: a shared, known-password account on
+    // synthetic data. In production the only sign-in is the email magic link.
+    ...(DEMO_ENABLED
+      ? [
+          Credentials({
+            id: 'credentials',
+            name: 'Demo account',
+            credentials: {
+              email: { label: 'Email', type: 'email' },
+              password: { label: 'Password', type: 'password' },
+            },
+            async authorize(raw) {
+              const parsed = credsSchema.safeParse(raw);
+              if (!parsed.success) return null;
+              const { email, password } = parsed.data;
+              // Brute-force throttle: 10 attempts / 15 min per email. Fail closed
+              // (treat as bad credentials) rather than throwing, to avoid enumeration.
+              const limit = await checkRateLimit(`login:${email.toLowerCase()}`, 10, 900);
+              if (!limit.ok) return null;
+              const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+              if (!user?.passwordHash || user.deletedAt) return null;
+              const ok = await verifyPassword(password, user.passwordHash);
+              if (!ok) return null;
+              return { id: user.id, email: user.email, name: user.name, role: user.role };
+            },
+          }),
+        ]
+      : []),
     Resend({
       apiKey: env.RESEND_API_KEY ?? 'dev-no-key',
       from: env.RESEND_FROM ?? 'Paxer <onboarding@resend.dev>',
       // In dev (or when no Resend key), log the magic link instead of sending email.
       async sendVerificationRequest({ identifier, url }) {
+        // Anti-abuse: cap magic-link sends per email (prevents email-bombing a
+        // victim's inbox and login-enumeration spam). 5 per 15 minutes.
+        await enforceRateLimit(`magic-link:${identifier.toLowerCase()}`, 5, 900, 'sign-in emails');
         if (!env.RESEND_API_KEY) {
           console.log(`\n🔗 Paxer magic link for ${identifier}:\n${url}\n`);
           return;

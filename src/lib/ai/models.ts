@@ -7,8 +7,8 @@ export const MODELS = {
   triage: 'claude-haiku-4-5-20251001',
   // Workhorse: extraction + audit explanation.
   workhorse: 'claude-sonnet-4-6',
-  // High-stakes dispute drafting.
-  drafting: 'claude-opus-4-8',
+  // Dispute drafting — Sonnet for cost (Opus is the higher-quality alternative).
+  drafting: 'claude-sonnet-4-6',
 } as const;
 
 export type ModelKey = keyof typeof MODELS;

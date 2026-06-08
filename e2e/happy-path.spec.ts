@@ -43,10 +43,10 @@ test('full patient loop: case → findings → dispute → simulated send → re
   await page.getByRole('button', { name: 'Generate dispute draft' }).click();
   await page.waitForURL('**/app/disputes/**');
 
-  // 5. Approve → confirm & simulate send → log a "Won" response.
+  // 5. Approve → mark as sent (patient sends it themselves) → log a "Won" response.
   await page.getByRole('button', { name: 'Approve draft' }).click();
-  await page.getByRole('button', { name: 'Confirm & simulate send' }).click();
-  await expect(page.getByText(/Simulated send/i).first()).toBeVisible();
+  await page.getByRole('button', { name: /mark as sent/i }).click();
+  await expect(page.getByText(/Marked as sent/i).first()).toBeVisible();
   await page.getByRole('button', { name: 'Won', exact: true }).click();
 
   // 6. Record a recovery and see the success fee.

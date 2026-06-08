@@ -23,8 +23,8 @@ export function Money({
   const sizeClass = {
     sm: 'text-sm',
     base: 'text-base',
-    lg: 'font-serif text-2xl',
-    xl: 'font-serif text-4xl',
+    lg: 'font-sans text-2xl',
+    xl: 'font-sans text-4xl',
   }[size];
 
   return (

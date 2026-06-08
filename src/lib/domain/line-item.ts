@@ -6,28 +6,35 @@ import { z } from 'zod';
  * are numbers in dollars; nullable fields are genuinely-unknown values and must
  * never be guessed (Section 9).
  */
+// Dollar amounts are stored in numeric(12,2) — values past ~10 integer digits
+// overflow the column. Bound every money field (and reject Infinity/NaN) so an
+// out-of-range input is a friendly validation error, not a DB-level 500.
+const MAX_MONEY = 99_999_999.99;
+const money = () => z.coerce.number().finite().min(0).max(MAX_MONEY);
+
 export const lineItemInputSchema = z.object({
-  description: z.string().min(1, 'Description is required.'),
+  description: z.string().min(1, 'Description is required.').max(500),
   cptHcpcsCode: z.string().trim().max(16).nullish(),
   revenueCode: z.string().trim().max(16).nullish(),
-  units: z.coerce.number().int().min(1).default(1),
-  chargeAmount: z.coerce.number().min(0).nullish(),
-  allowedAmount: z.coerce.number().min(0).nullish(),
-  planPaid: z.coerce.number().min(0).nullish(),
-  patientResponsibility: z.coerce.number().min(0).nullish(),
-  dateOfService: z.string().nullish(),
+  units: z.coerce.number().int().min(1).max(100_000).default(1),
+  chargeAmount: money().nullish(),
+  allowedAmount: money().nullish(),
+  planPaid: money().nullish(),
+  patientResponsibility: money().nullish(),
+  dateOfService: z.string().max(40).nullish(),
+  adjustmentCodes: z.array(z.string().trim().max(16)).max(30).nullish(),
   sourceConfidence: z.number().min(0).max(1).default(1),
 });
 
 export type LineItemInput = z.infer<typeof lineItemInputSchema>;
 
 export const planBenefitsInputSchema = z.object({
-  deductible: z.coerce.number().min(0).nullish(),
-  deductibleMet: z.coerce.number().min(0).nullish(),
-  coinsuranceRate: z.coerce.number().min(0).max(1).nullish(),
-  copay: z.coerce.number().min(0).nullish(),
-  oopMax: z.coerce.number().min(0).nullish(),
-  oopMet: z.coerce.number().min(0).nullish(),
+  deductible: money().nullish(),
+  deductibleMet: money().nullish(),
+  coinsuranceRate: z.coerce.number().finite().min(0).max(1).nullish(),
+  copay: money().nullish(),
+  oopMax: money().nullish(),
+  oopMet: money().nullish(),
   inNetwork: z.boolean().default(true),
 });
 

@@ -1,17 +1,11 @@
-import { Spectral, Hanken_Grotesk, IBM_Plex_Mono } from 'next/font/google';
+import { Hanken_Grotesk, IBM_Plex_Mono } from 'next/font/google';
 
-// Display / headings / wordmark (Section 5)
-export const fontSerif = Spectral({
-  subsets: ['latin'],
-  weight: ['500', '600', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-serif',
-  display: 'swap',
-});
-
-// Body / UI
+// Single typeface for display + body + the wordmark — a clean, modern lockup
+// that matches the Paxer logo (Section 5). Headings are differentiated by
+// weight, size, and tight tracking rather than a separate serif family.
 export const fontSans = Hanken_Grotesk({
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-sans',
   display: 'swap',
 });

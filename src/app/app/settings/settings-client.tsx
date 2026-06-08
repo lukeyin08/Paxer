@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { updateStateAction, deleteCaseAction, deleteAccountAction } from './actions';
+import { US_STATES } from '@/lib/us-states';
 
 export function StateForm({ defaultState }: { defaultState: string }) {
   const [state, setState] = useState(defaultState);
@@ -15,16 +16,22 @@ export function StateForm({ defaultState }: { defaultState: string }) {
     <div className="flex items-end gap-3">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="state">State</Label>
-        <Input
+        <select
           id="state"
           value={state}
-          maxLength={2}
-          className="w-24"
           onChange={(e) => {
             setState(e.target.value);
             setSaved(false);
           }}
-        />
+          className="h-10 w-56 rounded-md border border-rule bg-card px-3 text-sm text-ink outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <option value="">Select your state…</option>
+          {US_STATES.map((s) => (
+            <option key={s.code} value={s.code}>
+              {s.name}
+            </option>
+          ))}
+        </select>
       </div>
       <Button
         variant="outline"
@@ -77,7 +84,7 @@ export function DeleteAccountCard() {
   return (
     <Card className="border-danger/30">
       <CardContent className="flex flex-col gap-3 pt-6">
-        <h2 className="font-serif text-lg font-semibold text-danger">Delete account</h2>
+        <h2 className="font-sans text-lg font-semibold text-danger">Delete account</h2>
         <p className="text-sm text-muted">
           Permanently deletes your account and all cases, documents, findings, disputes, and
           recoveries. This cannot be undone. Type <strong>DELETE</strong> to confirm.

@@ -30,10 +30,10 @@ export default async function DisputeDraftPage({
           ← Back to case
         </Link>
         <Kicker className="mb-2 mt-3">New dispute</Kicker>
-        <h1 className="font-serif text-3xl font-semibold">Draft a dispute</h1>
+        <h1 className="font-sans text-3xl font-semibold">Draft a dispute</h1>
         <p className="mt-1 text-muted">
-          Choose the findings to include. Paxer drafts a letter you can edit and approve before any
-          (simulated) send.
+          Choose the findings to include. Paxer drafts a letter you can edit and approve, then
+          download and send to your provider or insurer.
         </p>
       </div>
 
@@ -51,6 +51,12 @@ export default async function DisputeDraftPage({
         <DraftForm
           caseId={id}
           preselected={preselected}
+          prefill={{
+            senderName: user.name ?? '',
+            senderEmail: user.email ?? '',
+            payerName: detail.case.payerName ?? '',
+            providerName: detail.case.providerName ?? '',
+          }}
           findings={open.map((f) => ({
             id: f.id,
             type: f.type,

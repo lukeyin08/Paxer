@@ -18,7 +18,11 @@ export function detectDuplicates(ctx: AuditContext): DetectorFinding[] {
   const findings: DetectorFinding[] = [];
   const groups = new Map<string, LineItem[]>();
   for (const li of ctx.lineItems) {
-    const key = `${li.cptHcpcsCode ?? li.description.toLowerCase()}|${dateKey(li.dateOfService)}|${li.chargeAmount ?? ''}`;
+    // A duplicate must have a real charge to be a duplicate worth flagging.
+    // Without this, EOB-only items that share a code+date but carry no amount
+    // collapse into one group and produce a $0 "duplicate" false positive.
+    if (li.chargeAmount == null || Number(li.chargeAmount) === 0) continue;
+    const key = `${li.cptHcpcsCode ?? li.description.toLowerCase()}|${dateKey(li.dateOfService)}|${li.chargeAmount}`;
     const arr = groups.get(key) ?? [];
     arr.push(li);
     groups.set(key, arr);
@@ -63,6 +67,13 @@ export function detectCostShareErrors(ctx: AuditContext): DetectorFinding[] {
     const billed = money(li.patientResponsibility);
     if (allowed === null || billed === null) continue;
     if (allowed <= 0) continue;
+
+    // Plan paid nothing and the entire allowed amount went to the patient — that's
+    // a denial / coordination-of-benefits pattern handled by detectNonCoveredBilled.
+    // Don't ALSO flag it as a cost-share miscalculation (it isn't one) — that would
+    // report the same dollars twice under the wrong cause.
+    const planPaid = money(li.planPaid) ?? 0;
+    if (planPaid <= 0.01 && billed >= allowed - 0.01) continue;
 
     const breakdown = computeExpectedPatientResponsibility(allowed, {
       deductible: money(plan.deductible),
@@ -115,14 +126,19 @@ export function detectOopOverrun(ctx: AuditContext): DetectorFinding[] {
   const cumulative = (oopMet ?? 0) + totalPatient;
   const overage = cumulative - oopMax;
   if (overage > COST_SHARE_THRESHOLD) {
+    // The recoverable amount on THIS case can't exceed what the patient was
+    // actually billed here — when oopMet already exceeds oopMax from prior
+    // (other-case) spend, `overage` includes that prior overspend, which isn't
+    // recoverable from this case's charges. Bound the finding accordingly.
+    const recoverable = Math.min(overage, totalPatient);
     return [
       {
         type: 'OOP_MAX_OVERRUN',
         severity: 'HIGH',
         title: 'Charges exceed your out-of-pocket maximum',
         explanationPlain: `Your plan's out-of-pocket maximum is ${formatUsd(oopMax)}. With ${formatUsd(oopMet ?? 0)} already met plus ${formatUsd(totalPatient)} billed on this case, your total reaches ${formatUsd(cumulative)} — about ${formatUsd(overage)} past the cap. Once you hit your out-of-pocket maximum, the plan should pay 100%.`,
-        evidence: { oopMax, oopMet: oopMet ?? 0, casePatientResponsibility: totalPatient, cumulative, overage },
-        estimatedRecovery: Math.round(overage * 100) / 100,
+        evidence: { oopMax, oopMet: oopMet ?? 0, casePatientResponsibility: totalPatient, cumulative, overage, recoverable },
+        estimatedRecovery: Math.round(recoverable * 100) / 100,
         confidence: 0.8,
         detector: 'RULE',
         lineItemId: null,
@@ -175,26 +191,117 @@ export function detectBalanceBilling(ctx: AuditContext): DetectorFinding[] {
 // ---------------------------------------------------------------------------
 // Non-covered service billed to patient after denial (rule).
 // ---------------------------------------------------------------------------
+/**
+ * Interpret EOB patient-responsibility (PR) reason codes so a denial finding can
+ * name the cause precisely. Returns null when no PR code clearly identifies a
+ * denial type (the caller then uses generic denial language).
+ */
+function classifyDenial(
+  codes: string[] | null | undefined,
+): { label: string; why: string; nextStep: string } | null {
+  if (!codes || codes.length === 0) return null;
+  const norm = codes.map((c) => c.toUpperCase().replace(/[^A-Z0-9]/g, '')); // "PR-22" -> "PR22"
+  const has = (...cs: string[]) => norm.some((n) => cs.includes(n));
+
+  if (has('PR22', 'PR23')) {
+    return {
+      label: 'coordination-of-benefits denial (reason code PR-22)',
+      why: 'Your insurer denied this saying another plan may be primary (coordination of benefits) — so it is not a true patient charge, it is a routing problem.',
+      nextStep:
+        'Submit the primary plan’s EOB to this insurer, or — if you have no other coverage — call them to correct your coordination-of-benefits record so the claim reprocesses. Do not pay until it has been reprocessed.',
+    };
+  }
+  if (has('PR96', 'PR204', 'PR49', 'PR149', 'PR50')) {
+    const code = norm.find((n) => ['PR96', 'PR204', 'PR49', 'PR149', 'PR50'].includes(n));
+    return {
+      label: `non-covered denial (reason code ${code?.replace(/^(PR)(\d+)$/, '$1-$2')})`,
+      why: 'Your insurer denied this as not covered or not medically necessary.',
+      nextStep:
+        'If the service was medically necessary and a covered benefit, file a first-level appeal citing your plan documents and the provider’s notes.',
+    };
+  }
+  if (has('PR31', 'PR27', 'PR26', 'PR177')) {
+    return {
+      label: 'an eligibility/coverage denial',
+      why: 'Your insurer denied this for an eligibility or coverage-date reason.',
+      nextStep:
+        'Confirm your member ID and coverage dates with the insurer, correct any enrollment error, and ask them to reprocess the claim.',
+    };
+  }
+  return null;
+}
+
 export function detectNonCoveredBilled(ctx: AuditContext): DetectorFinding[] {
   const findings: DetectorFinding[] = [];
+  const plan = ctx.planBenefits;
+  // Deductible the patient could still legitimately owe — a plan-paid-$0 amount
+  // up to this is just the deductible, not a denial worth disputing.
+  const remainingDeductible = plan
+    ? Math.max(0, (money(plan.deductible) ?? 0) - (money(plan.deductibleMet) ?? 0))
+    : 0;
+
   for (const li of ctx.lineItems) {
     const allowed = money(li.allowedAmount);
-    const planPaid = money(li.planPaid);
-    const billed = money(li.patientResponsibility);
-    const denied = /deni|not covered|non-?covered/i.test(li.description);
-    if (billed && billed > 0 && allowed === 0 && (planPaid ?? 0) === 0 && denied) {
+    const planPaid = money(li.planPaid) ?? 0;
+    const patient = money(li.patientResponsibility);
+    if (patient === null || patient < COST_SHARE_THRESHOLD) continue;
+    const descDenied = /deni|not covered|non-?covered/i.test(li.description);
+
+    // Case A — explicitly non-covered/denied line with $0 allowed.
+    if (allowed === 0 && planPaid <= 0.01 && descDenied) {
       findings.push({
         type: 'NON_COVERED_BILLED_TO_PATIENT',
         severity: 'MED',
         title: `Denied claim billed to you: ${li.description}`,
-        explanationPlain: `This claim was denied (often as out-of-network or "not medically necessary") and the full ${formatUsd(billed)} was passed to you. Denials are frequently overturned on appeal, especially when the service was necessary or network adequacy was lacking.`,
-        evidence: { description: li.description, billedPatientResponsibility: billed },
-        estimatedRecovery: billed,
+        explanationPlain: `This claim was denied (often as out-of-network or "not medically necessary") and the full ${formatUsd(patient)} was passed to you. Denials are frequently overturned on appeal, especially when the service was necessary or network adequacy was lacking.`,
+        evidence: { description: li.description, billedPatientResponsibility: patient },
+        estimatedRecovery: patient,
         confidence: 0.5,
         detector: 'RULE',
         lineItemId: li.id,
         recommendedNextStep:
           'File a first-level appeal with your insurer requesting reconsideration of the denial.',
+      });
+      continue;
+    }
+
+    // Case B — the service WAS allowed, but the plan paid $0 and the entire
+    // allowed amount landed on the patient, beyond any remaining deductible.
+    // That's the signature of a denial or coordination-of-benefits issue (e.g.
+    // EOB reason code PR-22), which are frequently reversed.
+    const denial = classifyDenial(li.adjustmentCodes);
+    const fullAllowedToPatient =
+      allowed !== null && allowed > 0 && planPaid <= 0.01 && patient >= allowed - 0.01;
+    // A denial reason code (PR-22 etc.) is authoritative. Without one, "plan paid
+    // nothing" only distinguishes a denial from an unmet deductible when we have
+    // plan benefits showing the deductible can't account for it. With neither a
+    // code nor plan benefits we can't tell — so stay silent rather than over-claim
+    // recoverable dollars on what may be a legitimate deductible.
+    const deductibleRulesOut = plan !== null && patient > remainingDeductible + COST_SHARE_THRESHOLD;
+    if (fullAllowedToPatient && (denial !== null || deductibleRulesOut)) {
+      findings.push({
+        type: 'NON_COVERED_BILLED_TO_PATIENT',
+        severity: 'HIGH',
+        title: denial
+          ? `Denial billed to you — ${denial.label}: ${li.description}`
+          : `Plan paid nothing — full amount billed to you: ${li.description}`,
+        explanationPlain: denial
+          ? `Your plan allowed ${formatUsd(allowed!)} for this service but paid $0, and the full ${formatUsd(patient)} was passed to you under ${denial.label}. ${denial.why} Denials like this are frequently reversed.`
+          : `Your plan allowed ${formatUsd(allowed!)} for this service but paid $0, leaving the entire ${formatUsd(patient)} on you — and that isn't explained by your deductible or coinsurance. When a plan pays nothing on an allowed service, it usually means the claim was denied or routed to another payer (e.g. a coordination-of-benefits issue, reason code PR-22). These are frequently reversed.`,
+        evidence: {
+          description: li.description,
+          allowed,
+          planPaid,
+          billedPatientResponsibility: patient,
+          reasonCodes: li.adjustmentCodes ?? null,
+        },
+        estimatedRecovery: patient,
+        confidence: denial ? 0.75 : 0.6,
+        detector: 'RULE',
+        lineItemId: li.id,
+        recommendedNextStep: denial
+          ? denial.nextStep
+          : 'Ask your insurer for the specific denial / zero-payment reason code, then request reprocessing or a first-level appeal. Do not pay until you have a clear written explanation.',
       });
     }
   }
@@ -233,14 +340,21 @@ export function detectCrossProviderDuplicates(ctx: AuditContext): DetectorFindin
   const findings: DetectorFinding[] = [];
   for (const li of ctx.lineItems) {
     if (!li.cptHcpcsCode || !li.dateOfService) continue;
-    const match = ctx.otherCaseLineItems.find(
+    const matches = ctx.otherCaseLineItems.filter(
       (o) =>
         o.lineItem.cptHcpcsCode === li.cptHcpcsCode &&
         dateKey(o.lineItem.dateOfService) === dateKey(li.dateOfService) &&
         o.providerName !== ctx.case.providerName,
     );
-    if (match) {
+    if (matches.length > 0) {
+      const match = matches[0]!;
       const charge = money(li.chargeAmount) ?? 0;
+      // The duplicate is symmetric: each colliding case's audit produces a mirror
+      // finding. Show it on every bill (good for the patient), but only ONE side
+      // counts toward the recoverable total — otherwise the dashboard sums the
+      // same recoverable dollar two (or, with 3+ providers, more) times. Only the
+      // globally-smallest line-item id across all colliding lines counts.
+      const countsRecovery = matches.every((m) => li.id < m.lineItem.id);
       findings.push({
         type: 'CROSS_PROVIDER_DUPLICATE',
         severity: 'MED',
@@ -253,7 +367,7 @@ export function detectCrossProviderDuplicates(ctx: AuditContext): DetectorFindin
           otherProvider: match.providerName,
           charge,
         },
-        estimatedRecovery: charge || null,
+        estimatedRecovery: countsRecovery ? charge || null : null,
         confidence: 0.6,
         detector: 'RULE',
         lineItemId: li.id,

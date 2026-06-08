@@ -13,6 +13,7 @@ import {
   type PlanBenefit,
 } from '@/lib/db/schema';
 import type { LineItemInput, PlanBenefitsInput } from '@/lib/domain/line-item';
+import { capRecoverable } from '@/lib/audit/recoverable';
 
 /** All non-deleted cases for a user, newest first. */
 export async function getCasesForUser(userId: string): Promise<Case[]> {
@@ -73,6 +74,31 @@ export async function getCaseForUser(
     planBenefits: benefit ?? null,
     findings: caseFindings,
   };
+}
+
+/**
+ * Fetch a single document only if it belongs to a (non-deleted) case owned by
+ * the user. Used by the file-serving proxy to enforce ownership before
+ * streaming bytes — prevents one patient from reading another's documents.
+ */
+export async function getDocumentForUser(
+  userId: string,
+  documentId: string,
+): Promise<Document | null> {
+  const [row] = await db
+    .select({ doc: documents })
+    .from(documents)
+    .innerJoin(cases, eq(documents.caseId, cases.id))
+    .where(
+      and(
+        eq(documents.id, documentId),
+        eq(cases.userId, userId),
+        isNull(documents.deletedAt),
+        isNull(cases.deletedAt),
+      ),
+    )
+    .limit(1);
+  return row?.doc ?? null;
 }
 
 export async function createCase(input: {
@@ -147,6 +173,7 @@ export async function addLineItems(
     description: it.description,
     cptHcpcsCode: it.cptHcpcsCode ?? null,
     revenueCode: it.revenueCode ?? null,
+    adjustmentCodes: it.adjustmentCodes ?? null,
     units: it.units ?? 1,
     chargeAmount: toMoney(it.chargeAmount),
     allowedAmount: toMoney(it.allowedAmount),
@@ -213,7 +240,7 @@ export async function recomputeCaseTotals(caseId: string): Promise<void> {
  */
 export async function recomputeEstimatedRecoverable(caseId: string): Promise<number> {
   const inPlay = await db
-    .select({ amt: findings.estimatedRecovery })
+    .select({ amt: findings.estimatedRecovery, lineItemId: findings.lineItemId, type: findings.type })
     .from(findings)
     .where(
       and(
@@ -223,15 +250,16 @@ export async function recomputeEstimatedRecoverable(caseId: string): Promise<num
       ),
     );
   const items = await db
-    .select({ pr: lineItems.patientResponsibility, charge: lineItems.chargeAmount })
+    .select({ id: lineItems.id, pr: lineItems.patientResponsibility, charge: lineItems.chargeAmount })
     .from(lineItems)
     .where(and(eq(lineItems.caseId, caseId), isNull(lineItems.deletedAt)));
 
-  const rawSum = inPlay.reduce((s, f) => s + (Number(f.amt) || 0), 0);
-  const totalPatient = items.reduce((s, i) => s + (Number(i.pr) || 0), 0);
-  const totalBilled = items.reduce((s, i) => s + (Number(i.charge) || 0), 0);
-  const cap = totalPatient > 0 ? totalPatient : totalBilled;
-  const total = cap > 0 ? Math.min(rawSum, cap) : rawSum;
+  // Per-line + case cap (shared with the embedded /api/v1/audit response so the
+  // two can never diverge). See capRecoverable for the exact rules.
+  const total = capRecoverable(
+    inPlay.map((f) => ({ lineItemId: f.lineItemId, type: f.type, estimatedRecovery: Number(f.amt) })),
+    items.map((i) => ({ id: i.id, charge: Number(i.charge), patientResponsibility: Number(i.pr) })),
+  );
 
   await db
     .update(cases)

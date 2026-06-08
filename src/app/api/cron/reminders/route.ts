@@ -8,9 +8,14 @@ import { sendEmail } from '@/lib/email';
 import { formatDate } from '@/lib/utils';
 
 export const runtime = 'nodejs';
+// This route does serial DB writes + email sends per dispute; give it headroom
+// and cap the per-run batch so it can't run past the limit and drop work
+// silently. Remaining disputes are processed on the next daily run.
+export const maxDuration = 60;
 
 const REMINDER_WINDOW_DAYS = 7;
 const DAY_MS = 24 * 60 * 60 * 1000;
+const MAX_PER_RUN = 200;
 
 /**
  * Daily cron (Section 7.9): for simulated-sent disputes, send a reminder as the
@@ -50,7 +55,15 @@ export async function GET(req: NextRequest) {
   let reminders = 0;
   let escalated = 0;
 
-  for (const row of open) {
+  // Bound the work per invocation. Disputes nearest their deadline first so the
+  // most urgent ones are never the ones dropped when there are more than the cap.
+  const ordered = [...open].sort(
+    (a, b) => (a.dispute.deadlineAt?.getTime() ?? Infinity) - (b.dispute.deadlineAt?.getTime() ?? Infinity),
+  );
+  const batch = ordered.slice(0, MAX_PER_RUN);
+  const deferred = ordered.length - batch.length;
+
+  for (const row of batch) {
     const deadline = row.dispute.deadlineAt;
     if (!deadline) continue;
     const msLeft = deadline.getTime() - now;
@@ -79,5 +92,8 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, checked: open.length, reminders, escalated });
+  if (deferred > 0) {
+    console.warn(`[cron/reminders] processed ${batch.length}/${open.length}; ${deferred} deferred to next run.`);
+  }
+  return NextResponse.json({ ok: true, checked: batch.length, total: open.length, reminders, escalated, deferred });
 }

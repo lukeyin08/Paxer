@@ -3,17 +3,16 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Wordmark } from '@/components/brand/wordmark';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { signOutAction } from '@/lib/auth/actions';
+import { UserMenu } from '@/components/user-menu';
 
+// Primary workflow tabs only. Secondary items (Settings, Benchmarks, API keys,
+// theme, sign out) live in the account menu to keep the bar uncluttered.
 const NAV = [
   { href: '/app', label: 'Dashboard' },
   { href: '/app/cases/new', label: 'New case' },
   { href: '/app/disputes', label: 'Disputes' },
   { href: '/app/recoveries', label: 'Recoveries' },
-  { href: '/app/benchmarks', label: 'Benchmarks' },
-  { href: '/app/settings', label: 'Settings' },
 ];
 
 export function AppNav({ email }: { email?: string | null }) {
@@ -39,19 +38,14 @@ export function AppNav({ email }: { email?: string | null }) {
     <header className="sticky top-0 z-20 border-b border-rule bg-paper/90 backdrop-blur">
       <div className="container flex h-16 items-center justify-between gap-4">
         <div className="flex min-w-0 items-center gap-8">
-          <Wordmark href="/app" />
+          {/* Logo returns to the public homepage (always visible); the Dashboard
+              tab is the app home. */}
+          <Wordmark href="/" />
           {/* Desktop nav */}
           <nav className="hidden items-center gap-1 md:flex">{links}</nav>
         </div>
         <div className="flex items-center gap-3">
-          {email && (
-            <span className="hidden max-w-[14ch] truncate text-sm text-muted lg:block">{email}</span>
-          )}
-          <form action={signOutAction}>
-            <Button type="submit" variant="outline" size="sm">
-              Sign out
-            </Button>
-          </form>
+          <UserMenu email={email} />
         </div>
       </div>
       {/* Mobile nav: horizontally scrollable strip so every section is reachable */}

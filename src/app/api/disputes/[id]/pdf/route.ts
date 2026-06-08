@@ -17,6 +17,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     headers: {
       'Content-Type': 'application/pdf',
       'Content-Disposition': `inline; filename="paxer-dispute-${id.slice(0, 8)}.pdf"`,
+      // PHI (patient name + medical detail) — never let browsers/proxies/CDNs cache it.
+      'Cache-Control': 'private, no-store, max-age=0',
     },
   });
 }

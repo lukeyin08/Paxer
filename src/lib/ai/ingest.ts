@@ -56,15 +56,17 @@ export interface IngestResult {
 export async function ingestDocument(input: {
   blobUrl: string;
   mimeType: string;
+  userId?: string | null;
 }): Promise<IngestResult> {
   const bytes = await getFileBytes(input.blobUrl);
-  return ingestBytes({ bytes, mimeType: input.mimeType });
+  return ingestBytes({ bytes, mimeType: input.mimeType, userId: input.userId });
 }
 
 /** Extract directly from in-memory bytes (used by ingestDocument and the eval harness). */
 export async function ingestBytes(input: {
   bytes: Buffer;
   mimeType: string;
+  userId?: string | null;
 }): Promise<IngestResult> {
   const content = buildContent(input.bytes, input.mimeType);
 
@@ -77,6 +79,7 @@ export async function ingestBytes(input: {
     effort: 'low', // keep effort modest for extraction (Section 8)
     maxTokens: 8000,
     label: 'extract',
+    userId: input.userId,
   });
 
   // Normalize confidences into range.

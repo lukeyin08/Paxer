@@ -1,5 +1,5 @@
 import { createElement as h } from 'react';
-import { Document, Page, View, Text, StyleSheet, renderToBuffer } from '@react-pdf/renderer';
+import { Document, Page, Text, StyleSheet, renderToBuffer } from '@react-pdf/renderer';
 
 interface Block {
   kind: 'p' | 'li' | 'h';
@@ -43,14 +43,10 @@ const styles = StyleSheet.create({
   p: { marginBottom: 10 },
   li: { marginBottom: 8, paddingLeft: 14 },
   h: { marginBottom: 10, fontSize: 13, fontFamily: 'Times-Bold' },
-  footer: { marginTop: 24, fontSize: 8, color: '#888', borderTop: '1 solid #ccc', paddingTop: 8 },
 });
 
 const blockStyle = (kind: 'p' | 'li' | 'h') =>
   kind === 'li' ? styles.li : kind === 'h' ? styles.h : styles.p;
-
-const DISCLAIMER =
-  'Paxer is a prototype. This letter is a draft for the patient to review before any use. It is not legal advice.';
 
 /** Render the dispute letter to a PDF buffer (Section 7.8). */
 export async function renderLetterPdf(letterHtml: string): Promise<Buffer> {
@@ -65,7 +61,6 @@ export async function renderLetterPdf(letterHtml: string): Promise<Buffer> {
       Page,
       { size: 'LETTER', style: styles.page },
       ...els,
-      h(View, { style: styles.footer }, h(Text, null, DISCLAIMER)),
     ),
   );
   return renderToBuffer(doc) as unknown as Promise<Buffer>;

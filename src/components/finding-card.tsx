@@ -8,7 +8,14 @@ import { Money } from '@/components/brand/money';
 import { ConfidenceBadge } from '@/components/brand/confidence-badge';
 import { StatusPill } from '@/components/brand/status-pill';
 import { formatUsd } from '@/lib/utils';
-import { severityTone, findingStatusTone } from '@/lib/cases/status';
+import {
+  severityTone,
+  findingStatusTone,
+  severityLabel,
+  findingTypeLabel,
+  findingStatusLabel,
+  detectorLabel,
+} from '@/lib/cases/status';
 import { dismissFindingAction } from '@/app/app/cases/[id]/audit-actions';
 
 export interface FindingView {
@@ -116,17 +123,17 @@ export function FindingCard({ finding }: { finding: FindingView }) {
     <Card className={dismissed ? 'opacity-60' : undefined}>
       <CardContent className="flex flex-col gap-3 pt-6">
         <div className="flex flex-wrap items-center gap-2">
-          <StatusPill label={finding.severity} tone={severityTone(finding.severity)} />
-          <StatusPill label={finding.type} tone="muted" />
+          <StatusPill label={severityLabel(finding.severity)} tone={severityTone(finding.severity)} />
+          <StatusPill label={findingTypeLabel(finding.type)} tone="muted" />
           <ConfidenceBadge confidence={finding.confidence} />
           {finding.detector !== 'RULE' && (
             <span className="font-mono text-[0.6rem] uppercase tracking-wider text-muted">
-              {finding.detector}
+              {detectorLabel(finding.detector)}
             </span>
           )}
           {finding.status !== 'OPEN' && (
             <StatusPill
-              label={finding.status}
+              label={findingStatusLabel(finding.status)}
               tone={findingStatusTone(
                 finding.status as 'OPEN' | 'DISMISSED' | 'DISPUTING' | 'RECOVERED',
               )}
@@ -135,7 +142,7 @@ export function FindingCard({ finding }: { finding: FindingView }) {
         </div>
 
         <div className="flex items-start justify-between gap-4">
-          <h3 className="font-serif text-lg font-semibold leading-snug">{finding.title}</h3>
+          <h3 className="font-sans text-lg font-semibold leading-snug">{finding.title}</h3>
           {finding.estimatedRecovery !== null && (
             <div className="shrink-0 text-right">
               <p className="kicker">Est. recovery</p>

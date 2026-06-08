@@ -40,6 +40,9 @@ export async function putFile(
 ): Promise<StoredFile> {
   if (env.BLOB_READ_WRITE_TOKEN) {
     const { put } = await import('@vercel/blob');
+    // The blob URL carries an unguessable random suffix AND is never exposed to
+    // the client — files are served only through /api/documents/[id] after an
+    // ownership check. The stored URL is treated as a server-side secret.
     const blob = await put(key, Buffer.from(data), {
       access: 'public',
       contentType,
@@ -49,7 +52,16 @@ export async function putFile(
     return { url: blob.url, pathname: blob.pathname };
   }
 
-  // Local dev fallback: write under .uploads and serve via /api/uploads/[...path].
+  // No blob token configured. On a serverless host the filesystem is read-only,
+  // so writing PHI to local disk both fails and is unsafe — refuse loudly in
+  // production rather than silently corrupting an upload.
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'File storage is not configured: set BLOB_READ_WRITE_TOKEN in production.',
+    );
+  }
+
+  // Local dev fallback: write under .uploads and serve via /api/documents/[id].
   // The pathname is flattened (no separators / traversal) and the resolved path
   // is verified to stay within .uploads.
   const { mkdir, writeFile } = await import('node:fs/promises');
@@ -58,13 +70,16 @@ export async function putFile(
   const filePath = await resolveLocalPath(pathname);
   await mkdir(path.dirname(filePath), { recursive: true });
   await writeFile(filePath, Buffer.from(data));
+  // The `/api/uploads/` prefix is an internal storage marker (not a servable
+  // route) that getFileBytes/deleteFile use to read from local disk. Files are
+  // served to the browser only via the ownership-checked /api/documents/[id].
   return { url: `/api/uploads/${pathname}`, pathname };
 }
 
 /**
  * Read a stored file's bytes server-side. For local dev uploads it reads from
- * disk directly (the /api/uploads route requires a session cookie that a
- * server-to-server fetch won't have); for Blob it fetches the public URL.
+ * disk directly; for Blob it fetches the stored (unguessable) URL server-side.
+ * Callers must enforce ownership before invoking this.
  */
 export async function getFileBytes(url: string): Promise<Buffer> {
   if (url.startsWith('/api/uploads/')) {

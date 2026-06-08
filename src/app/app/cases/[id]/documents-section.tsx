@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { FileText, Sparkles } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,6 @@ export interface DocRow {
   fileName: string | null;
   kind: string;
   ingestStatus: string;
-  blobUrl: string | null;
   hasFile: boolean;
 }
 
@@ -32,6 +32,7 @@ function statusTone(status: string) {
 }
 
 function DocumentCard({ doc, aiConfigured }: { doc: DocRow; aiConfigured: boolean }) {
+  const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
@@ -55,9 +56,9 @@ function DocumentCard({ doc, aiConfigured }: { doc: DocRow; aiConfigured: boolea
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {doc.blobUrl && (
+          {doc.hasFile && (
             <Button asChild variant="outline" size="sm">
-              <a href={doc.blobUrl} target="_blank" rel="noreferrer">
+              <a href={`/api/documents/${doc.id}`} target="_blank" rel="noreferrer">
                 View file
               </a>
             </Button>
@@ -70,6 +71,7 @@ function DocumentCard({ doc, aiConfigured }: { doc: DocRow; aiConfigured: boolea
                 startTransition(async () => {
                   const res = await ingestDocumentAction(doc.id);
                   setMsg({ ok: res.ok, text: res.message });
+                  if (res.ok) router.refresh();
                 })
               }
             >
@@ -85,6 +87,7 @@ function DocumentCard({ doc, aiConfigured }: { doc: DocRow; aiConfigured: boolea
               onClick={() =>
                 startTransition(async () => {
                   await confirmExtractionAction(doc.id);
+                  router.refresh();
                 })
               }
             >

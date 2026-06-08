@@ -25,8 +25,12 @@ export function zodToJsonSchema(schema: z.ZodTypeAny): JsonSchema {
       const properties: Record<string, JsonSchema> = {};
       const required: string[] = [];
       for (const key of Object.keys(shape)) {
-        properties[key] = zodToJsonSchema(shape[key] as z.ZodTypeAny);
-        required.push(key);
+        const field = shape[key] as z.ZodTypeAny;
+        properties[key] = zodToJsonSchema(field);
+        // `.optional()` fields are genuinely omittable — keep them OUT of
+        // `required` (and they carry no null-union, which keeps the schema under
+        // Anthropic's structured-output cap of 16 union-typed parameters).
+        if (defOf(field).typeName !== 'ZodOptional') required.push(key);
       }
       return { type: 'object', properties, required, additionalProperties: false };
     }

@@ -29,14 +29,18 @@ export function aiConfigured(): boolean {
   return Boolean(env.ANTHROPIC_API_KEY);
 }
 
-/** Sum today's AI spend (USD) from the audit log — the daily spend guard (Section 8). */
-async function spentTodayUsd(): Promise<number> {
+/**
+ * Sum today's AI spend (USD) from the audit log — the daily spend guard
+ * (Section 8). When `userId` is provided, scopes to that user's calls so a
+ * per-user ceiling can be enforced alongside the global one.
+ */
+async function spentTodayUsd(userId?: string | null): Promise<number> {
   const startOfDay = new Date();
   startOfDay.setUTCHours(0, 0, 0, 0);
-  const rows = await db
-    .select({ diff: auditLog.diffJson })
-    .from(auditLog)
-    .where(and(eq(auditLog.action, 'ai.call'), gte(auditLog.at, startOfDay)));
+  const where = userId
+    ? and(eq(auditLog.action, 'ai.call'), gte(auditLog.at, startOfDay), eq(auditLog.userId, userId))
+    : and(eq(auditLog.action, 'ai.call'), gte(auditLog.at, startOfDay));
+  const rows = await db.select({ diff: auditLog.diffJson }).from(auditLog).where(where);
   return rows.reduce((sum, r) => {
     const cost = (r.diff as { costUsd?: number } | null)?.costUsd ?? 0;
     return sum + cost;
@@ -62,6 +66,8 @@ export interface RunStructuredInput<T extends z.ZodTypeAny> {
   maxTokens?: number;
   /** Label for the audit log (e.g. "extract", "audit", "draft"). */
   label: string;
+  /** Owning user, for per-user budget enforcement + attribution. */
+  userId?: string | null;
 }
 
 /**
@@ -72,11 +78,20 @@ export interface RunStructuredInput<T extends z.ZodTypeAny> {
 export async function runStructured<T extends z.ZodTypeAny>(
   input: RunStructuredInput<T>,
 ): Promise<RunResult<z.infer<T>>> {
-  // Daily spend guard.
-  const spent = await spentTodayUsd();
+  // Global daily spend guard, plus a per-user ceiling so one account can't
+  // drain the shared budget (the global + per-user reads run concurrently).
+  const [spent, userSpent] = await Promise.all([
+    spentTodayUsd(),
+    input.userId ? spentTodayUsd(input.userId) : Promise.resolve(0),
+  ]);
   if (spent >= env.PAXER_DAILY_AI_BUDGET_USD) {
     throw new Error(
       `Daily AI budget reached ($${env.PAXER_DAILY_AI_BUDGET_USD}). Try again tomorrow or raise PAXER_DAILY_AI_BUDGET_USD.`,
+    );
+  }
+  if (input.userId && userSpent >= env.PAXER_USER_DAILY_AI_BUDGET_USD) {
+    throw new Error(
+      `You've reached today's AI usage limit ($${env.PAXER_USER_DAILY_AI_BUDGET_USD}). Please try again tomorrow.`,
     );
   }
 
@@ -129,10 +144,11 @@ export async function runStructured<T extends z.ZodTypeAny>(
   };
   const costUsd = estimateCostUsd(input.model, usage);
 
-  // Log token usage per call (Section 8).
+  // Log token usage per call (Section 8). userId attributes spend per user.
   await db.insert(auditLog).values({
     entity: 'ai',
     action: 'ai.call',
+    userId: input.userId ?? null,
     diffJson: {
       label: input.label,
       model: input.model,

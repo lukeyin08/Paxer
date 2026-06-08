@@ -1,8 +1,7 @@
-import { and, desc, eq, inArray, isNull } from 'drizzle-orm';
+import { and, desc, eq, isNull } from 'drizzle-orm';
 import { db } from '@/lib/db';
-import { cases, disputes, findings, recoveries, type Recovery } from '@/lib/db/schema';
+import { cases, disputes, recoveries, type Recovery } from '@/lib/db/schema';
 import { computeFee, defaultFeeRate } from '@/lib/audit/fees';
-import { recomputeEstimatedRecoverable } from '@/lib/cases/repo';
 
 export type RecoveryKind = Recovery['kind'];
 
@@ -24,74 +23,41 @@ export async function recordRecovery(input: {
     .limit(1);
   if (!caseRow) throw new Error('Case not found.');
 
+  // Only link a disputeId that actually belongs to this (owned) case — never
+  // trust a client-supplied id, even though it's currently write-only.
+  let disputeId: string | null = null;
+  if (input.disputeId) {
+    const [d] = await db
+      .select({ id: disputes.id })
+      .from(disputes)
+      .where(and(eq(disputes.id, input.disputeId), eq(disputes.caseId, input.caseId)))
+      .limit(1);
+    disputeId = d?.id ?? null;
+  }
+
   const feeRate = defaultFeeRate();
   const feeAmount = computeFee(input.amount, feeRate);
 
-  const row = await db.transaction(async (tx) => {
-    const [created] = await tx
-      .insert(recoveries)
-      .values({
-        caseId: input.caseId,
-        findingId: input.findingId ?? null,
-        amount: input.amount.toFixed(2),
-        kind: input.kind,
-        feeRate,
-        feeAmount: feeAmount.toFixed(2),
-        notes: input.notes ?? null,
-      })
-      .returning();
-
-    // Mark the dispute's findings RECOVERED — but only for a dispute on THIS case
-    // (already ownership-verified), preventing cross-tenant tampering.
-    if (input.disputeId) {
-      const [d] = await tx
-        .select()
-        .from(disputes)
-        .where(and(eq(disputes.id, input.disputeId), eq(disputes.caseId, input.caseId)))
-        .limit(1);
-      if (d) {
-        if (d.findingIds.length > 0) {
-          await tx
-            .update(findings)
-            .set({ status: 'RECOVERED' })
-            .where(and(inArray(findings.id, d.findingIds), eq(findings.caseId, input.caseId)));
-        }
-        // Keep the dispute consistent: only auto-mark WON when it was actually
-        // out for a response. Don't overwrite a PARTIAL (set via the response
-        // step) or rewrite a DENIED/ESCALATED outcome's history.
-        if (d.status === 'SIMULATED_SENT' || d.status === 'RESPONSE_RECEIVED') {
-          await tx.update(disputes).set({ status: 'WON', updatedAt: new Date() }).where(eq(disputes.id, d.id));
-        }
-      }
-    } else if (input.findingId) {
-      await tx
-        .update(findings)
-        .set({ status: 'RECOVERED' })
-        .where(and(eq(findings.id, input.findingId), eq(findings.caseId, input.caseId)));
-    }
-
-    // Mark the case RESOLVED only when nothing is still OPEN *or* DISPUTING —
-    // an active dispute on another finding must not flip the case to resolved.
-    const remaining = await tx
-      .select({ id: findings.id })
-      .from(findings)
-      .where(
-        and(
-          eq(findings.caseId, input.caseId),
-          inArray(findings.status, ['OPEN', 'DISPUTING']),
-          isNull(findings.deletedAt),
-        ),
-      );
-    if (remaining.length === 0) {
-      await tx.update(cases).set({ status: 'RESOLVED', updatedAt: new Date() }).where(eq(cases.id, input.caseId));
-    }
-    return created!;
-  });
-
-  // Recovered dollars leave the "in play" set, so the estimate must drop
-  // (prevents the dashboard double-counting recovered money — Section 9).
-  await recomputeEstimatedRecoverable(input.caseId);
-  return row;
+  // A recovery is purely the money record + success fee. Finding statuses, the
+  // dispute outcome, AND the case's RESOLVED status are all owned by
+  // logResponseAction (WON/PARTIAL/DENIED) — recording money does not change
+  // case state, so an unrelated recovery row can't side-effect a case to
+  // RESOLVED. (Previously this marked ALL of a dispute's findings RECOVERED even
+  // on a partial outcome, dropping still-owed dollars.)
+  const [created] = await db
+    .insert(recoveries)
+    .values({
+      caseId: input.caseId,
+      findingId: input.findingId ?? null,
+      disputeId,
+      amount: input.amount.toFixed(2),
+      kind: input.kind,
+      feeRate,
+      feeAmount: feeAmount.toFixed(2),
+      notes: input.notes ?? null,
+    })
+    .returning();
+  return created!;
 }
 
 export interface RecoveryRow {

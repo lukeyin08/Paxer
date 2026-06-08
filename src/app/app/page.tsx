@@ -12,7 +12,7 @@ import { Money } from '@/components/brand/money';
 import { EmptyState } from '@/components/brand/empty-state';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { caseStatusTone, disputeStatusTone } from '@/lib/cases/status';
+import { caseStatusTone, disputeStatusTone, disputeStatusLabel } from '@/lib/cases/status';
 import { formatDate } from '@/lib/utils';
 
 const ACTIVE_DISPUTE = new Set(['DRAFT', 'AWAITING_USER_APPROVAL', 'SIMULATED_SENT', 'RESPONSE_RECEIVED', 'ESCALATED']);
@@ -37,7 +37,7 @@ export default async function DashboardPage() {
     <div className="flex flex-col gap-10 animate-fade-up">
       <div>
         <Kicker className="mb-2">Your dashboard</Kicker>
-        <h1 className="font-serif text-3xl font-semibold">Overview</h1>
+        <h1 className="font-sans text-3xl font-semibold">Overview</h1>
       </div>
 
       <section className="grid grid-cols-2 gap-6 sm:grid-cols-4">
@@ -49,7 +49,7 @@ export default async function DashboardPage() {
 
       {upcoming.length > 0 && (
         <section className="flex flex-col gap-3">
-          <h2 className="font-serif text-xl font-semibold">Upcoming deadlines</h2>
+          <h2 className="font-sans text-xl font-semibold">Upcoming deadlines</h2>
           <div className="flex flex-col gap-2">
             {upcoming.map(({ dispute, caseTitle }) => (
               <Link
@@ -59,7 +59,7 @@ export default async function DashboardPage() {
               >
                 <span>{caseTitle}</span>
                 <span className="flex items-center gap-3">
-                  <StatusPill label={dispute.status} tone={disputeStatusTone(dispute.status)} />
+                  <StatusPill label={disputeStatusLabel(dispute.status)} tone={disputeStatusTone(dispute.status)} />
                   <span className="text-muted">due {formatDate(dispute.deadlineAt)}</span>
                 </span>
               </Link>
@@ -70,7 +70,7 @@ export default async function DashboardPage() {
 
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="font-serif text-xl font-semibold">Your cases</h2>
+          <h2 className="font-sans text-xl font-semibold">Your cases</h2>
           <Button asChild size="sm">
             <Link href="/app/cases/new">Start a case</Link>
           </Button>
@@ -80,7 +80,7 @@ export default async function DashboardPage() {
           <EmptyState
             kicker="Nothing here yet"
             title="Start your first case"
-            description="Upload a medical bill or EOB, connect your insurer, or enter charges by hand. Paxer reads the document and audits every line."
+            description="Upload a medical bill or EOB, or enter charges by hand. Paxer reads the document and audits every line."
             action={
               <Button asChild>
                 <Link href="/app/cases/new">Start your first case</Link>
@@ -93,7 +93,7 @@ export default async function DashboardPage() {
               <Card key={c.id}>
                 <CardContent className="flex flex-wrap items-center justify-between gap-3 pt-6">
                   <div className="min-w-0">
-                    <Link href={`/app/cases/${c.id}`} className="font-serif text-lg hover:underline">
+                    <Link href={`/app/cases/${c.id}`} className="font-sans text-lg hover:underline">
                       {c.title}
                     </Link>
                     <p className="truncate text-sm text-muted">

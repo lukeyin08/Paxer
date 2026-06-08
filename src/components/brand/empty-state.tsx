@@ -23,7 +23,7 @@ export function EmptyState({
       )}
     >
       {kicker && <Kicker>{kicker}</Kicker>}
-      <h3 className="font-serif text-xl font-semibold text-ink">{title}</h3>
+      <h3 className="font-sans text-xl font-semibold text-ink">{title}</h3>
       {description && <p className="max-w-md text-sm text-muted">{description}</p>}
       {action && <div className="mt-2">{action}</div>}
     </div>

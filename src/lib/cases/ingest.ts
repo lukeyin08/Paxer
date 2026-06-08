@@ -4,6 +4,7 @@ import { cases, documents } from '@/lib/db/schema';
 import { ingestDocument, needsReview } from '@/lib/ai/ingest';
 import { addLineItems, recomputeCaseTotals, upsertPlanBenefits } from './repo';
 import { writeAuditLog } from '@/lib/audit-log';
+import { enforceRateLimit } from '@/lib/rate-limit';
 import type { LineItemInput, PlanBenefitsInput } from '@/lib/domain/line-item';
 
 /**
@@ -32,12 +33,16 @@ export async function processDocumentIngestion(
   if (!caseRow) throw new Error('Not authorized for this document.');
   if (!doc.blobUrl || !doc.mimeType) throw new Error('Document has no stored file to extract.');
 
+  // Throttle AI extraction per user (abuse + cost protection): 20 / hour.
+  await enforceRateLimit(`ingest:${userId}`, 20, 3600, 'extractions');
+
   await db.update(documents).set({ ingestStatus: 'PROCESSING' }).where(eq(documents.id, doc.id));
 
   try {
     const { extraction, modelId, promptVersion } = await ingestDocument({
       blobUrl: doc.blobUrl,
       mimeType: doc.mimeType,
+      userId,
     });
 
     const items: LineItemInput[] = extraction.lineItems.map((li) => ({
@@ -50,6 +55,7 @@ export async function processDocumentIngestion(
       planPaid: li.planPaid,
       patientResponsibility: li.patientResponsibility,
       dateOfService: li.dateOfService,
+      adjustmentCodes: li.adjustmentCodes ?? null,
       sourceConfidence: li.confidence,
     }));
 
@@ -89,7 +95,10 @@ export async function processDocumentIngestion(
         dateOfService:
           caseRow.dateOfService ??
           (extraction.dateOfService ? new Date(extraction.dateOfService) : null),
-        status: 'AUDITED',
+        // A low-confidence extraction isn't trustworthy yet — keep the case in
+        // INGESTING until the user confirms the values, rather than presenting
+        // an unreviewed extraction as audited.
+        status: review ? 'INGESTING' : 'AUDITED',
       })
       .where(eq(cases.id, doc.caseId));
 

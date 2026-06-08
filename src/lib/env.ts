@@ -15,15 +15,27 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().optional(),
   RESEND_FROM: z.string().optional(),
   CRON_SECRET: z.string().optional(),
-  // Treat an empty string as unset so the default applies (z.coerce.number('')
-  // would otherwise become 0 — a 0% fee / $0 AI budget).
+  // Consumer product is FREE for individuals (fee rate 0). The fee plumbing is
+  // retained so a future B2B / shared-savings tier can set a non-zero rate.
+  // Treat an empty string as unset so the default applies.
   PAXER_FEE_RATE: z.preprocess(
     (v) => (v === '' || v === undefined ? undefined : v),
-    z.coerce.number().min(0).max(1).default(0.25),
+    z.coerce.number().min(0).max(1).default(0),
   ),
   PAXER_DAILY_AI_BUDGET_USD: z.preprocess(
     (v) => (v === '' || v === undefined ? undefined : v),
     z.coerce.number().min(0).default(10),
+  ),
+  // Per-user daily AI spend ceiling so one account can't exhaust the global
+  // budget and deny service to everyone (cost-runaway abuse protection).
+  PAXER_USER_DAILY_AI_BUDGET_USD: z.preprocess(
+    (v) => (v === '' || v === undefined ? undefined : v),
+    z.coerce.number().min(0).default(3),
+  ),
+  // Audit-API free-tier monthly call quota; over this, free keys get 402.
+  PAXER_FREE_API_QUOTA: z.preprocess(
+    (v) => (v === '' || v === undefined ? undefined : v),
+    z.coerce.number().int().min(1).default(100),
   ),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 });

@@ -31,8 +31,12 @@ export interface AuditContext {
   region: string | null;
 }
 
-/** Helper: numeric value of a money column (stored as string by pg). */
-export function money(value: string | null): number | null {
+/**
+ * Helper: numeric value of a money column (stored as string by pg). Also accepts
+ * a number so callers that build line items in-memory (e.g. the /api/v1/audit
+ * endpoint) can pass numeric amounts directly.
+ */
+export function money(value: string | number | null): number | null {
   if (value === null) return null;
   const n = Number(value);
   return Number.isNaN(n) ? null : n;

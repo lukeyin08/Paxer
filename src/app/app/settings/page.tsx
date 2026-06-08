@@ -2,30 +2,51 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { cases, users } from '@/lib/db/schema';
 import { requireUser } from '@/lib/auth/session';
+import { listApiKeys } from '@/lib/api-keys/repo';
+import { usageSnapshot } from '@/lib/billing/usage';
 import { Kicker } from '@/components/brand/kicker';
 import { Card, CardContent } from '@/components/ui/card';
 import { Disclaimer } from '@/components/brand/disclaimer';
 import { formatDate } from '@/lib/utils';
 import { StateForm, DeleteCaseButton, DeleteAccountCard } from './settings-client';
+import { ApiKeysClient } from './api-keys-client';
 
 export default async function SettingsPage() {
   const sessionUser = await requireUser();
   const [user] = await db.select().from(users).where(eq(users.id, sessionUser.id)).limit(1);
-  const myCases = await db
-    .select()
-    .from(cases)
-    .where(and(eq(cases.userId, sessionUser.id), isNull(cases.deletedAt)));
+  const [myCases, allKeys, usage] = await Promise.all([
+    db.select().from(cases).where(and(eq(cases.userId, sessionUser.id), isNull(cases.deletedAt))),
+    listApiKeys(sessionUser.id),
+    usageSnapshot(sessionUser.id),
+  ]);
+  const apiKeys = allKeys
+    .filter((k) => !k.revokedAt)
+    .map((k) => ({
+      id: k.id,
+      name: k.name,
+      keyPrefix: k.keyPrefix,
+      lastUsedAt: k.lastUsedAt ? k.lastUsedAt.toISOString() : null,
+      createdAt: k.createdAt.toISOString(),
+    }));
+  const apiUsage = {
+    planLabel: usage.plan.label,
+    used: usage.used,
+    quota: usage.quota,
+    isFreePlan: usage.plan.id === 'free',
+    // No self-serve billing yet — upgrade requests come to us by email.
+    upgradeHref: 'mailto:ly3569@princeton.edu?subject=Paxer%20API%20upgrade',
+  };
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-8 animate-fade-up">
       <div>
         <Kicker className="mb-2">Settings</Kicker>
-        <h1 className="font-serif text-3xl font-semibold">Account</h1>
+        <h1 className="font-sans text-3xl font-semibold">Account</h1>
       </div>
 
       <Card>
         <CardContent className="flex flex-col gap-4 pt-6">
-          <h2 className="font-serif text-lg font-semibold">Profile</h2>
+          <h2 className="font-sans text-lg font-semibold">Profile</h2>
           <div className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
             <div>
               <p className="kicker">Name</p>
@@ -43,10 +64,10 @@ export default async function SettingsPage() {
 
       <Card>
         <CardContent className="flex flex-col gap-2 pt-6">
-          <h2 className="font-serif text-lg font-semibold">Consent record</h2>
+          <h2 className="font-sans text-lg font-semibold">Consent record</h2>
           <p className="text-sm text-muted">
             {user?.consentAt
-              ? `You acknowledged the prototype / synthetic-data terms on ${formatDate(user.consentAt)}.`
+              ? `You agreed to the Terms of Service and Privacy Policy on ${formatDate(user.consentAt)}.`
               : 'No consent on record.'}
           </p>
         </CardContent>
@@ -54,7 +75,7 @@ export default async function SettingsPage() {
 
       <Card>
         <CardContent className="flex flex-col gap-3 pt-6">
-          <h2 className="font-serif text-lg font-semibold">Your data</h2>
+          <h2 className="font-sans text-lg font-semibold">Your data</h2>
           {myCases.length === 0 ? (
             <p className="text-sm text-muted">No cases to manage.</p>
           ) : (
@@ -67,6 +88,18 @@ export default async function SettingsPage() {
               ))}
             </ul>
           )}
+        </CardContent>
+      </Card>
+
+      <Card id="developers">
+        <CardContent className="flex flex-col gap-4 pt-6">
+          <div>
+            <h2 className="font-sans text-lg font-semibold">Developers — Audit API</h2>
+            <p className="text-sm text-muted">
+              Run Paxer’s deterministic audit engine on your own line items via API.
+            </p>
+          </div>
+          <ApiKeysClient keys={apiKeys} usage={apiUsage} />
         </CardContent>
       </Card>
 

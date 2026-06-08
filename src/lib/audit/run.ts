@@ -7,6 +7,7 @@ import { runAiAuditPass } from '@/lib/ai/audit';
 import { aiConfigured } from '@/lib/ai/client';
 import { writeAuditLog } from '@/lib/audit-log';
 import { recomputeEstimatedRecoverable } from '@/lib/cases/repo';
+import { enforceRateLimit } from '@/lib/rate-limit';
 
 export interface AuditOutcome {
   findingCount: number;
@@ -89,7 +90,14 @@ export async function runAudit(userId: string, caseId: string): Promise<AuditOut
 
   if (aiConfigured()) {
     try {
-      const ai = await runAiAuditPass({ lineItems: items, ruleFindings: detectorFindings });
+      // Throttle the AI audit pass per user: 30 / hour. On limit, this throws
+      // and we fall through to the deterministic rule findings below.
+      await enforceRateLimit(`audit:${userId}`, 30, 3600, 'audits');
+      const ai = await runAiAuditPass({
+        lineItems: items,
+        ruleFindings: detectorFindings,
+        userId,
+      });
       detectorFindings = ai.findings;
       modelId = ai.modelId;
       promptVersion = ai.promptVersion;

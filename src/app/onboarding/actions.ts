@@ -9,8 +9,15 @@ import { requireUser } from '@/lib/auth/session';
 import { writeAuditLog } from '@/lib/audit-log';
 
 const schema = z.object({
-  name: z.string().min(1, 'Please enter your name.'),
-  state: z.string().optional(),
+  name: z.string().min(1, 'Please enter your name.').max(120),
+  // 2-letter code only — `state` is part of the benchmark grouping key
+  // (`code|region`), so free text (e.g. containing '|') would corrupt it.
+  state: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .regex(/^[A-Z]{2}$/, 'Use a 2-letter state code (e.g. CA).')
+    .optional(),
   consent: z.literal('on', { errorMap: () => ({ message: 'Consent is required to continue.' }) }),
 });
 

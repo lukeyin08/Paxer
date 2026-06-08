@@ -4,11 +4,14 @@ import { useState, useTransition } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Money } from '@/components/brand/money';
 import { StatusPill } from '@/components/brand/status-pill';
 import { Disclaimer } from '@/components/brand/disclaimer';
 import { severityTone } from '@/lib/cases/status';
 import { generateDisputeAction } from '@/app/app/disputes/actions';
+import type { LetterDetailsInput } from '@/lib/disputes/letter-context';
 
 export interface SelectableFinding {
   id: string;
@@ -18,19 +21,87 @@ export interface SelectableFinding {
   estimatedRecovery: number | null;
 }
 
+export interface DraftPrefill {
+  senderName: string;
+  senderEmail: string;
+  payerName: string;
+  providerName: string;
+}
+
+const REQUIRED_FIELDS: (keyof LetterDetailsInput)[] = [
+  'senderName',
+  'senderAddress',
+  'senderCityStateZip',
+  'senderPhone',
+  'senderEmail',
+  'recipientName',
+];
+
+// Defined at module scope (not inside DraftForm) so it keeps a stable identity
+// across renders — otherwise each keystroke would remount the input and drop focus.
+function Field({
+  label,
+  value,
+  onChange,
+  placeholder,
+  required,
+  type = 'text',
+  className,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  required?: boolean;
+  type?: string;
+  className?: string;
+}) {
+  return (
+    <div className={`flex flex-col gap-1.5 ${className ?? ''}`}>
+      <Label>
+        {label}
+        {required ? <span className="text-danger"> *</span> : null}
+      </Label>
+      <Input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+      />
+    </div>
+  );
+}
+
 export function DraftForm({
   caseId,
   findings,
   preselected,
+  prefill,
 }: {
   caseId: string;
   findings: SelectableFinding[];
   preselected: string[];
+  prefill: DraftPrefill;
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set(preselected));
   const [target, setTarget] = useState<'PROVIDER' | 'INSURER' | 'AUTO'>('AUTO');
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [details, setDetails] = useState<LetterDetailsInput>({
+    senderName: prefill.senderName,
+    senderAddress: '',
+    senderCityStateZip: '',
+    senderPhone: '',
+    senderEmail: prefill.senderEmail,
+    recipientName: prefill.payerName || prefill.providerName,
+    recipientAddress: '',
+    recipientCityStateZip: '',
+    memberId: '',
+    claimNumber: '',
+  });
+
+  const setField = (k: keyof LetterDetailsInput) => (v: string) =>
+    setDetails((d) => ({ ...d, [k]: v }));
 
   const toggle = (id: string) =>
     setSelected((s) => {
@@ -50,11 +121,20 @@ export function DraftForm({
       setError('Select at least one finding to dispute.');
       return;
     }
+    if (REQUIRED_FIELDS.some((k) => !details[k].trim())) {
+      setError('Please complete your contact details and the recipient name (fields marked *).');
+      return;
+    }
+    // Trim everything so stray whitespace never lands in the letter.
+    const trimmed = Object.fromEntries(
+      Object.entries(details).map(([k, v]) => [k, v.trim()]),
+    ) as LetterDetailsInput;
     startTransition(async () => {
       const res = await generateDisputeAction({
         caseId,
         findingIds: [...selected],
         target: target === 'AUTO' ? undefined : target,
+        details: trimmed,
       });
       if (res && !res.ok) setError(res.error);
     });
@@ -107,9 +187,54 @@ export function DraftForm({
         </div>
       </div>
 
+      {/* Contact / claim details so the generated letter is final — no [placeholders]. */}
+      <Card>
+        <CardContent className="flex flex-col gap-6 pt-6">
+          <div>
+            <h2 className="font-sans text-lg font-semibold">Your details</h2>
+            <p className="mt-1 text-sm text-muted">
+              We use these to produce a finished letter with no blanks to fill in. Fields marked{' '}
+              <span className="text-danger">*</span> are required.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <span className="kicker">Your contact information</span>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Full name" value={details.senderName} onChange={setField('senderName')} placeholder="Luke Yin" required />
+              <Field label="Phone" value={details.senderPhone} onChange={setField('senderPhone')} placeholder="(555) 123-4567" required />
+              <Field label="Email" type="email" value={details.senderEmail} onChange={setField('senderEmail')} placeholder="you@example.com" required />
+              <Field label="Street address" value={details.senderAddress} onChange={setField('senderAddress')} placeholder="123 Main St, Apt 4" required />
+              <Field label="City, State ZIP" value={details.senderCityStateZip} onChange={setField('senderCityStateZip')} placeholder="Austin, TX 78701" required className="sm:col-span-2" />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <span className="kicker">Send the letter to</span>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Recipient name" value={details.recipientName} onChange={setField('recipientName')} placeholder="Cigna Appeals Department" required className="sm:col-span-2" />
+              <Field label="Recipient street address" value={details.recipientAddress} onChange={setField('recipientAddress')} placeholder="PO Box 188061" />
+              <Field label="Recipient city, state ZIP" value={details.recipientCityStateZip} onChange={setField('recipientCityStateZip')} placeholder="Chattanooga, TN 37422" />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <span className="kicker">Claim details</span>
+            <p className="text-xs text-muted">
+              From your insurance card and Explanation of Benefits. Leave blank if not applicable —
+              we&rsquo;ll simply omit them.
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Member ID" value={details.memberId} onChange={setField('memberId')} placeholder="U1234567801" />
+              <Field label="Claim number" value={details.claimNumber} onChange={setField('claimNumber')} placeholder="20-123456789" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {error && <p className="text-sm text-danger">{error}</p>}
       <Button onClick={generate} disabled={pending} className="self-start">
-        {pending ? 'Drafting…' : 'Generate dispute draft'}
+        {pending ? 'Drafting…' : 'Generate dispute letter'}
       </Button>
       <Disclaimer variant="callout" />
     </div>

@@ -124,9 +124,51 @@ export const users = pgTable('users', {
   state: text('state'),
   consentAt: timestamp('consent_at', { withTimezone: true }),
   passwordHash: text('password_hash'), // seeded demo credentials only
+  // Audit-API billing plan ('free' | 'pro'). Drives the monthly call quota.
+  apiPlan: text('api_plan').default('free').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });
+
+// ---------------------------------------------------------------------------
+// API keys — authenticate the embedded audit API (B2B). Only the SHA-256 hash
+// of the full key is stored; the plaintext is shown to the user exactly once.
+// ---------------------------------------------------------------------------
+export const apiKeys = pgTable(
+  'api_keys',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    keyPrefix: text('key_prefix').notNull(), // display only, e.g. "pax_live_a1b2c3de"
+    keyHash: text('key_hash').notNull(), // sha256 hex of the full key
+    lastUsedAt: timestamp('last_used_at', { withTimezone: true }),
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex('api_keys_key_hash_idx').on(t.keyHash),
+    index('api_keys_user_id_idx').on(t.userId),
+  ],
+);
+
+// Monthly Audit-API usage counter per user (for quota + billing). One row per
+// (user, YYYY-MM); incremented atomically on each successful audit call.
+export const apiUsage = pgTable(
+  'api_usage',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    period: text('period').notNull(), // 'YYYY-MM'
+    count: integer('count').default(0).notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [uniqueIndex('api_usage_user_period_idx').on(t.userId, t.period)],
+);
 
 export const accounts = pgTable(
   'accounts',
@@ -228,6 +270,9 @@ export const lineItems = pgTable(
     description: text('description').notNull(),
     cptHcpcsCode: text('cpt_hcpcs_code'),
     revenueCode: text('revenue_code'),
+    // EOB adjustment/reason codes for this line, e.g. ["PR-22"] (coordination of
+    // benefits) — lets the audit name a denial precisely instead of guessing.
+    adjustmentCodes: jsonb('adjustment_codes').$type<string[]>(),
     units: integer('units').default(1).notNull(),
     chargeAmount: money('charge_amount'),
     allowedAmount: money('allowed_amount'),
@@ -346,6 +391,7 @@ export const recoveries = pgTable(
       .notNull()
       .references(() => cases.id, { onDelete: 'cascade' }),
     findingId: uuid('finding_id').references(() => findings.id, { onDelete: 'set null' }),
+    disputeId: uuid('dispute_id').references(() => disputes.id, { onDelete: 'set null' }),
     amount: money('amount').notNull(),
     kind: recoveryKind('kind').notNull(),
     recoveredAt: timestamp('recovered_at', { withTimezone: true }).defaultNow().notNull(),
@@ -394,6 +440,16 @@ export const auditLog = pgTable(
   },
   (t) => [index('audit_log_entity_idx').on(t.entity, t.entityId)],
 );
+
+// ---------------------------------------------------------------------------
+// Rate limits (fixed-window, Postgres-backed abuse protection — no Redis dep)
+// ---------------------------------------------------------------------------
+export const rateLimits = pgTable('rate_limits', {
+  // Namespaced subject, e.g. "ingest:<userId>" or "magic-link:<email>".
+  key: text('key').primaryKey(),
+  windowStart: timestamp('window_start', { withTimezone: true }).defaultNow().notNull(),
+  count: integer('count').default(0).notNull(),
+});
 
 // ---------------------------------------------------------------------------
 // Relations
@@ -446,12 +502,14 @@ export const disputeEventsRelations = relations(disputeEvents, ({ one }) => ({
 export const recoveriesRelations = relations(recoveries, ({ one }) => ({
   case: one(cases, { fields: [recoveries.caseId], references: [cases.id] }),
   finding: one(findings, { fields: [recoveries.findingId], references: [findings.id] }),
+  dispute: one(disputes, { fields: [recoveries.disputeId], references: [disputes.id] }),
 }));
 
 // ---------------------------------------------------------------------------
 // Inferred types
 // ---------------------------------------------------------------------------
 export type User = typeof users.$inferSelect;
+export type ApiKey = typeof apiKeys.$inferSelect;
 export type Case = typeof cases.$inferSelect;
 export type NewCase = typeof cases.$inferInsert;
 export type Document = typeof documents.$inferSelect;

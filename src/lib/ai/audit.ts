@@ -25,6 +25,16 @@ const auditOutputSchema = z.object({
       estimatedRecovery: z.number().nullable(),
     }),
   ),
+  excessiveCharges: z.array(
+    z.object({
+      lineItemIndex: z.number(),
+      title: z.string(),
+      explanationPlain: z.string(),
+      recommendedNextStep: z.string(),
+      confidence: z.number(),
+      estimatedRecovery: z.number().nullable(),
+    }),
+  ),
 });
 
 export interface AiAuditResult {
@@ -42,6 +52,7 @@ export interface AiAuditResult {
 export async function runAiAuditPass(input: {
   lineItems: LineItem[];
   ruleFindings: DetectorFinding[];
+  userId?: string | null;
 }): Promise<AiAuditResult> {
   const liView = input.lineItems.map((li, i) => ({
     index: i,
@@ -77,6 +88,7 @@ export async function runAiAuditPass(input: {
     effort: 'medium',
     maxTokens: 6000,
     label: 'audit',
+    userId: input.userId,
   });
 
   // Merge enrichment into rule findings.
@@ -117,6 +129,42 @@ export async function runAiAuditPass(input: {
       detector: 'AI',
       lineItemId: li.id,
       recommendedNextStep: u.recommendedNextStep,
+    });
+  }
+
+  // Append AI-only excessive / implausible-charge findings — one per line item,
+  // and never on a line the rule engine already flagged as a benchmark overcharge
+  // (so the same dollars aren't reported twice under the same finding type).
+  const benchmarkedLines = new Set(
+    input.ruleFindings
+      .filter((f) => f.type === 'OTHER' && f.lineItemId)
+      .map((f) => f.lineItemId as string),
+  );
+  const flaggedExcessive = new Set<string>();
+  for (const x of data.excessiveCharges) {
+    if (!inRange(x.lineItemIndex, input.lineItems.length)) continue;
+    const li = input.lineItems[x.lineItemIndex];
+    if (!li) continue;
+    if (benchmarkedLines.has(li.id) || flaggedExcessive.has(li.id)) continue;
+    flaggedExcessive.add(li.id);
+    const est =
+      typeof x.estimatedRecovery === 'number' && x.estimatedRecovery >= 0 ? x.estimatedRecovery : null;
+    merged.push({
+      type: 'OTHER',
+      severity: 'MED',
+      title: x.title,
+      explanationPlain: x.explanationPlain,
+      evidence: {
+        description: li.description,
+        code: li.cptHcpcsCode,
+        charge: money(li.chargeAmount),
+        allowed: money(li.allowedAmount),
+      },
+      estimatedRecovery: est,
+      confidence: Math.min(0.6, clampConfidence(x.confidence)),
+      detector: 'AI',
+      lineItemId: li.id,
+      recommendedNextStep: x.recommendedNextStep,
     });
   }
 

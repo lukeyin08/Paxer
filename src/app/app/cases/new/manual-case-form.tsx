@@ -116,19 +116,19 @@ export function ManualCaseForm() {
               {rows.map((r, i) => (
                 <tr key={i} className="border-b border-rule last:border-0">
                   <td className="p-1.5">
-                    <Input value={r.description} onChange={(e) => setRow(i, { description: e.target.value })} placeholder="CT scan, head" />
+                    <Input aria-label={`Line ${i + 1} description`} value={r.description} onChange={(e) => setRow(i, { description: e.target.value })} placeholder="CT scan, head" />
                   </td>
                   <td className="p-1.5">
-                    <Input value={r.cptHcpcsCode} onChange={(e) => setRow(i, { cptHcpcsCode: e.target.value })} placeholder="70450" className="w-24" />
+                    <Input aria-label={`Line ${i + 1} CPT/HCPCS code`} value={r.cptHcpcsCode} onChange={(e) => setRow(i, { cptHcpcsCode: e.target.value })} placeholder="70450" className="w-24" />
                   </td>
                   <td className="p-1.5">
-                    <Input inputMode="numeric" value={r.units} onChange={(e) => setRow(i, { units: e.target.value })} className="w-16" />
+                    <Input aria-label={`Line ${i + 1} units`} inputMode="numeric" value={r.units} onChange={(e) => setRow(i, { units: e.target.value })} className="w-16" />
                   </td>
                   <td className="p-1.5">
-                    <Input inputMode="decimal" value={r.chargeAmount} onChange={(e) => setRow(i, { chargeAmount: e.target.value })} placeholder="1240" className="w-24" />
+                    <Input aria-label={`Line ${i + 1} charge amount`} inputMode="decimal" value={r.chargeAmount} onChange={(e) => setRow(i, { chargeAmount: e.target.value })} placeholder="1240" className="w-24" />
                   </td>
                   <td className="p-1.5">
-                    <Input inputMode="decimal" value={r.patientResponsibility} onChange={(e) => setRow(i, { patientResponsibility: e.target.value })} placeholder="248" className="w-24" />
+                    <Input aria-label={`Line ${i + 1} amount you owe`} inputMode="decimal" value={r.patientResponsibility} onChange={(e) => setRow(i, { patientResponsibility: e.target.value })} placeholder="248" className="w-24" />
                   </td>
                   <td className="p-1.5">
                     <Button type="button" variant="ghost" size="icon" onClick={() => removeRow(i)} disabled={rows.length === 1} aria-label="Remove row">

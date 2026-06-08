@@ -15,6 +15,7 @@ import { aiConfigured } from '@/lib/ai/client';
 import { FindingCard } from '@/components/finding-card';
 import { DocumentsSection } from './documents-section';
 import { RunAuditButton } from './run-audit-button';
+import { AddLineItemsForm } from './add-line-items-form';
 
 export default async function CaseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser();
@@ -36,7 +37,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <Kicker className="mb-2">Case</Kicker>
-            <h1 className="font-serif text-3xl font-semibold">{c.title}</h1>
+            <h1 className="font-sans text-3xl font-semibold">{c.title}</h1>
             <p className="mt-1 text-muted">
               {c.providerName ?? 'Unknown provider'} · {c.payerName ?? 'Unknown payer'}
               {c.dateOfService ? ` · ${formatDate(c.dateOfService)}` : ''}
@@ -77,7 +78,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
 
       {/* Documents */}
       <section className="flex flex-col gap-4">
-        <h2 className="font-serif text-xl font-semibold">Documents</h2>
+        <h2 className="font-sans text-xl font-semibold">Documents</h2>
         {needsReviewDocs && (
           <div className="rounded-md border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-warning">
             Some extracted values are low-confidence. Please review the line items below and choose
@@ -91,7 +92,6 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
             fileName: d.fileName,
             kind: d.kind,
             ingestStatus: d.ingestStatus,
-            blobUrl: d.blobUrl,
             hasFile: Boolean(d.blobUrl && d.mimeType),
           }))}
         />
@@ -100,7 +100,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
       {/* Plan benefits */}
       {plan && (
         <section className="flex flex-col gap-4">
-          <h2 className="font-serif text-xl font-semibold">Plan benefits</h2>
+          <h2 className="font-sans text-xl font-semibold">Plan benefits</h2>
           <Card>
             <CardContent className="grid grid-cols-2 gap-4 pt-6 text-sm sm:grid-cols-4">
               <div>
@@ -131,14 +131,15 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
 
       {/* Line items */}
       <section className="flex flex-col gap-4">
-        <h2 className="font-serif text-xl font-semibold">Line items</h2>
+        <h2 className="font-sans text-xl font-semibold">Line items</h2>
         <LineItemsTable items={lineItems} />
+        <AddLineItemsForm caseId={c.id} />
       </section>
 
       {/* Findings */}
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="font-serif text-xl font-semibold">Findings</h2>
+          <h2 className="font-sans text-xl font-semibold">Findings</h2>
           {lineItems.length > 0 && (
             <RunAuditButton caseId={c.id} hasFindings={findings.length > 0} />
           )}

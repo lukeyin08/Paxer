@@ -39,13 +39,45 @@ export function renderTemplateLetter(ctx: LetterContext): string {
     ? `I am requesting that you reprocess the affected claims and correct my cost-share in accordance with my plan benefits. Please treat this as a formal first-level appeal. I have enclosed the relevant Explanation of Benefits for your reference.`
     : `I am requesting a corrected, itemized bill reflecting the adjustments above. Please confirm in writing once the account has been updated.`;
 
-  return `<div class="dispute-letter">
-<p>[Your name]<br/>[Your address]<br/>[City, State ZIP]<br/>[Email] · [Phone]</p>
+  // Header / reference blocks. When the patient supplied details we build a
+  // finished, placeholder-free header; otherwise (e.g. seed data) we fall back
+  // to clearly-marked [placeholders] as before.
+  const d = ctx.details;
+  const ln = (s: string | null | undefined) => (s && s.trim() ? esc(s.trim()) : '');
+  let header: string;
+  if (d) {
+    const senderLines = [
+      ln(d.senderName),
+      ln(d.senderAddress),
+      ln(d.senderCityStateZip),
+      [ln(d.senderEmail), ln(d.senderPhone)].filter(Boolean).join(' · '),
+    ].filter(Boolean);
+    const recipientLines = [
+      ln(d.recipientName) || esc(ctx.recipientName),
+      ln(d.recipientAddress),
+      ln(d.recipientCityStateZip),
+    ].filter(Boolean);
+    const refLines = [
+      `<strong>Re: ${esc(subject)}</strong>`,
+      `Patient: ${ln(d.senderName) || esc(ctx.patientName)}${ctx.dateOfService ? ` · Date of service: ${esc(ctx.dateOfService)}` : ''}`,
+      ln(d.memberId) ? `Member ID: ${ln(d.memberId)}` : '',
+      ln(d.claimNumber) ? `Claim number: ${ln(d.claimNumber)}` : '',
+    ].filter(Boolean);
+    header = `<p>${senderLines.join('<br/>')}</p>
+<p>${ln(d.letterDate)}</p>
+<p>${recipientLines.join('<br/>')}</p>
+<p>${refLines.join('<br/>')}</p>`;
+  } else {
+    header = `<p>[Your name]<br/>[Your address]<br/>[City, State ZIP]<br/>[Email] · [Phone]</p>
 <p>[Date]</p>
 <p>${esc(ctx.recipientName)}<br/>[Recipient address]</p>
 <p><strong>Re: ${esc(subject)}</strong><br/>
 Patient: ${esc(ctx.patientName)}${ctx.dateOfService ? ` · Date of service: ${esc(ctx.dateOfService)}` : ''}<br/>
-[Account / Claim number]</p>
+[Account / Claim number]</p>`;
+  }
+
+  return `<div class="dispute-letter">
+${header}
 <p>To whom it may concern,</p>
 <p>I am writing regarding the charges associated with the service${ctx.dateOfService ? ` on ${esc(ctx.dateOfService)}` : ''}. After a careful review, I have identified the following item(s) that appear inconsistent and that I am asking you to correct:</p>
 <ol>

@@ -17,3 +17,16 @@ export async function requireUser() {
   }
   return session.user;
 }
+
+/**
+ * Require an authenticated ADMIN. Use to gate operational actions (e.g.
+ * recomputing global benchmarks) that must not be available to patients.
+ * Throws — callers should already have a user, so this is a hard authz failure.
+ */
+export async function requireAdmin() {
+  const user = await requireUser();
+  if (user.role !== 'ADMIN') {
+    throw new Error('Not authorized.');
+  }
+  return user;
+}

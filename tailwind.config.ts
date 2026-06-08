@@ -58,8 +58,10 @@ const config: Config = {
         ring: 'hsl(var(--ring))',
       },
       fontFamily: {
-        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        // Single sans family for display + body (matches the logo). `serif` is
+        // kept as an alias of sans so any stray `font-serif` stays on-brand.
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-sans)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
       borderRadius: {

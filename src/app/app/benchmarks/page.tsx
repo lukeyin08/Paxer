@@ -10,7 +10,8 @@ import { formatUsd } from '@/lib/utils';
 import { RecomputeButton } from './recompute-button';
 
 export default async function BenchmarksPage() {
-  await requireUser();
+  const user = await requireUser();
+  const isAdmin = user.role === 'ADMIN';
   const rows = await db.select().from(benchmarks).orderBy(desc(benchmarks.sampleSize));
   const totalSamples = rows.reduce((s, b) => s + b.sampleSize, 0);
   const aggregated = rows.filter((b) => b.source === 'AGGREGATE').length;
@@ -20,14 +21,14 @@ export default async function BenchmarksPage() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <Kicker className="mb-2">Benchmarks</Kicker>
-          <h1 className="font-serif text-3xl font-semibold">Price benchmarks</h1>
+          <h1 className="font-sans text-3xl font-semibold">Price benchmarks</h1>
           <p className="mt-1 max-w-2xl text-muted">
             The compounding asset: anonymized prices accrued across cases (code + region + amount
             only, no identifiers). As more bills are audited, these benchmarks sharpen and power the
             overcharge detector.
           </p>
         </div>
-        <RecomputeButton />
+        {isAdmin && <RecomputeButton />}
       </div>
 
       <section className="grid grid-cols-2 gap-6 sm:grid-cols-3">
@@ -37,7 +38,7 @@ export default async function BenchmarksPage() {
       </section>
 
       {rows.length === 0 ? (
-        <EmptyState title="No benchmarks yet" description="Seed the demo or recompute from your data." />
+        <EmptyState title="No benchmarks yet" description="Price benchmarks build up as more bills are audited across Paxer." />
       ) : (
         <div className="overflow-x-auto rounded-md border border-rule">
           <table className="w-full min-w-[640px] text-sm">

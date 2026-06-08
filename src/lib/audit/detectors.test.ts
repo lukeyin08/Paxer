@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { detectDuplicates, detectCostShareErrors } from './detectors';
+import { detectDuplicates, detectCostShareErrors, detectNonCoveredBilled } from './detectors';
 import type { AuditContext } from './types';
 import type { Case, LineItem, PlanBenefit } from '@/lib/db/schema';
 
@@ -89,5 +89,37 @@ describe('detectCostShareErrors', () => {
     } as PlanBenefit;
     const items = [li({ allowedAmount: '1200.00', patientResponsibility: '240.00' })];
     expect(detectCostShareErrors(ctx(items, plan))).toHaveLength(0);
+  });
+});
+
+describe('detectNonCoveredBilled (denial / COB)', () => {
+  // Plan paid $0 and the full allowed amount landed on the patient.
+  const denialLine = () =>
+    li({ description: 'Procedure', cptHcpcsCode: '67028', allowedAmount: '900', planPaid: '0', patientResponsibility: '900' });
+  const pb = (deductible: string, met: string) =>
+    ({ deductible, deductibleMet: met, coinsuranceRate: null, copay: null, oopMax: null, oopMet: null, inNetwork: true }) as PlanBenefit;
+
+  it('fires on a PR-22 reason code (even with no plan benefits) and names the COB denial', () => {
+    const f = detectNonCoveredBilled(ctx([li({ ...denialLine(), adjustmentCodes: ['PR-22'] })], null));
+    expect(f).toHaveLength(1);
+    expect(f[0]!.type).toBe('NON_COVERED_BILLED_TO_PATIENT');
+    expect(f[0]!.estimatedRecovery).toBe(900);
+    expect(`${f[0]!.title} ${f[0]!.explanationPlain}`).toMatch(/coordination-of-benefits|PR-22/i);
+  });
+
+  it('fires when plan benefits show no deductible can explain it', () => {
+    expect(detectNonCoveredBilled(ctx([denialLine()], pb('0', '0')))).toHaveLength(1);
+  });
+
+  it('does NOT fire on a legit unmet deductible', () => {
+    expect(detectNonCoveredBilled(ctx([denialLine()], pb('2000', '0')))).toHaveLength(0);
+  });
+
+  it('does NOT fire with no reason code AND no plan benefits (ambiguous — avoid over-claiming)', () => {
+    expect(detectNonCoveredBilled(ctx([denialLine()], null))).toHaveLength(0);
+  });
+
+  it('fires when the deductible is already met (so $0 plan-paid is not a deductible)', () => {
+    expect(detectNonCoveredBilled(ctx([denialLine()], pb('2000', '2000')))).toHaveLength(1);
   });
 });
