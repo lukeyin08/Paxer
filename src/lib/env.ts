@@ -5,16 +5,29 @@ import { z } from 'zod';
  * Most values are optional so the app can boot for local UI work without every
  * integration configured; features that need a value fail loudly at call time.
  */
+
+/**
+ * An optional string var where a present-but-blank value ("") is treated the
+ * same as unset. Without this, a variable that exists with an empty value (e.g.
+ * a key left blank in the Vercel dashboard) parses as '' — which is falsy in
+ * `!env.X` guards yet slips PAST `env.X ?? fallback` (?? only catches
+ * null/undefined). That mismatch silently disabled magic-link email and would
+ * have sent `from: ''` to Resend. Coercing '' -> undefined makes blank and
+ * unset behave identically so both checks agree.
+ */
+const optionalString = (schema: z.ZodString = z.string()) =>
+  z.preprocess((v) => (v === '' ? undefined : v), schema.optional());
+
 const envSchema = z.object({
-  DATABASE_URL: z.string().min(1).optional(),
-  POSTGRES_URL: z.string().min(1).optional(),
-  BLOB_READ_WRITE_TOKEN: z.string().optional(),
-  ANTHROPIC_API_KEY: z.string().optional(),
-  AUTH_SECRET: z.string().optional(),
-  AUTH_URL: z.string().optional(),
-  RESEND_API_KEY: z.string().optional(),
-  RESEND_FROM: z.string().optional(),
-  CRON_SECRET: z.string().optional(),
+  DATABASE_URL: optionalString(z.string().min(1)),
+  POSTGRES_URL: optionalString(z.string().min(1)),
+  BLOB_READ_WRITE_TOKEN: optionalString(),
+  ANTHROPIC_API_KEY: optionalString(),
+  AUTH_SECRET: optionalString(),
+  AUTH_URL: optionalString(),
+  RESEND_API_KEY: optionalString(),
+  RESEND_FROM: optionalString(),
+  CRON_SECRET: optionalString(),
   // Consumer product is FREE for individuals (fee rate 0). The fee plumbing is
   // retained so a future B2B / shared-savings tier can set a non-zero rate.
   // Treat an empty string as unset so the default applies.
