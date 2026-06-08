@@ -81,8 +81,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // and a GET on the callback burns the one-time token before the user
         // clicks. The interstitial doesn't touch the token; the real callback
         // fires only on a genuine click. See src/app/auth/confirm/page.tsx.
+        //
+        // Carry the callback as OPAQUE params (path + token + email), NOT as an
+        // embedded `?u=https://…` URL — that shape reads as open-redirect/phishing
+        // to Google Safe Browsing and can get a fresh domain flagged "Dangerous".
+        const cbUrl = new URL(url);
         const confirmUrl = new URL('/auth/confirm', url);
-        confirmUrl.searchParams.set('u', url);
+        confirmUrl.searchParams.set('cb', cbUrl.pathname);
+        const token = cbUrl.searchParams.get('token');
+        const emailParam = cbUrl.searchParams.get('email');
+        if (token) confirmUrl.searchParams.set('token', token);
+        if (emailParam) confirmUrl.searchParams.set('email', emailParam);
         const link = confirmUrl.toString();
         if (!env.RESEND_API_KEY) {
           console.log(`\n🔗 Paxer magic link for ${identifier}:\n${link}\n`);

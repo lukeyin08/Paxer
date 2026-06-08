@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { headers } from 'next/headers';
 import { Wordmark } from '@/components/brand/wordmark';
 import { Kicker } from '@/components/brand/kicker';
 import { Card, CardContent } from '@/components/ui/card';
@@ -22,32 +21,29 @@ export const metadata: Metadata = {
  * pre-fetch every link in an email to vet it — and a GET on the real callback
  * would consume the one-time token before the human ever clicks, leaving them
  * with an "expired link". This page does NOT touch the token; it only renders a
- * button that forwards to the real callback on a genuine click. Auth.js passes
- * the full callback URL as the `u` query param.
+ * button that forwards to the real callback on a genuine click.
+ *
+ * It carries the callback as OPAQUE params (`cb` path + `token` + `email`) and
+ * forwards via a RELATIVE href — never an embedded `https://…` URL — because a
+ * `?u=https://…` value reads as an open-redirect/phishing pattern to Google Safe
+ * Browsing and can get a fresh domain flagged "Dangerous site".
  */
-async function resolveCallback(raw: string | undefined): Promise<string | null> {
-  if (!raw) return null;
-  try {
-    const target = new URL(raw);
-    const host = (await headers()).get('host');
-    // Only ever forward to THIS host's own Auth.js callback — never an arbitrary
-    // URL — so the page can't be abused as an open redirect / phishing hop.
-    if (host && target.host === host && target.pathname.startsWith('/api/auth/')) {
-      return target.toString();
-    }
-  } catch {
-    // malformed URL → treat as invalid below
-  }
-  return null;
+function buildCallbackHref(sp: { cb?: string; token?: string; email?: string }): string | null {
+  const { cb, token, email } = sp;
+  if (!cb || !token || !email) return null;
+  // `cb` must be a same-origin RELATIVE auth-callback path — no scheme, no host,
+  // no protocol-relative `//` — so this page can't be turned into an open redirect.
+  if (!cb.startsWith('/api/auth/') || cb.includes('//') || cb.includes(':')) return null;
+  const params = new URLSearchParams({ callbackUrl: '/app', token, email });
+  return `${cb}?${params.toString()}`;
 }
 
 export default async function ConfirmSignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ u?: string }>;
+  searchParams: Promise<{ cb?: string; token?: string; email?: string }>;
 }) {
-  const { u } = await searchParams;
-  const callbackUrl = await resolveCallback(u);
+  const href = buildCallbackHref(await searchParams);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 py-12">
@@ -59,16 +55,16 @@ export default async function ConfirmSignInPage({
             <h1 className="font-sans text-2xl font-semibold">Confirm your sign-in</h1>
           </div>
 
-          {callbackUrl ? (
+          {href ? (
             <>
               <p className="text-sm text-muted">
                 Click below to finish signing in to Paxer. This extra step keeps email security
                 scanners from using up your one-time sign-in link.
               </p>
               <Button asChild className="w-full">
-                {/* Plain <a>: a real full-page navigation to the Auth.js callback,
-                    only on a genuine click — Next.js won't prefetch it. */}
-                <a href={callbackUrl} rel="nofollow">
+                {/* Relative href → resolves to this origin's Auth.js callback. A real
+                    full-page navigation, only on a genuine click — never prefetched. */}
+                <a href={href} rel="nofollow">
                   Confirm sign-in
                 </a>
               </Button>
