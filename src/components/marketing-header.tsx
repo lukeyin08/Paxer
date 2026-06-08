@@ -2,13 +2,6 @@ import Link from 'next/link';
 import { Wordmark } from '@/components/brand/wordmark';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { DEMO_ENABLED } from '@/lib/auth/demo';
-
-// The instant demo only exists in non-production (Credentials provider disabled
-// in prod), so the public CTA points to real sign-in there.
-const CTA = DEMO_ENABLED
-  ? { href: '/login?demo=1', label: 'View the demo' }
-  : { href: '/login', label: 'Get started' };
 
 /** Shared public/marketing top bar so every public page exposes the same nav. */
 export function MarketingHeader() {
@@ -30,11 +23,11 @@ export function MarketingHeader() {
             </Button>
           </div>
           <ThemeToggle />
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/login">Sign in</Link>
-          </Button>
+          {/* Single auth entry: the magic link both registers new users and signs
+              in returning ones, so a separate "Get started" would just duplicate
+              this. The new-visitor CTA lives in the page hero. */}
           <Button asChild size="sm">
-            <Link href={CTA.href}>{CTA.label}</Link>
+            <Link href="/login">Sign in</Link>
           </Button>
         </nav>
       </div>

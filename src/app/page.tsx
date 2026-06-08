@@ -42,7 +42,7 @@ export default function LandingPage() {
                 <Link href={PRIMARY_CTA.href}>{PRIMARY_CTA.label}</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href="/login">Start a case</Link>
+                <Link href="/how-it-works">See how it works</Link>
               </Button>
             </div>
           </div>
