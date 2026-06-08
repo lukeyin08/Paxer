@@ -124,8 +124,15 @@ export const users = pgTable('users', {
   state: text('state'),
   consentAt: timestamp('consent_at', { withTimezone: true }),
   passwordHash: text('password_hash'), // seeded demo credentials only
-  // Audit-API billing plan ('free' | 'pro'). Drives the monthly call quota.
+  // Audit-API billing plan ('free' | 'pro' | 'scale' | 'enterprise'). Drives the
+  // monthly call quota. NOTE: Phase 3 moves the billing unit to organizations.plan;
+  // this stays as a per-user fallback (read order: org.plan → user.apiPlan → free).
   apiPlan: text('api_plan').default('free').notNull(),
+  // Stripe billing state (Audit API). The Stripe webhook is the ONLY writer of
+  // these — never trust the client. No PHI is ever sent to Stripe.
+  stripeCustomerId: text('stripe_customer_id'),
+  stripeSubscriptionId: text('stripe_subscription_id'),
+  planStatus: text('plan_status'), // 'active' | 'past_due' | 'canceled'
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });

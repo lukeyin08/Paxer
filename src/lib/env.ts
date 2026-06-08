@@ -28,6 +28,13 @@ const envSchema = z.object({
   RESEND_API_KEY: optionalString(),
   RESEND_FROM: optionalString(),
   CRON_SECRET: optionalString(),
+  // Stripe (Audit API billing). Server-side only; never sent PHI. The billing
+  // code stays dormant until these are set, so the app runs fine without them.
+  STRIPE_SECRET_KEY: optionalString(),
+  STRIPE_WEBHOOK_SECRET: optionalString(),
+  STRIPE_PRICE_PRO: optionalString(), // price_… for the $49/mo Pro plan
+  STRIPE_PRICE_SCALE: optionalString(), // price_… for the $299/mo Scale plan
+  STRIPE_PORTAL_RETURN_URL: optionalString(), // defaults to AUTH_URL/app/settings
   // Consumer product is FREE for individuals (fee rate 0). The fee plumbing is
   // retained so a future B2B / shared-savings tier can set a non-zero rate.
   // Treat an empty string as unset so the default applies.

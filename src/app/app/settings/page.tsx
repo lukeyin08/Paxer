@@ -4,12 +4,14 @@ import { cases, users } from '@/lib/db/schema';
 import { requireUser } from '@/lib/auth/session';
 import { listApiKeys } from '@/lib/api-keys/repo';
 import { usageSnapshot } from '@/lib/billing/usage';
+import { checkoutPlans, billingConfigured, planFor } from '@/lib/billing/plans';
 import { Kicker } from '@/components/brand/kicker';
 import { Card, CardContent } from '@/components/ui/card';
 import { Disclaimer } from '@/components/brand/disclaimer';
 import { formatDate } from '@/lib/utils';
 import { StateForm, DeleteCaseButton, DeleteAccountCard } from './settings-client';
 import { ApiKeysClient } from './api-keys-client';
+import { BillingClient } from './billing-client';
 
 export default async function SettingsPage() {
   const sessionUser = await requireUser();
@@ -88,6 +90,30 @@ export default async function SettingsPage() {
               ))}
             </ul>
           )}
+        </CardContent>
+      </Card>
+
+      <Card id="billing">
+        <CardContent className="flex flex-col gap-4 pt-6">
+          <div>
+            <h2 className="font-sans text-lg font-semibold">Billing — Audit API</h2>
+            <p className="text-sm text-muted">
+              The consumer app is free. The Audit API is usage-priced for businesses.
+            </p>
+          </div>
+          <BillingClient
+            planLabel={planFor(user?.apiPlan).label}
+            planId={user?.apiPlan ?? 'free'}
+            used={usage.used}
+            quota={usage.quota}
+            hasSubscription={!!user?.stripeSubscriptionId}
+            billingConfigured={billingConfigured()}
+            checkoutPlans={checkoutPlans().map((p) => ({
+              id: p.id,
+              label: p.label,
+              priceLabel: p.priceLabel,
+            }))}
+          />
         </CardContent>
       </Card>
 
