@@ -37,16 +37,23 @@ const RESPONSE = `{
     {
       "type": "NON_COVERED_BILLED_TO_PATIENT",
       "severity": "HIGH",
-      "title": "Coordination-of-benefits denial",
-      "explanation": "Plan paid $0; $900 billed to you.",
+      "title": "Denial billed to you — coordination-of-benefits denial (reason code PR-22): CT scan, head",
+      "explanation": "Your plan allowed $900 but paid $0, and the full $900 was passed to you under a PR-22 coordination-of-benefits denial. Denials like this are frequently reversed.",
+      "recommendedNextStep": "Submit the primary plan's EOB to this insurer, or call to correct your coordination-of-benefits record so the claim reprocesses. Do not pay until it is reprocessed.",
       "estimatedRecovery": 900,
       "confidence": 0.75,
+      "detector": "RULE",
       "lineItemIndex": 0
     }
   ],
   "summary": {
     "findingCount": 1,
     "estimatedRecoverable": 900
+  },
+  "usage": {
+    "plan": "free",
+    "used": 1,
+    "quota": 100
   }
 }`;
 

@@ -81,7 +81,9 @@ export function ApiKeysClient({ keys, usage }: { keys: KeyRow[]; usage: Usage })
           <div className="mt-2 h-1.5 w-44 overflow-hidden rounded-full bg-rule">
             <div
               className="h-full bg-accent"
-              style={{ width: `${Math.min(100, Math.round((usage.used / usage.quota) * 100))}%` }}
+              style={{
+                width: `${usage.quota > 0 ? Math.min(100, Math.round((usage.used / usage.quota) * 100)) : 0}%`,
+              }}
             />
           </div>
         </div>

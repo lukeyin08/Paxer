@@ -27,9 +27,9 @@ export async function POST(req: NextRequest) {
         { status: 429, headers: { 'Retry-After': String(err.retryAfterSec) } },
       );
     }
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'Extraction failed.' },
-      { status: 500 },
-    );
+    // Log the real cause server-side; return a generic message so internal
+    // details (AI-budget config, authorization semantics) don't leak to callers.
+    console.error('[ingest] failed:', err);
+    return NextResponse.json({ error: 'Extraction failed.' }, { status: 500 });
   }
 }
