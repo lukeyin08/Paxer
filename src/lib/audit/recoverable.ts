@@ -30,18 +30,30 @@ export function capRecoverable(
   const chargeById = new Map(lineItems.map((i) => [i.id, Number(i.charge) || Infinity]));
   const perLine = new Map<string, number>();
   let unlinkedSum = 0;
+  let oopSum = 0;
   for (const f of findings) {
     const amt = Number(f.estimatedRecovery) || 0;
+    // OOP-max overrun measures the SAME pool of over-paid patient-responsibility
+    // dollars that the per-line findings (cost-share, etc.) also measure, just at
+    // the case level — adding it on top double-counts. Track it apart and take
+    // the larger of the two views below (max, not sum).
+    if (f.type === 'OOP_MAX_OVERRUN') {
+      oopSum += amt;
+      continue;
+    }
     if (!f.lineItemId || MULTI_LINE_TYPES.has(f.type)) {
       unlinkedSum += amt;
       continue;
     }
     perLine.set(f.lineItemId, (perLine.get(f.lineItemId) ?? 0) + amt);
   }
-  let rawSum = unlinkedSum;
+  let itemizedSum = unlinkedSum;
   for (const [id, sum] of perLine) {
-    rawSum += Math.min(sum, chargeById.get(id) ?? Infinity);
+    itemizedSum += Math.min(sum, chargeById.get(id) ?? Infinity);
   }
+  // OOP overage and the itemized findings are two views of the same overcharge;
+  // the recoverable is the larger, then bounded by total responsibility below.
+  const rawSum = Math.max(oopSum, itemizedSum);
 
   const totalPatient = lineItems.reduce((s, i) => s + (Number(i.patientResponsibility) || 0), 0);
   const totalBilled = lineItems.reduce((s, i) => s + (Number(i.charge) || 0), 0);

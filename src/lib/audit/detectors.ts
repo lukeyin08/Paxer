@@ -157,8 +157,11 @@ const NSA_CONTEXT = /(emergency|\ber\b|anesthesia|ambulance|radiolog|patholog|as
 
 export function detectBalanceBilling(ctx: AuditContext): DetectorFinding[] {
   const plan = ctx.planBenefits;
+  // Need the plan to know network status and the real in-network cost-share.
+  // (Previously this ran without a plan and defaulted to a fabricated 20%.)
+  if (!plan) return [];
   const findings: DetectorFinding[] = [];
-  const outOfNetwork = plan ? !plan.inNetwork : false;
+  const outOfNetwork = !plan.inNetwork;
   for (const li of ctx.lineItems) {
     const allowed = money(li.allowedAmount);
     const billed = money(li.patientResponsibility);
@@ -168,7 +171,17 @@ export function detectBalanceBilling(ctx: AuditContext): DetectorFinding[] {
     const looksProtected = NSA_CONTEXT.test(li.description);
     const balanceBilled = billed + planPaid - allowed; // billed above the allowed amount
     if (outOfNetwork && looksProtected && balanceBilled > COST_SHARE_THRESHOLD) {
-      const expectedInNetwork = allowed * (plan?.coinsuranceRate ?? 0.2);
+      // Compute the actual in-network cost-share from the plan (deductible +
+      // coinsurance + copay, capped at the OOP max) using the same helper as the
+      // cost-share detector — never a made-up coinsurance rate.
+      const expectedInNetwork = computeExpectedPatientResponsibility(allowed, {
+        deductible: money(plan.deductible),
+        deductibleMet: money(plan.deductibleMet),
+        coinsuranceRate: plan.coinsuranceRate,
+        copay: money(plan.copay),
+        oopMax: money(plan.oopMax),
+        oopMet: money(plan.oopMet),
+      }).expectedPatientResponsibility;
       const recovery = Math.max(0, billed - expectedInNetwork);
       findings.push({
         type: 'BALANCE_BILLING_NSA',

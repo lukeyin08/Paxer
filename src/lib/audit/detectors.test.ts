@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { detectDuplicates, detectCostShareErrors, detectNonCoveredBilled } from './detectors';
+import {
+  detectDuplicates,
+  detectCostShareErrors,
+  detectNonCoveredBilled,
+  detectBalanceBilling,
+} from './detectors';
 import type { AuditContext } from './types';
 import type { Case, LineItem, PlanBenefit } from '@/lib/db/schema';
 
@@ -121,5 +126,49 @@ describe('detectNonCoveredBilled (denial / COB)', () => {
 
   it('fires when the deductible is already met (so $0 plan-paid is not a deductible)', () => {
     expect(detectNonCoveredBilled(ctx([denialLine()], pb('2000', '2000')))).toHaveLength(1);
+  });
+});
+
+describe('detectBalanceBilling (No Surprises Act)', () => {
+  const oonPlan = (over: Partial<PlanBenefit> = {}) =>
+    ({
+      deductible: '0.00',
+      deductibleMet: '0.00',
+      coinsuranceRate: 0.2,
+      copay: '0.00',
+      oopMax: null,
+      oopMet: null,
+      inNetwork: false,
+      ...over,
+    }) as PlanBenefit;
+  const erLine = () =>
+    li({
+      description: 'Emergency room visit',
+      allowedAmount: '1000.00',
+      planPaid: '0.00',
+      patientResponsibility: '1500.00',
+    });
+
+  it('flags an OON emergency charge using REAL in-network cost-share (no fabricated rate)', () => {
+    const f = detectBalanceBilling(ctx([erLine()], oonPlan()));
+    expect(f).toHaveLength(1);
+    expect(f[0]!.type).toBe('BALANCE_BILLING_NSA');
+    // in-network expected = deductible 0 + coinsurance 1000*0.2 = 200; recovery = 1500 - 200.
+    expect(f[0]!.estimatedRecovery).toBe(1300);
+  });
+
+  it('with no coinsurance on the plan, does not invent 20% — expected share is deductible/copay only', () => {
+    const f = detectBalanceBilling(ctx([erLine()], oonPlan({ coinsuranceRate: null })));
+    expect(f).toHaveLength(1);
+    // expected = 0 (no deductible/copay/coinsurance) → recovery = full 1500, not 1500 - 200.
+    expect(f[0]!.estimatedRecovery).toBe(1500);
+  });
+
+  it('does not fire for in-network plans', () => {
+    expect(detectBalanceBilling(ctx([erLine()], oonPlan({ inNetwork: true })))).toHaveLength(0);
+  });
+
+  it('returns nothing without plan benefits (no fabricated default)', () => {
+    expect(detectBalanceBilling(ctx([erLine()], null))).toHaveLength(0);
   });
 });

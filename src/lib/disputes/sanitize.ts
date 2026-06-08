@@ -33,7 +33,14 @@ export function sanitizeLetterHtml(html: string): string {
       const hrefMatch = attrs.match(/\bhref\s*=\s*("([^"]*)"|'([^']*)')/i);
       const href = (hrefMatch?.[2] ?? hrefMatch?.[3] ?? '').trim();
       if (/^(https?:|mailto:)/i.test(href)) {
-        return `<a href="${href.replace(/"/g, '')}" rel="noreferrer">`;
+        // Escape HTML metacharacters so the value can't break out of the
+        // attribute/tag context.
+        const safeHref = href
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+        return `<a href="${safeHref}" rel="noreferrer">`;
       }
       return '<a>';
     }

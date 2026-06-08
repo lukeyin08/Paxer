@@ -8,7 +8,7 @@ import { db } from '@/lib/db';
 import { users, accounts, sessions, verificationTokens } from '@/lib/db/schema';
 import { verifyPassword } from './password';
 import { env, DEFAULT_EMAIL_FROM } from '@/lib/env';
-import { checkRateLimit, enforceRateLimit } from '@/lib/rate-limit';
+import { checkRateLimit } from '@/lib/rate-limit';
 import { DEMO_ENABLED } from './demo';
 
 // Expose id + role on the session (Section 6).
@@ -73,9 +73,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       from: env.RESEND_FROM ?? DEFAULT_EMAIL_FROM,
       // In dev (or when no Resend key), log the magic link instead of sending email.
       async sendVerificationRequest({ identifier, url }) {
-        // Anti-abuse: cap magic-link sends per email (prevents email-bombing a
-        // victim's inbox and login-enumeration spam). 5 per 15 minutes.
-        await enforceRateLimit(`magic-link:${identifier.toLowerCase()}`, 5, 900, 'sign-in emails');
+        // Rate-limiting lives in the sendMagicLink server action (the only
+        // magic-link entry point) so it can return a user-facing message — an
+        // error thrown here is swallowed by Auth.js. See src/app/login/actions.ts.
         // Link to our confirmation page, not straight to the Auth.js callback:
         // email security scanners (Microsoft Safe Links, etc.) pre-fetch links,
         // and a GET on the callback burns the one-time token before the user

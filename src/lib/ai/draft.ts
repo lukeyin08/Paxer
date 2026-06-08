@@ -17,7 +17,9 @@ export interface DraftResult {
 }
 
 /**
- * Generate a dispute letter with Opus (high stakes — Section 7.8). Uses only the
+ * Generate a dispute letter with the drafting model (Sonnet — chosen for cost;
+ * Opus is the higher-quality alternative, see MODELS.drafting). High stakes
+ * (Section 7.8), so it uses only the
  * case's real evidence; the system prompt forbids fabrication and limits cited
  * rules. Returns editable HTML plus model metadata to store on the dispute.
  */

@@ -31,4 +31,22 @@ describe('capRecoverable', () => {
     const lines = [{ id: 'li-0', charge: 100, patientResponsibility: 0 }];
     expect(capRecoverable(findings, lines)).toBe(75);
   });
+
+  it('does NOT add OOP-max overrun on top of per-line findings (takes the larger view)', () => {
+    const findings = [
+      { lineItemId: 'li-0', type: 'COST_SHARE_ERROR', estimatedRecovery: 300 },
+      { lineItemId: null, type: 'OOP_MAX_OVERRUN', estimatedRecovery: 400 },
+    ];
+    const lines = [{ id: 'li-0', charge: 1000, patientResponsibility: 1000 }];
+    expect(capRecoverable(findings, lines)).toBe(400); // max(400, 300), not 700
+  });
+
+  it('uses the itemized total when it exceeds the OOP overage', () => {
+    const findings = [
+      { lineItemId: 'li-0', type: 'DUPLICATE_CHARGE', estimatedRecovery: 600 },
+      { lineItemId: null, type: 'OOP_MAX_OVERRUN', estimatedRecovery: 400 },
+    ];
+    const lines = [{ id: 'li-0', charge: 1000, patientResponsibility: 1000 }];
+    expect(capRecoverable(findings, lines)).toBe(600);
+  });
 });

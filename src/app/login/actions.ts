@@ -3,6 +3,7 @@
 import { AuthError } from 'next-auth';
 import { signIn } from '@/lib/auth/config';
 import { DEMO_EMAIL, DEMO_PASSWORD, DEMO_ENABLED } from '@/lib/auth/demo';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 /** Sign in as the seeded demo account (dev-only — Section 7.1). */
 export async function signInDemo() {
@@ -26,6 +27,16 @@ export async function sendMagicLink(
   const email = String(formData.get('email') ?? '').trim();
   if (!email || !email.includes('@')) {
     return { ok: false, message: 'Please enter a valid email address.' };
+  }
+  // Anti-abuse: cap magic-link sends per email (prevents inbox-bombing and
+  // enumeration spam). 5 per 15 min. Enforced HERE — the only magic-link entry
+  // point — rather than in the Auth.js sendVerificationRequest hook, because an
+  // error thrown there is swallowed by Auth.js and the user would be falsely
+  // told the email was sent.
+  const rl = await checkRateLimit(`magic-link:${email.toLowerCase()}`, 5, 900);
+  if (!rl.ok) {
+    const wait = rl.retryAfterSec < 90 ? `${rl.retryAfterSec}s` : `${Math.ceil(rl.retryAfterSec / 60)} min`;
+    return { ok: false, message: `Too many sign-in emails. Please wait ${wait} and try again.` };
   }
   try {
     await signIn('resend', { email, redirectTo: '/app', redirect: false });
