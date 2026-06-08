@@ -30,7 +30,7 @@ export function ApiKeysClient({ keys, usage }: { keys: KeyRow[]; usage: Usage })
   const [created, setCreated] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [origin, setOrigin] = useState('https://your-paxer-host');
+  const [origin, setOrigin] = useState('https://paxer.app');
 
   useEffect(() => setOrigin(window.location.origin), []);
 

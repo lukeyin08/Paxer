@@ -21,7 +21,7 @@ const DETECTS = [
   ['Implausible charges', 'Amounts wildly out of line with what the service plausibly costs.'],
 ];
 
-const CURL = `curl -X POST https://your-paxer-host/api/v1/audit \\
+const CURL = `curl -X POST https://paxer.app/api/v1/audit \\
   -H "Authorization: Bearer pax_live_..." \\
   -H "Content-Type: application/json" \\
   -d '{

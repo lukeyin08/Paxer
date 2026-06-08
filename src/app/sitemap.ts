@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const SITE_URL = process.env.AUTH_URL || 'https://paxer.health';
+const SITE_URL = process.env.AUTH_URL || 'https://paxer.app';
 
 // Public, indexable routes only (the app is auth-gated and excluded in robots).
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -55,6 +55,14 @@ const envSchema = z.object({
 
 export const env = envSchema.parse(process.env);
 
+/**
+ * Default transactional-email sender. Must be an address on a domain VERIFIED in
+ * Resend (paxer.app). The old `onboarding@resend.dev` sandbox sender could only
+ * deliver to the Resend account owner's own address — every other recipient was
+ * silently dropped. RESEND_FROM overrides this per environment.
+ */
+export const DEFAULT_EMAIL_FROM = 'Paxer <noreply@paxer.app>';
+
 /** The Postgres connection string, preferring DATABASE_URL then POSTGRES_URL. */
 export function databaseUrl(): string {
   const url = env.DATABASE_URL ?? env.POSTGRES_URL;

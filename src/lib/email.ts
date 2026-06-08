@@ -1,4 +1,4 @@
-import { env } from '@/lib/env';
+import { env, DEFAULT_EMAIL_FROM } from '@/lib/env';
 
 /**
  * Send an email. Uses Resend in production; logs to the console in dev or when
@@ -18,7 +18,7 @@ export async function sendEmail(input: {
     const { Resend } = await import('resend');
     const resend = new Resend(env.RESEND_API_KEY);
     await resend.emails.send({
-      from: env.RESEND_FROM ?? 'Paxer <onboarding@resend.dev>',
+      from: env.RESEND_FROM ?? DEFAULT_EMAIL_FROM,
       to: input.to,
       subject: input.subject,
       text: input.text,

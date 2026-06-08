@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { db } from '@/lib/db';
 import { users, accounts, sessions, verificationTokens } from '@/lib/db/schema';
 import { verifyPassword } from './password';
-import { env } from '@/lib/env';
+import { env, DEFAULT_EMAIL_FROM } from '@/lib/env';
 import { checkRateLimit, enforceRateLimit } from '@/lib/rate-limit';
 import { DEMO_ENABLED } from './demo';
 
@@ -70,7 +70,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       : []),
     Resend({
       apiKey: env.RESEND_API_KEY ?? 'dev-no-key',
-      from: env.RESEND_FROM ?? 'Paxer <onboarding@resend.dev>',
+      from: env.RESEND_FROM ?? DEFAULT_EMAIL_FROM,
       // In dev (or when no Resend key), log the magic link instead of sending email.
       async sendVerificationRequest({ identifier, url }) {
         // Anti-abuse: cap magic-link sends per email (prevents email-bombing a
@@ -83,7 +83,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const { Resend: ResendClient } = await import('resend');
         const resend = new ResendClient(env.RESEND_API_KEY);
         await resend.emails.send({
-          from: env.RESEND_FROM ?? 'Paxer <onboarding@resend.dev>',
+          from: env.RESEND_FROM ?? DEFAULT_EMAIL_FROM,
           to: identifier,
           subject: 'Sign in to Paxer',
           text: `Sign in to Paxer:\n${url}\n\nIf you did not request this, you can ignore it.`,

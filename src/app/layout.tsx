@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { fontSans, fontMono } from '@/lib/fonts';
 import './globals.css';
 
-const SITE_URL = process.env.AUTH_URL || 'https://paxer.health';
+const SITE_URL = process.env.AUTH_URL || 'https://paxer.app';
 const TITLE = 'Paxer — the advocate on the patient’s side of the bill';
 const DESCRIPTION =
   'Paxer audits the medical bills and EOBs you actually receive, finds the errors, and helps you get your own money back.';
