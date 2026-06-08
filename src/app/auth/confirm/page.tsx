@@ -28,20 +28,31 @@ export const metadata: Metadata = {
  * `?u=https://…` value reads as an open-redirect/phishing pattern to Google Safe
  * Browsing and can get a fresh domain flagged "Dangerous site".
  */
-function buildCallbackHref(sp: { cb?: string; token?: string; email?: string }): string | null {
+function safeNext(next: string | undefined): string {
+  // Only same-site /app destinations — no scheme, host, or protocol-relative `//`.
+  if (next && next.startsWith('/app') && !next.startsWith('//') && !next.includes(':')) return next;
+  return '/app';
+}
+
+function buildCallbackHref(sp: {
+  cb?: string;
+  token?: string;
+  email?: string;
+  next?: string;
+}): string | null {
   const { cb, token, email } = sp;
   if (!cb || !token || !email) return null;
   // `cb` must be a same-origin RELATIVE auth-callback path — no scheme, no host,
   // no protocol-relative `//` — so this page can't be turned into an open redirect.
   if (!cb.startsWith('/api/auth/') || cb.includes('//') || cb.includes(':')) return null;
-  const params = new URLSearchParams({ callbackUrl: '/app', token, email });
+  const params = new URLSearchParams({ callbackUrl: safeNext(sp.next), token, email });
   return `${cb}?${params.toString()}`;
 }
 
 export default async function ConfirmSignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ cb?: string; token?: string; email?: string }>;
+  searchParams: Promise<{ cb?: string; token?: string; email?: string; next?: string }>;
 }) {
   const href = buildCallbackHref(await searchParams);
 

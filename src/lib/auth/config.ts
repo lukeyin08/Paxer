@@ -92,6 +92,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const emailParam = cbUrl.searchParams.get('email');
         if (token) confirmUrl.searchParams.set('token', token);
         if (emailParam) confirmUrl.searchParams.set('email', emailParam);
+        // Preserve a developer/business post-sign-in destination (e.g. /app/settings)
+        // when one was requested. Strip any origin, allow only same-site /app paths,
+        // and omit it for the default so the patient flow is unchanged.
+        const cbTarget = (cbUrl.searchParams.get('callbackUrl') ?? '').replace(/^https?:\/\/[^/]+/, '');
+        if (cbTarget.startsWith('/app') && !cbTarget.startsWith('//') && cbTarget !== '/app') {
+          confirmUrl.searchParams.set('next', cbTarget);
+        }
         const link = confirmUrl.toString();
         if (!env.RESEND_API_KEY) {
           console.log(`\n🔗 Paxer magic link for ${identifier}:\n${link}\n`);

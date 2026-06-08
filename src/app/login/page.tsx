@@ -13,7 +13,14 @@ export const metadata: Metadata = {
   description: 'Sign in to Paxer to audit your medical bills and recover your money.',
 };
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
+  // Only forward same-site /app destinations (e.g. developers land in Settings).
+  const callbackUrl = next && next.startsWith('/app') && !next.startsWith('//') ? next : undefined;
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center gap-6 px-6 py-12">
       <div className="absolute right-4 top-4">
@@ -45,7 +52,7 @@ export default function LoginPage() {
             </>
           )}
 
-          <MagicLinkForm />
+          <MagicLinkForm callbackUrl={callbackUrl} />
         </CardContent>
       </Card>
 

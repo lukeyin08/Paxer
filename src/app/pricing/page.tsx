@@ -111,7 +111,7 @@ export default function PricingPage() {
                 'Higher volume & SLA — contact us',
               ]}
               cta="Get an API key — free"
-              href="/login"
+              href="/login?next=/app/settings"
             />
             <Tier
               name="Employers & TPAs"

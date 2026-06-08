@@ -24,10 +24,11 @@ export function DemoButton() {
   );
 }
 
-export function MagicLinkForm() {
+export function MagicLinkForm({ callbackUrl }: { callbackUrl?: string }) {
   const [state, formAction] = useActionState(sendMagicLink, null);
   return (
     <form action={formAction} className="flex flex-col gap-3">
+      {callbackUrl && <input type="hidden" name="callbackUrl" value={callbackUrl} />}
       <div className="flex flex-col gap-1.5 text-left">
         <Label htmlFor="email">Email address</Label>
         <Input id="email" name="email" type="email" placeholder="you@example.com" required />

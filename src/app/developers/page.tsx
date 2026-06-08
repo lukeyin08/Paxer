@@ -58,6 +58,14 @@ const RESPONSE = `{
   }
 }`;
 
+const ERROR_CODES: [string, string][] = [
+  ['200', 'Findings returned. summary.estimatedRecoverable is capped so it never exceeds total patient responsibility.'],
+  ['400', 'Invalid request body — e.g. missing or malformed lineItems. The response “error” field explains.'],
+  ['401', 'Missing or invalid API key. Send it as Authorization: Bearer pax_live_… (or the x-api-key header).'],
+  ['402', 'Monthly quota exceeded — this calendar month’s audit allotment is used up. Upgrade for a higher quota.'],
+  ['429', 'Rate limited (120 requests/min per key). Retry after the window resets.'],
+];
+
 export default function DevelopersPage() {
   return (
     <div className="flex min-h-screen flex-col">
@@ -77,7 +85,7 @@ export default function DevelopersPage() {
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
-                <Link href="/login">Get an API key</Link>
+                <Link href="/login?next=/app/settings">Get an API key</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
                 <a href="mailto:ly3569@princeton.edu?subject=Paxer%20Audit%20API">Talk to us</a>
@@ -142,6 +150,30 @@ export default function DevelopersPage() {
           </div>
         </section>
 
+        {/* Errors & limits */}
+        <section className="container py-20">
+          <Kicker className="mb-3">Errors &amp; limits</Kicker>
+          <h2 className="max-w-2xl font-sans text-3xl font-semibold text-ink">
+            Predictable status codes.
+          </h2>
+          <div className="mt-8 overflow-hidden rounded-lg border border-rule">
+            {ERROR_CODES.map(([code, desc], i) => (
+              <div
+                key={code}
+                className={`grid grid-cols-[3.5rem_1fr] gap-4 p-4 text-sm ${i > 0 ? 'border-t border-rule' : ''}`}
+              >
+                <span className="font-mono text-ink">{code}</span>
+                <span className="text-muted">{desc}</span>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 max-w-3xl text-sm text-muted">
+            Quota is per calendar month and hard-capped — over the limit returns 402, with no
+            surprise overage charges. Usage resets on the 1st. Keys are created and revoked in
+            Settings → Developers.
+          </p>
+        </section>
+
         {/* Practical notes */}
         <section className="container py-20">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -167,7 +199,7 @@ export default function DevelopersPage() {
           </h2>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg">
-              <Link href="/login">Get an API key</Link>
+              <Link href="/login?next=/app/settings">Get an API key</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
               <a href="mailto:ly3569@princeton.edu?subject=Paxer%20Audit%20API">Contact us</a>

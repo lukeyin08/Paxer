@@ -28,6 +28,10 @@ export async function sendMagicLink(
   if (!email || !email.includes('@')) {
     return { ok: false, message: 'Please enter a valid email address.' };
   }
+  // Optional post-sign-in destination (e.g. /app/settings for developers). Only
+  // same-site /app paths; default to the patient dashboard.
+  const rawNext = String(formData.get('callbackUrl') ?? '').trim();
+  const redirectTo = rawNext.startsWith('/app') && !rawNext.startsWith('//') ? rawNext : '/app';
   // Anti-abuse: cap magic-link sends per email (prevents inbox-bombing and
   // enumeration spam). 5 per 15 min. Enforced HERE — the only magic-link entry
   // point — rather than in the Auth.js sendVerificationRequest hook, because an
@@ -39,7 +43,7 @@ export async function sendMagicLink(
     return { ok: false, message: `Too many sign-in emails. Please wait ${wait} and try again.` };
   }
   try {
-    await signIn('resend', { email, redirectTo: '/app', redirect: false });
+    await signIn('resend', { email, redirectTo, redirect: false });
     // The console-fallback hint is only true in dev (no RESEND_API_KEY); never
     // show it to real users in production.
     const devHint =
