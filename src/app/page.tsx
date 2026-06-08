@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
+import { HeroBillDemo } from '@/components/hero-bill-demo';
 import { DEMO_ENABLED } from '@/lib/auth/demo';
 import { defaultFeeRate } from '@/lib/audit/fees';
 import { PROCESS_STEPS, ERROR_TYPES, API_BUYERS } from '@/lib/marketing';
@@ -27,9 +28,10 @@ export default function LandingPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="container py-20 md:py-28">
-          <div className="max-w-3xl animate-fade-up">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+            <div className="max-w-2xl animate-fade-up">
             <Kicker className="mb-5">Patient-side medical billing advocate</Kicker>
-            <h1 className="font-sans text-4xl font-semibold leading-[1.1] text-ink md:text-6xl">
+            <h1 className="font-sans text-4xl font-semibold leading-[1.1] text-ink md:text-5xl">
               The only advocate on the patient&rsquo;s side of the bill.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
@@ -44,6 +46,10 @@ export default function LandingPage() {
               <Button asChild size="lg" variant="outline">
                 <Link href="/how-it-works">See how it works</Link>
               </Button>
+            </div>
+            </div>
+            <div className="flex justify-center animate-fade-up [animation-delay:120ms] lg:justify-end">
+              <HeroBillDemo />
             </div>
           </div>
         </section>
