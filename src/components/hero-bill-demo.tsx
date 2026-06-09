@@ -87,7 +87,7 @@ export function HeroBillDemo() {
           </div>
         </CardContent>
       </Card>
-      <p className="mt-3 text-center text-xs text-muted">Illustrative example — not a real bill.</p>
+      <p className="mt-3 text-center text-xs text-muted">Illustrative example, not a real bill.</p>
     </div>
   );
 }
