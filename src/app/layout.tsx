@@ -6,24 +6,37 @@ import './globals.css';
 const SITE_URL = process.env.AUTH_URL || 'https://paxer.app';
 const TITLE = 'Paxer — the advocate on the patient’s side of the bill';
 const DESCRIPTION =
-  'Paxer audits the medical bills and EOBs you actually receive, finds the errors, and helps you get your own money back.';
+  'Paxer audits your medical bills and EOBs, finds billing errors — overcharges, duplicates, denials, surprise bills — and drafts the dispute letters to get your money back. Your first audit is free.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  // Browser tab shows just "Paxer" on the home/default; sub-pages become
-  // "Sign in · Paxer", etc. The longer tagline is kept for social cards below.
+  // Keyword-rich default for search; sub-pages append "· Paxer" via the template.
   title: {
-    default: 'Paxer',
+    default: 'Paxer — Find & Dispute Medical Bill Errors',
     template: '%s · Paxer',
   },
   description: DESCRIPTION,
   applicationName: 'Paxer',
+  keywords: [
+    'medical bill audit',
+    'dispute medical bill',
+    'medical billing errors',
+    'EOB review',
+    'appeal a medical bill',
+    'surprise medical bill',
+    'No Surprises Act',
+    'lower medical bill',
+    'overcharged medical bill',
+    'medical bill help',
+  ],
+  alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
     siteName: 'Paxer',
     title: TITLE,
     description: DESCRIPTION,
     url: SITE_URL,
+    locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
@@ -59,6 +72,23 @@ const JSON_LD = {
       url: SITE_URL,
       name: 'Paxer',
       description: DESCRIPTION,
+      publisher: { '@id': `${SITE_URL}/#organization` },
+    },
+    {
+      '@type': 'WebApplication',
+      '@id': `${SITE_URL}/#app`,
+      name: 'Paxer',
+      url: SITE_URL,
+      applicationCategory: 'HealthApplication',
+      operatingSystem: 'Web',
+      description: DESCRIPTION,
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+        description:
+          'Your first medical-bill audit is free. Paxer Plus is a flat subscription for unlimited audits and dispute letters — no contingency fee.',
+      },
       publisher: { '@id': `${SITE_URL}/#organization` },
     },
   ],

@@ -4,6 +4,7 @@ import { LegalLayout, LegalSection } from '@/components/legal-layout';
 export const metadata: Metadata = {
   title: 'Terms of Service — Paxer',
   description: 'The terms that govern your use of Paxer.',
+  alternates: { canonical: '/terms' },
 };
 
 export default function TermsPage() {

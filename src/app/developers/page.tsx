@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: 'Developers — Audit API',
   description:
     'Paxer’s medical-bill audit engine as an API. Send line items, get back the errors — duplicates, cost-share mistakes, denials, balance billing, and more.',
+  alternates: { canonical: '/developers' },
 };
 
 const DETECTS = [

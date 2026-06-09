@@ -10,9 +10,10 @@ import { env } from '@/lib/env';
 import { API_PLANS } from '@/lib/billing/plans';
 
 export const metadata: Metadata = {
-  title: 'Pricing',
+  title: 'Pricing — Paxer Plus & Audit API',
   description:
-    'Audit your medical bills free. Paxer Plus generates dispute letters — a flat subscription, and you keep 100% of what you recover. The Audit API is usage-based for businesses.',
+    'Your first medical-bill audit is free. Paxer Plus unlocks unlimited audits and dispute letters — a flat subscription, no contingency, keep 100% of recoveries. The Audit API is usage-based for businesses.',
+  alternates: { canonical: '/pricing' },
 };
 
 function Tier({

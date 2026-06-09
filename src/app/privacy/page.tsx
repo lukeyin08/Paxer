@@ -4,6 +4,7 @@ import { LegalLayout, LegalSection } from '@/components/legal-layout';
 export const metadata: Metadata = {
   title: 'Privacy Policy — Paxer',
   description: 'How Paxer collects, uses, protects, and shares your information.',
+  alternates: { canonical: '/privacy' },
 };
 
 export default function PrivacyPage() {

@@ -11,6 +11,7 @@ import { DemoButton, MagicLinkForm } from './login-forms';
 export const metadata: Metadata = {
   title: 'Sign in',
   description: 'Sign in to Paxer to audit your medical bills and recover your money.',
+  robots: { index: false, follow: true },
 };
 
 export default async function LoginPage({

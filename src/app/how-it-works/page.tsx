@@ -10,9 +10,10 @@ import { env } from '@/lib/env';
 import { ERROR_TYPES } from '@/lib/marketing';
 
 export const metadata: Metadata = {
-  title: 'How it works',
+  title: 'How Paxer audits & disputes your medical bills',
   description:
     'See how Paxer audits a medical bill, finds the errors, drafts a dispute letter, and helps you recover your money — with a worked example.',
+  alternates: { canonical: '/how-it-works' },
 };
 
 // Illustrative example (not a real patient). Dollar figures are made up to show
@@ -76,11 +77,25 @@ const FAQS = (priceLabel: string) => [
 
 export default function HowItWorksPage() {
   const plusPrice = env.PAXER_CONSUMER_PRICE_LABEL || '$12/mo';
+  // FAQ structured data (schema.org) — eligible for FAQ rich results in search.
+  const faqLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQS(plusPrice).map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  };
   const totalBilled = EXAMPLE_LINES.reduce((s, l) => s + l.charge, 0);
   const totalFound = EXAMPLE_FINDINGS.reduce((s, f) => s + f.amount, 0);
 
   return (
     <div className="flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+      />
       <MarketingHeader />
 
       <main className="flex-1">
