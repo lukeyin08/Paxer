@@ -34,11 +34,10 @@ export default function TermsPage() {
 
       <LegalSection heading="3. Fees & subscription">
         <p>
-          Auditing your bills, viewing findings, and tracking recoveries are free. Generating a
-          dispute letter requires a <strong>Paxer Plus</strong> subscription — a flat recurring
-          software fee, shown to you before you subscribe. This is <strong>not</strong> a contingency or success
-          fee: Paxer never takes a percentage of any amount you recover, and you keep 100% of your
-          recoveries.
+          Your first bill audit is free. Additional audits and generating dispute letters require a
+          <strong> Paxer Plus</strong> subscription — a flat recurring software fee, shown to you
+          before you subscribe. This is <strong>not</strong> a contingency or success fee: Paxer
+          never takes a percentage of any amount you recover, and you keep 100% of your recoveries.
         </p>
         <p>
           <strong>Auto-renewal &amp; cancellation.</strong> A Paxer Plus subscription renews

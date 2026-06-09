@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireUser } from '@/lib/auth/session';
 import { getCaseForUser } from '@/lib/cases/repo';
+import { getAuditEntitlement, consumerBillingConfigured, CONSUMER_PLAN } from '@/lib/billing/consumer';
 import { caseStatusTone } from '@/lib/cases/status';
 import { Kicker } from '@/components/brand/kicker';
 import { StatBlock } from '@/components/brand/stat-block';
@@ -24,6 +25,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
   if (!detail) notFound();
 
   const { case: c, documents, lineItems, planBenefits: plan, findings } = detail;
+  const auditEntitlement = await getAuditEntitlement(user.id, id);
   const aiEnabled = aiConfigured();
   const needsReviewDocs = documents.some((d) => d.ingestStatus === 'NEEDS_REVIEW');
 
@@ -141,7 +143,13 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
         <div className="flex items-center justify-between gap-4">
           <h2 className="font-sans text-xl font-semibold">Findings</h2>
           {lineItems.length > 0 && (
-            <RunAuditButton caseId={c.id} hasFindings={findings.length > 0} />
+            <RunAuditButton
+              caseId={c.id}
+              hasFindings={findings.length > 0}
+              canAudit={auditEntitlement.canAudit}
+              plusPriceLabel={CONSUMER_PLAN.priceLabel}
+              plusConfigured={consumerBillingConfigured()}
+            />
           )}
         </div>
         {findings.length === 0 ? (

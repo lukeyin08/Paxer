@@ -6,14 +6,26 @@ import { db } from '@/lib/db';
 import { cases, findings } from '@/lib/db/schema';
 import { requireUser } from '@/lib/auth/session';
 import { runAudit } from '@/lib/audit/run';
+import { getAuditEntitlement } from '@/lib/billing/consumer';
 import { recomputeEstimatedRecoverable } from '@/lib/cases/repo';
 import { writeAuditLog } from '@/lib/audit-log';
 
 /** Run (or re-run) the audit engine on a case. */
 export async function runAuditAction(
   caseId: string,
-): Promise<{ ok: boolean; message: string }> {
+): Promise<{ ok: boolean; message: string; code?: 'subscription_required' }> {
   const user = await requireUser();
+  // Free tier gets 1 free audit; auditing additional cases requires Paxer Plus
+  // (re-running an already-audited case is free; demo bypasses). Enforced
+  // server-side before any AI spend.
+  const entitlement = await getAuditEntitlement(user.id, caseId);
+  if (!entitlement.canAudit) {
+    return {
+      ok: false,
+      code: 'subscription_required',
+      message: 'You’ve used your free audit — subscribe to Paxer Plus for unlimited audits.',
+    };
+  }
   try {
     const result = await runAudit(user.id, caseId);
     revalidatePath(`/app/cases/${caseId}`);

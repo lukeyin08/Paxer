@@ -136,8 +136,8 @@ export default function LandingPage() {
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">
                 For {API_BUYERS} — the parties whose incentives line up with the patient. Check a
-                bill for errors with one API call. Audits are free for individuals; the API is
-                usage-based for businesses.
+                bill for errors with one API call. Individuals start free; the API is usage-based
+                for businesses.
               </p>
             </div>
             <div className="flex shrink-0 gap-3">

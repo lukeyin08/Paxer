@@ -60,6 +60,12 @@ const envSchema = z.object({
     (v) => (v === '' || v === undefined ? undefined : v),
     z.coerce.number().int().min(1).default(100),
   ),
+  // Free consumer audits before Paxer Plus is required (the first audit is free;
+  // re-running an already-audited case doesn't consume another).
+  PAXER_FREE_AUDIT_LIMIT: z.preprocess(
+    (v) => (v === '' || v === undefined ? undefined : v),
+    z.coerce.number().int().min(0).default(1),
+  ),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 });
 

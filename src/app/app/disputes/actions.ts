@@ -37,8 +37,9 @@ export async function generateDisputeAction(input: {
   details?: LetterDetailsInput;
 }): Promise<{ ok: false; error: string; code?: 'subscription_required' } | never> {
   const user = await requireUser();
-  // Paywall: generating a dispute draft requires Paxer Plus (audits are free).
-  // Enforced here, server-side, before any AI spend. The demo account bypasses.
+  // Paywall: generating a dispute draft requires Paxer Plus (the first audit is
+  // free; further audits are gated separately in runAuditAction). Enforced here,
+  // server-side, before any AI spend. The demo account bypasses.
   const entitlement = await getConsumerEntitlement(user.id);
   if (!entitlement.canGenerateDraft) {
     return {

@@ -100,8 +100,8 @@ export default async function SettingsPage() {
           <div>
             <h2 className="font-sans text-lg font-semibold">Paxer Plus</h2>
             <p className="text-sm text-muted">
-              Your bill audits are free. Paxer Plus unlocks unlimited dispute letters — a flat
-              subscription, never a cut of what you recover.
+              Your first bill audit is free. Paxer Plus unlocks unlimited audits and dispute
+              letters — a flat subscription, never a cut of what you recover.
             </p>
           </div>
           <ConsumerBillingClient

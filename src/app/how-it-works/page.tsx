@@ -50,7 +50,7 @@ const EXAMPLE_FINDINGS = [
 const FAQS = (priceLabel: string) => [
   {
     q: 'How much does Paxer cost?',
-    a: `Auditing your bills is free. Generating dispute letters takes Paxer Plus — ${priceLabel}, a flat subscription (not a contingency fee). You keep 100% of anything you recover, and can cancel anytime.`,
+    a: `Your first bill audit is free. After that, Paxer Plus — ${priceLabel}, a flat subscription (not a contingency fee) — unlocks unlimited audits and dispute letters. You keep 100% of anything you recover, and can cancel anytime.`,
   },
   {
     q: 'Will Paxer contact my provider or insurer for me?',

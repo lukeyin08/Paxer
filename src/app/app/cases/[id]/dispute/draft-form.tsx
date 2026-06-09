@@ -259,7 +259,7 @@ export function DraftForm({
         </Button>
         {!canDraft && (
           <p className="text-xs text-muted">
-            Generating a letter requires Paxer Plus ({plusPriceLabel}). Your audit stays free.
+            Generating a dispute letter requires Paxer Plus ({plusPriceLabel}).
           </p>
         )}
       </div>

@@ -41,7 +41,7 @@ export function ConsumerBillingClient({
             {status && status !== 'active' ? ` (${status})` : ''}.
           </>
         ) : (
-          <>You&rsquo;re on the free plan — audits are free; generating dispute letters needs Paxer Plus.</>
+          <>You&rsquo;re on the free plan — your first audit is free; more audits and dispute letters need Paxer Plus.</>
         )}
       </p>
       <div className="flex flex-wrap items-center gap-2">

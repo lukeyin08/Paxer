@@ -78,12 +78,12 @@ export default function PricingPage() {
           <div className="max-w-2xl animate-fade-up">
             <Kicker className="mb-4">Pricing</Kicker>
             <h1 className="font-sans text-4xl font-semibold leading-[1.1] text-ink md:text-5xl">
-              Free to audit. Plus to dispute.
+              Your first audit is free.
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-muted">
-              Auditing your bills is free. Generating dispute letters takes Paxer Plus — a flat
-              subscription, never a cut of your recovery. The same engine is available to businesses
-              as an API.
+              Your first bill audit is free. Paxer Plus unlocks unlimited audits and dispute
+              letters — a flat subscription, never a cut of your recovery. The same engine is
+              available to businesses as an API.
             </p>
           </div>
 
@@ -91,10 +91,10 @@ export default function PricingPage() {
             <Tier
               name="Paxer Plus"
               price={plusPrice}
-              sub="Audit free. Plus unlocks dispute letters."
+              sub="First audit free. Plus unlocks the rest."
               features={[
-                'Audit your bills & EOBs — free, unlimited',
-                'AI-drafted dispute letters (you review & send)',
+                'Your first bill audit — free to try',
+                'Plus: unlimited audits & AI dispute letters',
                 'Track outcomes and recoveries',
                 'Keep 100% of what you recover — no contingency',
                 'Cancel anytime',
