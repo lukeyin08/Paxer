@@ -106,13 +106,13 @@ export default function PricingPage() {
             />
             <Tier
               name="Audit API"
-              price={`Free → ${API_PLANS.pro.priceLabel}`}
+              price="Usage-based"
               sub="For developers: embed the audit engine in your own software. Self-serve, billed per API call."
               features={[
                 'Embedded /api/v1/audit endpoint — your code calls it',
-                `${API_PLANS.free.monthlyQuota} free API calls/mo to start`,
-                `Pro: ${API_PLANS.pro.monthlyQuota.toLocaleString()}/mo (${API_PLANS.pro.priceLabel}) · Scale: ${API_PLANS.scale.monthlyQuota.toLocaleString()}/mo (${API_PLANS.scale.priceLabel})`,
-                'Bearer API keys — create & revoke anytime',
+                `Free to start — ${API_PLANS.free.monthlyQuota} API calls/mo`,
+                `Pro — ${API_PLANS.pro.priceLabel} for ${API_PLANS.pro.monthlyQuota.toLocaleString()} calls`,
+                `Scale — ${API_PLANS.scale.priceLabel} for ${API_PLANS.scale.monthlyQuota.toLocaleString()} calls`,
                 'Enterprise volume & SLA — contact us',
               ]}
               cta="Get an API key — free"
