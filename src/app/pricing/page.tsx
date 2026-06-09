@@ -95,8 +95,8 @@ export default function PricingPage() {
               sub="For patients. First audit free, then unlimited — flat, no contingency."
               highlight
               features={[
-                'Your first bill audit — free to try',
-                'Plus: unlimited audits & AI dispute letters',
+                'Unlimited bill audits',
+                'AI-drafted dispute letters (you review & send)',
                 'Track outcomes and recoveries',
                 'Keep 100% of what you recover — no contingency',
                 'Cancel anytime',
