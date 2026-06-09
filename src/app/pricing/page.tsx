@@ -107,7 +107,7 @@ export default function PricingPage() {
             <Tier
               name="Audit API"
               price={`Free → ${API_PLANS.pro.priceLabel}`}
-              sub="For developers embedding the audit engine in their own product (not for patients)."
+              sub="For developers: embed the audit engine in your own software. Self-serve, billed per API call."
               features={[
                 'Embedded /api/v1/audit endpoint — your code calls it',
                 `${API_PLANS.free.monthlyQuota} free API calls/mo to start`,
@@ -121,13 +121,13 @@ export default function PricingPage() {
             <Tier
               name="Employers & TPAs"
               price="Let’s talk"
-              sub="Bill review as an employee benefit — self-insured employers, TPAs, and benefit platforms."
+              sub="Give your workforce Paxer as a benefit — per-member (PEPM) or shared-savings, sales-led."
               features={[
-                'Aggregate savings reporting for your population',
+                'Bill-review benefit for your whole population',
                 'Per-member pricing (PEPM) or shared savings',
-                'Bulk / programmatic access',
-                'Dedicated support',
-                'Design-partner program — now onboarding',
+                'Aggregate savings reporting (your people recovered $X)',
+                'Member roster import & rollout',
+                'Dedicated support · design-partner program now onboarding',
               ]}
               cta="Contact us"
               href="mailto:ly3569@princeton.edu?subject=Paxer%20for%20employers"
