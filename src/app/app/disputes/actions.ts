@@ -7,6 +7,7 @@ import { db } from '@/lib/db';
 import { cases, disputes, findings } from '@/lib/db/schema';
 import { requireUser } from '@/lib/auth/session';
 import { generateDraft } from '@/lib/disputes/generate';
+import { getConsumerEntitlement } from '@/lib/billing/consumer';
 import { sanitizeLetterHtml } from '@/lib/disputes/sanitize';
 import { createDispute, getDisputeForUser, addDisputeEvent } from '@/lib/disputes/repo';
 import { recomputeEstimatedRecoverable } from '@/lib/cases/repo';
@@ -34,8 +35,18 @@ export async function generateDisputeAction(input: {
   findingIds: string[];
   target?: Dispute['target'];
   details?: LetterDetailsInput;
-}): Promise<{ ok: false; error: string } | never> {
+}): Promise<{ ok: false; error: string; code?: 'subscription_required' } | never> {
   const user = await requireUser();
+  // Paywall: generating a dispute draft requires Paxer Plus (audits are free).
+  // Enforced here, server-side, before any AI spend. The demo account bypasses.
+  const entitlement = await getConsumerEntitlement(user.id);
+  if (!entitlement.canGenerateDraft) {
+    return {
+      ok: false,
+      code: 'subscription_required',
+      error: 'A Paxer Plus subscription is required to generate dispute letters.',
+    };
+  }
   // Validate the supplied details server-side (the action is a public endpoint).
   if (input.details) {
     const missing = REQUIRED_DETAILS.filter((k) => !input.details![k]?.trim());

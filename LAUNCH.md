@@ -94,3 +94,25 @@ solve" are not optional.
   is provider-default at rest).
 - A scheduled cleanup of stale `rate_limits` rows.
 - Magic-byte sniffing on uploads (current validation trusts the client MIME).
+
+## Counsel review — consumer Paxer Plus subscription (added with the consumer paywall)
+
+The consumer model charges patients a flat **Paxer Plus** subscription (≈$12/mo)
+to **generate dispute letters** (audits remain free). This is a flat software fee,
+not a contingency — `PAXER_FEE_RATE` stays `0` — but it still needs counsel sign-off
+before charging real consumers:
+
+- **UPL / billing-advocate licensing.** Charging consumers to produce dispute/appeal
+  letters may implicate unauthorized-practice-of-law rules and state medical-billing-
+  advocate licensing/registration regimes. Confirm Paxer is positioned as a self-help
+  document tool (patient reviews, completes, and sends every letter — which it does).
+- **Subscription / auto-renewal disclosure law.** Recurring consumer subscriptions are
+  regulated (e.g. California's Automatic Renewal Law, FTC "click-to-cancel", and similar
+  state statutes): clear pre-checkout disclosure of price/renewal terms, affirmative
+  consent, easy online cancellation, and renewal reminders. Review the Plus checkout,
+  Terms §3, and the Settings cancellation path against these.
+- **Refunds.** Terms §3 states a default non-refundable policy "except where required by
+  law" — confirm against applicable consumer-protection law.
+
+Not a code blocker (billing is dormant until `STRIPE_PRICE_CONSUMER` is set), but resolve
+before flipping consumer billing live.

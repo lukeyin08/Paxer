@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireUser } from '@/lib/auth/session';
 import { getCaseForUser } from '@/lib/cases/repo';
+import { getConsumerEntitlement, consumerBillingConfigured, CONSUMER_PLAN } from '@/lib/billing/consumer';
 import { Kicker } from '@/components/brand/kicker';
 import { EmptyState } from '@/components/brand/empty-state';
 import { Button } from '@/components/ui/button';
@@ -22,6 +23,7 @@ export default async function DisputeDraftPage({
 
   const open = detail.findings.filter((f) => f.status === 'OPEN');
   const preselected = (findingIds ?? '').split(',').filter(Boolean);
+  const entitlement = await getConsumerEntitlement(user.id);
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-8 animate-fade-up">
@@ -51,6 +53,9 @@ export default async function DisputeDraftPage({
         <DraftForm
           caseId={id}
           preselected={preselected}
+          canDraft={entitlement.canGenerateDraft}
+          plusPriceLabel={CONSUMER_PLAN.priceLabel}
+          plusConfigured={consumerBillingConfigured()}
           prefill={{
             senderName: user.name ?? '',
             senderEmail: user.email ?? '',

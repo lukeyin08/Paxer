@@ -32,14 +32,26 @@ export default function TermsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection heading="3. Fees">
+      <LegalSection heading="3. Fees & subscription">
         <p>
-          Paxer is free for individual use: there is no charge to audit your bills, generate dispute
-          letters, or track recoveries, and Paxer does not take a percentage of amounts you recover.
-          If Paxer ever introduces paid plans (for example, business or enterprise tiers), the
-          applicable terms and pricing will be disclosed to you before any fee applies, and your
-          individual use will not become chargeable without your agreement. Business use of the
-          Audit API is subject to the plan you select.
+          Auditing your bills, viewing findings, and tracking recoveries are free. Generating a
+          dispute letter requires a <strong>Paxer Plus</strong> subscription — a flat recurring
+          software fee, shown to you before you subscribe. This is <strong>not</strong> a contingency or success
+          fee: Paxer never takes a percentage of any amount you recover, and you keep 100% of your
+          recoveries.
+        </p>
+        <p>
+          <strong>Auto-renewal &amp; cancellation.</strong> A Paxer Plus subscription renews
+          automatically at the end of each billing period at the then-current price until you cancel.
+          You may cancel at any time from Settings → Paxer Plus (or the billing portal); cancellation
+          stops future renewals, and your access continues through the end of the period you have
+          already paid for.
+        </p>
+        <p>
+          <strong>Refunds.</strong> Subscription fees are generally non-refundable except where
+          required by applicable law; contact support for any billing issue and we will work with you
+          in good faith. Prices and any changes will be disclosed before they take effect. Business
+          use of the Audit API is subject to the separate API plan you select.
         </p>
       </LegalSection>
 

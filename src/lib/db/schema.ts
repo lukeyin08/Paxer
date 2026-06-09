@@ -133,6 +133,12 @@ export const users = pgTable('users', {
   stripeCustomerId: text('stripe_customer_id'),
   stripeSubscriptionId: text('stripe_subscription_id'),
   planStatus: text('plan_status'), // 'active' | 'past_due' | 'canceled'
+  // Consumer subscription (Paxer Plus) — DISTINCT from the B2B Audit-API plan
+  // above (one Stripe customer can hold both). Gates dispute-draft generation;
+  // audits stay free. The Stripe webhook is the only writer. 'free' | 'plus'.
+  consumerPlan: text('consumer_plan').default('free').notNull(),
+  consumerStatus: text('consumer_status'), // 'active' | 'past_due' | 'canceled'
+  consumerSubscriptionId: text('consumer_subscription_id'),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 });

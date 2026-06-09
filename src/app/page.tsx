@@ -8,7 +8,6 @@ import { SiteFooter } from '@/components/site-footer';
 import { HeroBillDemo } from '@/components/hero-bill-demo';
 import { Reveal } from '@/components/reveal';
 import { DEMO_ENABLED } from '@/lib/auth/demo';
-import { defaultFeeRate } from '@/lib/audit/fees';
 import { PROCESS_STEPS, ERROR_TYPES, API_BUYERS } from '@/lib/marketing';
 
 // The instant demo only exists in non-production (the Credentials provider is
@@ -19,9 +18,6 @@ const PRIMARY_CTA = DEMO_ENABLED
   : { href: '/login', label: 'Get started' };
 
 export default function LandingPage() {
-  // Derived from the configured fee so the headline can't contradict the app.
-  const isFree = defaultFeeRate() === 0;
-  const keepPct = Math.round((1 - defaultFeeRate()) * 100);
   return (
     <div className="flex min-h-screen flex-col">
       <MarketingHeader />
@@ -74,13 +70,9 @@ export default function LandingPage() {
             </Reveal>
             <Reveal delay={180}>
               <StatBlock
-                label={isFree ? 'Free for individuals' : 'You keep'}
-                value={isFree ? '$0' : `${keepPct}%`}
-                hint={
-                  isFree
-                    ? 'Paxer is free for patients — we never take a cut of what you recover.'
-                    : 'Paxer takes a share only of dollars actually returned to you.'
-                }
+                label="You keep"
+                value="100%"
+                hint="Paxer Plus is a flat subscription — never a cut of what you recover."
               />
             </Reveal>
           </div>
@@ -144,7 +136,8 @@ export default function LandingPage() {
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">
                 For {API_BUYERS} — the parties whose incentives line up with the patient. Check a
-                bill for errors with one API call. Free for individuals; usage-based for businesses.
+                bill for errors with one API call. Audits are free for individuals; the API is
+                usage-based for businesses.
               </p>
             </div>
             <div className="flex shrink-0 gap-3">

@@ -74,7 +74,7 @@ export default async function RecoveriesPage({
             title="No recoveries yet"
             description={
               isFree
-                ? 'When a dispute is won, log the amount returned here. Paxer is free — you keep everything you recover.'
+                ? 'When a dispute is won, log the amount returned here. Paxer never takes a cut — you keep everything you recover.'
                 : 'When a dispute is won, log the amount returned here. Paxer computes the success fee and shows what you keep.'
             }
           />

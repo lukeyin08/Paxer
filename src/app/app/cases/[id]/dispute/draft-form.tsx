@@ -11,6 +11,7 @@ import { StatusPill } from '@/components/brand/status-pill';
 import { Disclaimer } from '@/components/brand/disclaimer';
 import { severityTone } from '@/lib/cases/status';
 import { generateDisputeAction } from '@/app/app/disputes/actions';
+import { ConsumerPaywall } from '@/components/consumer-paywall';
 import type { LetterDetailsInput } from '@/lib/disputes/letter-context';
 
 export interface SelectableFinding {
@@ -77,16 +78,24 @@ export function DraftForm({
   findings,
   preselected,
   prefill,
+  canDraft,
+  plusPriceLabel,
+  plusConfigured,
 }: {
   caseId: string;
   findings: SelectableFinding[];
   preselected: string[];
   prefill: DraftPrefill;
+  /** Whether this user may generate a draft (Plus subscriber or demo). */
+  canDraft: boolean;
+  plusPriceLabel: string;
+  plusConfigured: boolean;
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set(preselected));
   const [target, setTarget] = useState<'PROVIDER' | 'INSURER' | 'AUTO'>('AUTO');
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [showPaywall, setShowPaywall] = useState(false);
   const [details, setDetails] = useState<LetterDetailsInput>({
     senderName: prefill.senderName,
     senderAddress: '',
@@ -117,6 +126,12 @@ export function DraftForm({
 
   function generate() {
     setError(null);
+    // Paywall first: don't make a locked user fill out the form. The popup is
+    // shown the moment they try to generate (server still enforces the gate).
+    if (!canDraft) {
+      setShowPaywall(true);
+      return;
+    }
     if (selected.size === 0) {
       setError('Select at least one finding to dispute.');
       return;
@@ -136,7 +151,12 @@ export function DraftForm({
         target: target === 'AUTO' ? undefined : target,
         details: trimmed,
       });
-      if (res && !res.ok) setError(res.error);
+      // The subscription may have lapsed between page load and submit — fall back
+      // to the paywall if the server gate trips.
+      if (res && !res.ok) {
+        if (res.code === 'subscription_required') setShowPaywall(true);
+        else setError(res.error);
+      }
     });
   }
 
@@ -233,10 +253,24 @@ export function DraftForm({
       </Card>
 
       {error && <p className="text-sm text-danger">{error}</p>}
-      <Button onClick={generate} disabled={pending} className="self-start">
-        {pending ? 'Drafting…' : 'Generate dispute letter'}
-      </Button>
+      <div className="flex flex-col gap-2">
+        <Button onClick={generate} disabled={pending} className="self-start">
+          {pending ? 'Drafting…' : 'Generate dispute letter'}
+        </Button>
+        {!canDraft && (
+          <p className="text-xs text-muted">
+            Generating a letter requires Paxer Plus ({plusPriceLabel}). Your audit stays free.
+          </p>
+        )}
+      </div>
       <Disclaimer variant="callout" />
+
+      <ConsumerPaywall
+        open={showPaywall}
+        onOpenChange={setShowPaywall}
+        priceLabel={plusPriceLabel}
+        configured={plusConfigured}
+      />
     </div>
   );
 }

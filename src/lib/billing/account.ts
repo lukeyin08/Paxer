@@ -75,3 +75,28 @@ export async function applyPlanFromStripe(opts: {
     await db.update(users).set(set).where(eq(users.stripeCustomerId, opts.customerId));
   }
 }
+
+/**
+ * Writer for the CONSUMER (Paxer Plus) subscription columns — also only called
+ * from the verified webhook. Kept separate from the API-plan writer so one
+ * customer can hold both subscriptions without them clobbering each other.
+ */
+export async function applyConsumerPlanFromStripe(opts: {
+  userId?: string | null;
+  customerId: string;
+  subscriptionId: string | null;
+  active: boolean;
+  status: string;
+}): Promise<void> {
+  const set = {
+    consumerPlan: opts.active ? 'plus' : 'free',
+    consumerStatus: opts.status,
+    consumerSubscriptionId: opts.subscriptionId,
+    stripeCustomerId: opts.customerId,
+  };
+  if (opts.userId) {
+    await db.update(users).set(set).where(eq(users.id, opts.userId));
+  } else {
+    await db.update(users).set(set).where(eq(users.stripeCustomerId, opts.customerId));
+  }
+}

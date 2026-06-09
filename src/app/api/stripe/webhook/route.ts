@@ -3,7 +3,9 @@ import type Stripe from 'stripe';
 import { getStripe, stripeConfigured } from '@/lib/billing/stripe';
 import { env } from '@/lib/env';
 import { planForStripePrice } from '@/lib/billing/plans';
-import { applyPlanFromStripe } from '@/lib/billing/account';
+import { isConsumerPrice } from '@/lib/billing/consumer';
+import { isActiveStatus } from '@/lib/billing/consumer-entitlement';
+import { applyPlanFromStripe, applyConsumerPlanFromStripe } from '@/lib/billing/account';
 
 // Node runtime + raw body for Stripe signature verification.
 export const runtime = 'nodejs';
@@ -37,15 +39,29 @@ export async function POST(req: NextRequest) {
         const subId = typeof s.subscription === 'string' ? s.subscription : (s.subscription?.id ?? null);
         if (customerId && subId) {
           const sub = await getStripe().subscriptions.retrieve(subId);
-          const plan = planForStripePrice(sub.items.data[0]?.price.id);
-          if (plan) {
-            await applyPlanFromStripe({
+          const priceId = sub.items.data[0]?.price.id;
+          const active = isActiveStatus(sub.status);
+          if (isConsumerPrice(priceId)) {
+            await applyConsumerPlanFromStripe({
               userId: s.client_reference_id,
               customerId,
               subscriptionId: subId,
-              plan: plan.id,
+              active,
               status: sub.status,
             });
+          } else {
+            // Only write the API columns for a recognized API price — an unknown
+            // price must not spuriously stamp apiPlan on this customer.
+            const plan = planForStripePrice(priceId);
+            if (plan) {
+              await applyPlanFromStripe({
+                userId: s.client_reference_id,
+                customerId,
+                subscriptionId: subId,
+                plan: plan.id,
+                status: sub.status,
+              });
+            }
           }
         }
         break;
@@ -54,14 +70,26 @@ export async function POST(req: NextRequest) {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = customerIdOf(sub.customer);
         if (customerId) {
-          const plan = planForStripePrice(sub.items.data[0]?.price.id);
-          const active = ['active', 'trialing', 'past_due'].includes(sub.status);
-          await applyPlanFromStripe({
-            customerId,
-            subscriptionId: sub.id,
-            plan: active && plan ? plan.id : 'free',
-            status: sub.status,
-          });
+          const priceId = sub.items.data[0]?.price.id;
+          const active = isActiveStatus(sub.status);
+          if (isConsumerPrice(priceId)) {
+            await applyConsumerPlanFromStripe({
+              customerId,
+              subscriptionId: sub.id,
+              active,
+              status: sub.status,
+            });
+          } else {
+            const plan = planForStripePrice(priceId);
+            if (plan) {
+              await applyPlanFromStripe({
+                customerId,
+                subscriptionId: sub.id,
+                plan: active ? plan.id : 'free',
+                status: sub.status,
+              });
+            }
+          }
         }
         break;
       }
@@ -69,12 +97,22 @@ export async function POST(req: NextRequest) {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = customerIdOf(sub.customer);
         if (customerId) {
-          await applyPlanFromStripe({
-            customerId,
-            subscriptionId: null,
-            plan: 'free',
-            status: 'canceled',
-          });
+          const priceId = sub.items.data[0]?.price.id;
+          if (isConsumerPrice(priceId)) {
+            await applyConsumerPlanFromStripe({
+              customerId,
+              subscriptionId: null,
+              active: false,
+              status: 'canceled',
+            });
+          } else if (planForStripePrice(priceId)) {
+            await applyPlanFromStripe({
+              customerId,
+              subscriptionId: null,
+              plan: 'free',
+              status: 'canceled',
+            });
+          }
         }
         break;
       }

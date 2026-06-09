@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
 import { formatUsd } from '@/lib/utils';
-import { defaultFeeRate } from '@/lib/audit/fees';
+import { env } from '@/lib/env';
 import { ERROR_TYPES } from '@/lib/marketing';
 
 export const metadata: Metadata = {
@@ -47,12 +47,10 @@ const EXAMPLE_FINDINGS = [
   },
 ];
 
-const FAQS = (isFree: boolean, feePct: number) => [
+const FAQS = (priceLabel: string) => [
   {
     q: 'How much does Paxer cost?',
-    a: isFree
-      ? 'Paxer is free for individuals. There’s no fee and no contingency — you keep 100% of anything you recover.'
-      : `Paxer charges a ${feePct}% success fee only on money you actually recover. No recovery, no fee.`,
+    a: `Auditing your bills is free. Generating dispute letters takes Paxer Plus — ${priceLabel}, a flat subscription (not a contingency fee). You keep 100% of anything you recover, and can cancel anytime.`,
   },
   {
     q: 'Will Paxer contact my provider or insurer for me?',
@@ -72,15 +70,12 @@ const FAQS = (isFree: boolean, feePct: number) => [
   },
   {
     q: 'What if my dispute isn’t successful?',
-    a: isFree
-      ? 'Nothing changes — Paxer is free either way. Dispute outcomes are never guaranteed.'
-      : 'You owe nothing. The success fee applies only to dollars actually returned to you.',
+    a: 'Your Paxer Plus subscription is the same flat price either way — Paxer never takes a cut of recoveries, and dispute outcomes are never guaranteed.',
   },
 ];
 
 export default function HowItWorksPage() {
-  const feePct = Math.round(defaultFeeRate() * 100);
-  const isFree = defaultFeeRate() === 0;
+  const plusPrice = env.PAXER_CONSUMER_PRICE_LABEL || '$12/mo';
   const totalBilled = EXAMPLE_LINES.reduce((s, l) => s + l.charge, 0);
   const totalFound = EXAMPLE_FINDINGS.reduce((s, f) => s + f.amount, 0);
 
@@ -184,7 +179,7 @@ export default function HowItWorksPage() {
           <Kicker className="mb-3">FAQ</Kicker>
           <h2 className="text-3xl font-semibold text-ink">Common questions.</h2>
           <div className="mt-8 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-rule bg-rule md:grid-cols-2">
-            {FAQS(isFree, feePct).map((f) => (
+            {FAQS(plusPrice).map((f) => (
               <div key={f.q} className="bg-card p-6">
                 <h3 className="text-base font-semibold text-ink">{f.q}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{f.a}</p>

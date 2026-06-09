@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
 import { Check } from 'lucide-react';
-import { defaultFeeRate } from '@/lib/audit/fees';
+import { env } from '@/lib/env';
 import { API_PLANS } from '@/lib/billing/plans';
 
 export const metadata: Metadata = {
   title: 'Pricing',
   description:
-    'Paxer is free for individuals — audit your bills, draft disputes, and keep 100% of what you recover. The Audit API is usage-based for businesses.',
+    'Audit your medical bills free. Paxer Plus generates dispute letters — a flat subscription, and you keep 100% of what you recover. The Audit API is usage-based for businesses.',
 };
 
 function Tier({
@@ -68,8 +68,7 @@ function Tier({
 }
 
 export default function PricingPage() {
-  const isFree = defaultFeeRate() === 0;
-  const keepPct = Math.round((1 - defaultFeeRate()) * 100);
+  const plusPrice = env.PAXER_CONSUMER_PRICE_LABEL || '$12/mo';
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -79,28 +78,29 @@ export default function PricingPage() {
           <div className="max-w-2xl animate-fade-up">
             <Kicker className="mb-4">Pricing</Kicker>
             <h1 className="font-sans text-4xl font-semibold leading-[1.1] text-ink md:text-5xl">
-              Free for patients. Usage-based for businesses.
+              Free to audit. Plus to dispute.
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-muted">
-              Individuals never pay and never give up a cut of what they recover. The same engine is
-              available to businesses as an API.
+              Auditing your bills is free. Generating dispute letters takes Paxer Plus — a flat
+              subscription, never a cut of your recovery. The same engine is available to businesses
+              as an API.
             </p>
           </div>
 
           <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
             <Tier
-              name="Individuals"
-              price={isFree ? 'Free' : `${100 - keepPct}% fee`}
-              sub={isFree ? 'Always — no fee, no contingency.' : 'Success fee on recoveries only.'}
+              name="Paxer Plus"
+              price={plusPrice}
+              sub="Audit free. Plus unlocks dispute letters."
               features={[
-                'Upload bills & EOBs, or enter them manually',
-                'Full audit for billing errors',
+                'Audit your bills & EOBs — free, unlimited',
                 'AI-drafted dispute letters (you review & send)',
                 'Track outcomes and recoveries',
-                isFree ? 'You keep 100% of what you recover' : `You keep ${keepPct}% of recoveries`,
+                'Keep 100% of what you recover — no contingency',
+                'Cancel anytime',
               ]}
-              cta="Get started"
-              href="/login"
+              cta="Get started free"
+              href="/login?next=/app/settings"
             />
             <Tier
               name="Audit API"

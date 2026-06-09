@@ -5,6 +5,7 @@ import { requireUser } from '@/lib/auth/session';
 import { listApiKeys } from '@/lib/api-keys/repo';
 import { usageSnapshot } from '@/lib/billing/usage';
 import { checkoutPlans, billingConfigured, planFor } from '@/lib/billing/plans';
+import { consumerBillingConfigured, CONSUMER_PLAN } from '@/lib/billing/consumer';
 import { Kicker } from '@/components/brand/kicker';
 import { Card, CardContent } from '@/components/ui/card';
 import { Disclaimer } from '@/components/brand/disclaimer';
@@ -12,6 +13,7 @@ import { formatDate } from '@/lib/utils';
 import { StateForm, DeleteCaseButton, DeleteAccountCard } from './settings-client';
 import { ApiKeysClient } from './api-keys-client';
 import { BillingClient } from './billing-client';
+import { ConsumerBillingClient } from './consumer-billing-client';
 
 export default async function SettingsPage() {
   const sessionUser = await requireUser();
@@ -90,6 +92,25 @@ export default async function SettingsPage() {
               ))}
             </ul>
           )}
+        </CardContent>
+      </Card>
+
+      <Card id="plus">
+        <CardContent className="flex flex-col gap-4 pt-6">
+          <div>
+            <h2 className="font-sans text-lg font-semibold">Paxer Plus</h2>
+            <p className="text-sm text-muted">
+              Your bill audits are free. Paxer Plus unlocks unlimited dispute letters — a flat
+              subscription, never a cut of what you recover.
+            </p>
+          </div>
+          <ConsumerBillingClient
+            plan={user?.consumerPlan ?? 'free'}
+            status={user?.consumerStatus ?? null}
+            priceLabel={CONSUMER_PLAN.priceLabel}
+            configured={consumerBillingConfigured()}
+            hasCustomer={!!user?.stripeCustomerId}
+          />
         </CardContent>
       </Card>
 

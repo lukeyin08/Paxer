@@ -4,8 +4,33 @@ import { requireUser } from '@/lib/auth/session';
 import { getStripe, stripeConfigured, billingReturnUrl } from '@/lib/billing/stripe';
 import { getOrCreateStripeCustomer, getUserBilling } from '@/lib/billing/account';
 import { API_PLANS, type ApiPlan } from '@/lib/billing/plans';
+import { consumerBillingConfigured, CONSUMER_PLAN } from '@/lib/billing/consumer';
 
 type Result = { url: string } | { error: string };
+
+/** Start a Stripe Checkout subscription for Paxer Plus (consumer). */
+export async function startConsumerCheckout(): Promise<Result> {
+  const user = await requireUser();
+  const price = CONSUMER_PLAN.stripePriceId;
+  if (!consumerBillingConfigured() || !price) return { error: 'Paxer Plus isn’t available yet.' };
+  try {
+    const customerId = await getOrCreateStripeCustomer(user.id);
+    const session = await getStripe().checkout.sessions.create({
+      mode: 'subscription',
+      customer: customerId,
+      line_items: [{ price, quantity: 1 }],
+      client_reference_id: user.id, // so the webhook can resolve the user
+      success_url: `${billingReturnUrl()}?plus=success`,
+      cancel_url: `${billingReturnUrl()}?plus=cancelled`,
+      allow_promotion_codes: true,
+    });
+    if (!session.url) return { error: 'Could not start checkout.' };
+    return { url: session.url };
+  } catch (err) {
+    console.error('[billing] consumer checkout failed:', err);
+    return { error: 'Could not start checkout. Please try again.' };
+  }
+}
 
 /** Start a Stripe Checkout subscription for a paid plan; returns the redirect URL. */
 export async function startCheckout(plan: ApiPlan): Promise<Result> {

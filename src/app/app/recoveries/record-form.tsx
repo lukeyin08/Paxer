@@ -100,7 +100,7 @@ export function RecordRecoveryForm({
                 <Row label="Recovered for you" value={formatUsd(amt)} strong />
               </div>
               <p className="mt-3 font-mono text-[0.65rem] uppercase tracking-wider text-accent2">
-                Paxer is free — you keep 100%.
+                No contingency — you keep 100%.
               </p>
             </>
           ) : (
