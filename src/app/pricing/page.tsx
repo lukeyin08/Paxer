@@ -106,7 +106,7 @@ export default function PricingPage() {
             />
             <Tier
               name="Audit API"
-              price="Usage-based"
+              price={`Free → ${API_PLANS.scale.priceLabel}`}
               sub="For developers: embed the audit engine in your own software. Self-serve, billed per API call."
               features={[
                 'Embedded /api/v1/audit endpoint — your code calls it',
