@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
 import { HeroBillDemo } from '@/components/hero-bill-demo';
+import { Reveal } from '@/components/reveal';
 import { DEMO_ENABLED } from '@/lib/auth/demo';
 import { defaultFeeRate } from '@/lib/audit/fees';
 import { PROCESS_STEPS, ERROR_TYPES, API_BUYERS } from '@/lib/marketing';
@@ -57,25 +58,31 @@ export default function LandingPage() {
         {/* Stat blocks */}
         <section className="border-y border-rule bg-soft/40">
           <div className="container grid grid-cols-1 gap-8 py-12 sm:grid-cols-3">
-            <StatBlock
-              label="Of bills contain errors"
-              value="80%"
-              hint="Industry estimates put error rates on complex, itemized hospital bills in this range."
-            />
-            <StatBlock
-              label="Saved by Paxer users"
-              value="$10k+"
-              hint="In duplicate charges, denials, and cost-share errors caught and recovered."
-            />
-            <StatBlock
-              label={isFree ? 'Free for individuals' : 'You keep'}
-              value={isFree ? '$0' : `${keepPct}%`}
-              hint={
-                isFree
-                  ? 'Paxer is free for patients — we never take a cut of what you recover.'
-                  : 'Paxer takes a share only of dollars actually returned to you.'
-              }
-            />
+            <Reveal delay={0}>
+              <StatBlock
+                label="Of bills contain errors"
+                value="80%"
+                hint="Industry estimates put error rates on complex, itemized hospital bills in this range."
+              />
+            </Reveal>
+            <Reveal delay={90}>
+              <StatBlock
+                label="Saved by Paxer users"
+                value="$10k+"
+                hint="In duplicate charges, denials, and cost-share errors caught and recovered."
+              />
+            </Reveal>
+            <Reveal delay={180}>
+              <StatBlock
+                label={isFree ? 'Free for individuals' : 'You keep'}
+                value={isFree ? '$0' : `${keepPct}%`}
+                hint={
+                  isFree
+                    ? 'Paxer is free for patients — we never take a cut of what you recover.'
+                    : 'Paxer takes a share only of dollars actually returned to you.'
+                }
+              />
+            </Reveal>
           </div>
         </section>
 
@@ -86,11 +93,11 @@ export default function LandingPage() {
             Four kinds of error, hiding in plain sight.
           </h2>
           <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-2">
-            {ERROR_TYPES.map((e) => (
-              <div key={e.title} className="bg-card p-8">
+            {ERROR_TYPES.map((e, i) => (
+              <Reveal key={e.title} className="bg-card p-8" delay={i * 70}>
                 <h3 className="font-sans text-xl font-semibold text-ink">{e.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted">{e.body}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </section>
@@ -103,14 +110,16 @@ export default function LandingPage() {
               Three steps, and you stay in control.
             </h2>
             <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-              {PROCESS_STEPS.map((c) => (
-                <Card key={c.step}>
-                  <CardContent className="pt-6">
-                    <span className="font-mono text-sm text-accent">{c.step}</span>
-                    <h3 className="mt-3 font-sans text-xl font-semibold text-ink">{c.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted">{c.body}</p>
-                  </CardContent>
-                </Card>
+              {PROCESS_STEPS.map((c, i) => (
+                <Reveal key={c.step} delay={i * 90}>
+                  <Card className="h-full transition duration-200 hover:-translate-y-1 hover:shadow-md">
+                    <CardContent className="pt-6">
+                      <span className="font-mono text-sm text-accent">{c.step}</span>
+                      <h3 className="mt-3 font-sans text-xl font-semibold text-ink">{c.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-muted">{c.body}</p>
+                    </CardContent>
+                  </Card>
+                </Reveal>
               ))}
             </div>
             <div className="mt-8">
@@ -126,6 +135,7 @@ export default function LandingPage() {
 
         {/* For businesses & developers */}
         <section className="container py-20">
+          <Reveal>
           <div className="flex flex-col items-start justify-between gap-6 rounded-lg border border-rule bg-soft/40 p-8 md:flex-row md:items-center">
             <div className="max-w-xl">
               <Kicker className="mb-2">For businesses &amp; developers</Kicker>
@@ -146,23 +156,26 @@ export default function LandingPage() {
               </Button>
             </div>
           </div>
+          </Reveal>
         </section>
 
         {/* CTA */}
         <section className="container py-24 text-center">
-          <h2 className="mx-auto max-w-2xl font-sans text-3xl font-semibold text-ink md:text-4xl">
-            See what your bill is hiding.
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted">
-            {DEMO_ENABLED
-              ? 'Walk the full loop on a seeded demo case. No sign-up required.'
-              : 'Add your first bill and see what it’s hiding in minutes.'}
-          </p>
-          <div className="mt-8">
-            <Button asChild size="lg">
-              <Link href={PRIMARY_CTA.href}>{PRIMARY_CTA.label}</Link>
-            </Button>
-          </div>
+          <Reveal>
+            <h2 className="mx-auto max-w-2xl font-sans text-3xl font-semibold text-ink md:text-4xl">
+              See what your bill is hiding.
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-muted">
+              {DEMO_ENABLED
+                ? 'Walk the full loop on a seeded demo case. No sign-up required.'
+                : 'Add your first bill and see what it’s hiding in minutes.'}
+            </p>
+            <div className="mt-8">
+              <Button asChild size="lg">
+                <Link href={PRIMARY_CTA.href}>{PRIMARY_CTA.label}</Link>
+              </Button>
+            </div>
+          </Reveal>
         </section>
       </main>
 

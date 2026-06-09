@@ -35,7 +35,11 @@ function Tier({
   external?: boolean;
 }) {
   return (
-    <Card className={highlight ? 'border-2 border-accent' : undefined}>
+    <Card
+      className={`h-full transition duration-200 hover:-translate-y-1 hover:shadow-md ${
+        highlight ? 'border-2 border-accent' : ''
+      }`}
+    >
       <CardContent className="flex h-full flex-col gap-5 pt-6">
         {highlight && (
           <span className="-mt-1 self-start rounded-full bg-accent/10 px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-wider text-accent">

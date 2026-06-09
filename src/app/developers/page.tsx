@@ -182,7 +182,7 @@ export default function DevelopersPage() {
               ['Authentication', 'Bearer API keys, created and revoked in Settings → Developers. Keys are shown once and stored hashed.'],
               ['Limits & pricing', 'Free to start, rate-limited per key. For production volume or an SLA, get in touch — usage-based pricing.'],
             ].map(([title, body]) => (
-              <Card key={title}>
+              <Card key={title} className="h-full transition duration-200 hover:-translate-y-1 hover:shadow-md">
                 <CardContent className="pt-6">
                   <h3 className="font-sans text-lg font-semibold text-ink">{title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted">{body}</p>
