@@ -106,12 +106,12 @@ export default function PricingPage() {
             />
             <Tier
               name="Audit API"
-              price={`Free → ${API_PLANS.scale.priceLabel}`}
+              price={`Free → ${API_PLANS.pro.priceLabel}`}
               sub="For developers embedding the audit engine in their own product (not for patients)."
               features={[
                 'Embedded /api/v1/audit endpoint — your code calls it',
-                `Free ${API_PLANS.free.monthlyQuota} · Pro ${API_PLANS.pro.monthlyQuota.toLocaleString()} · Scale ${API_PLANS.scale.monthlyQuota.toLocaleString()} API calls/mo`,
-                `Pro ${API_PLANS.pro.priceLabel} · Scale ${API_PLANS.scale.priceLabel}`,
+                `${API_PLANS.free.monthlyQuota} free API calls/mo to start`,
+                `Pro: ${API_PLANS.pro.monthlyQuota.toLocaleString()}/mo (${API_PLANS.pro.priceLabel}) · Scale: ${API_PLANS.scale.monthlyQuota.toLocaleString()}/mo (${API_PLANS.scale.priceLabel})`,
                 'Bearer API keys — create & revoke anytime',
                 'Enterprise volume & SLA — contact us',
               ]}
@@ -123,7 +123,7 @@ export default function PricingPage() {
               price="Let’s talk"
               sub="Bill review as an employee benefit — self-insured employers, TPAs, and benefit platforms."
               features={[
-                'Offer bill review as an employee benefit',
+                'Aggregate savings reporting for your population',
                 'Per-member pricing (PEPM) or shared savings',
                 'Bulk / programmatic access',
                 'Dedicated support',
