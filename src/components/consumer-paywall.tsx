@@ -52,9 +52,8 @@ export function ConsumerPaywall({
                 Subscribe to Paxer Plus
               </Dialog.Title>
               <Dialog.Description className="mt-2 text-sm leading-relaxed text-muted">
-                The first bill audit is free. Paxer Plus ({priceLabel}) unlocks unlimited audits and
-                dispute letters so you can chase the money down — a flat subscription, never a cut of
-                what you recover.
+                Paxer Plus ({priceLabel}) unlocks unlimited audits and dispute letters so you can
+                chase the money down — a flat subscription, never a cut of what you recover.
               </Dialog.Description>
             </div>
 
