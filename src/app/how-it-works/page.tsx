@@ -76,7 +76,7 @@ const FAQS = (priceLabel: string) => [
 ];
 
 export default function HowItWorksPage() {
-  const plusPrice = env.PAXER_CONSUMER_PRICE_LABEL || '$12/mo';
+  const plusPrice = env.PAXER_CONSUMER_PRICE_LABEL || '$19/mo';
   // FAQ structured data (schema.org) — eligible for FAQ rich results in search.
   const faqLd = {
     '@context': 'https://schema.org',

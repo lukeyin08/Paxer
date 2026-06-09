@@ -20,7 +20,7 @@ export type { ConsumerEntitlement };
 export const CONSUMER_PLAN = {
   id: 'plus' as const,
   label: 'Paxer Plus',
-  priceLabel: env.PAXER_CONSUMER_PRICE_LABEL || '$12/mo',
+  priceLabel: env.PAXER_CONSUMER_PRICE_LABEL || '$19/mo',
   stripePriceId: env.STRIPE_PRICE_CONSUMER,
 };
 

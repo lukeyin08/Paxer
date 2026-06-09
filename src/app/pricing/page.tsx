@@ -69,7 +69,7 @@ function Tier({
 }
 
 export default function PricingPage() {
-  const plusPrice = env.PAXER_CONSUMER_PRICE_LABEL || '$12/mo';
+  const plusPrice = env.PAXER_CONSUMER_PRICE_LABEL || '$19/mo';
 
   return (
     <div className="flex min-h-screen flex-col">

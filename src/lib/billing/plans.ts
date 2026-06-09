@@ -27,14 +27,14 @@ export const API_PLANS: Record<ApiPlan, PlanDef> = {
     id: 'pro',
     label: 'Pro',
     monthlyQuota: 5000,
-    priceLabel: '$49/mo',
+    priceLabel: '$99/mo',
     stripePriceId: env.STRIPE_PRICE_PRO,
   },
   scale: {
     id: 'scale',
     label: 'Scale',
     monthlyQuota: 50000,
-    priceLabel: '$299/mo',
+    priceLabel: '$499/mo',
     stripePriceId: env.STRIPE_PRICE_SCALE,
   },
   // Custom / contact — not self-serve. The high quota just means an enterprise

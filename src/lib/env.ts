@@ -32,11 +32,11 @@ const envSchema = z.object({
   // code stays dormant until these are set, so the app runs fine without them.
   STRIPE_SECRET_KEY: optionalString(),
   STRIPE_WEBHOOK_SECRET: optionalString(),
-  STRIPE_PRICE_PRO: optionalString(), // price_… for the $49/mo Pro plan
-  STRIPE_PRICE_SCALE: optionalString(), // price_… for the $299/mo Scale plan
+  STRIPE_PRICE_PRO: optionalString(), // price_… for the $99/mo Pro plan
+  STRIPE_PRICE_SCALE: optionalString(), // price_… for the $499/mo Scale plan
   STRIPE_PRICE_CONSUMER: optionalString(), // price_… for the Paxer Plus consumer subscription
   STRIPE_PORTAL_RETURN_URL: optionalString(), // defaults to AUTH_URL/app/settings
-  PAXER_CONSUMER_PRICE_LABEL: optionalString(), // display label, default '$12/mo'
+  PAXER_CONSUMER_PRICE_LABEL: optionalString(), // display label, default '$19/mo'
   // Stays 0 — Paxer never takes a contingency/success cut of patient recoveries
   // (consumer revenue is the flat Paxer Plus subscription, not a fee). The fee
   // plumbing is retained for a possible future B2B / shared-savings tier.
