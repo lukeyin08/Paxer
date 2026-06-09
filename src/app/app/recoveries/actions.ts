@@ -37,7 +37,7 @@ export async function recordRecoveryAction(
       entity: 'recovery',
       entityId: recovery.id,
       action: 'recovery.recorded',
-      diff: { amount: data.amount, kind: data.kind, feeAmount: recovery.feeAmount },
+      diff: { amount: data.amount, kind: data.kind },
     });
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : 'Could not record recovery.' };

@@ -92,7 +92,7 @@ export default function PricingPage() {
             <Tier
               name="Paxer Plus"
               price={plusPrice}
-              sub="For patients. First audit free, then unlimited — flat, no contingency."
+              sub="For patients. First audit free; Plus unlocks unlimited audits + dispute letters. Flat, no contingency."
               highlight
               features={[
                 'Unlimited bill audits',

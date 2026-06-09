@@ -221,7 +221,7 @@ export function DraftForm({
           <div className="flex flex-col gap-3">
             <span className="kicker">Your contact information</span>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Full name" value={details.senderName} onChange={setField('senderName')} placeholder="Luke Yin" required />
+              <Field label="Full name" value={details.senderName} onChange={setField('senderName')} placeholder="Jane Doe" required />
               <Field label="Phone" value={details.senderPhone} onChange={setField('senderPhone')} placeholder="(555) 123-4567" required />
               <Field label="Email" type="email" value={details.senderEmail} onChange={setField('senderEmail')} placeholder="you@example.com" required />
               <Field label="Street address" value={details.senderAddress} onChange={setField('senderAddress')} placeholder="123 Main St, Apt 4" required />

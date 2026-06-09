@@ -1,11 +1,10 @@
 import { and, desc, eq, isNull } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { cases, disputes, recoveries, type Recovery } from '@/lib/db/schema';
-import { computeFee, defaultFeeRate } from '@/lib/audit/fees';
 
 export type RecoveryKind = Recovery['kind'];
 
-/** Record a recovery, compute the success fee, and update linked records. */
+/** Record a recovery and update linked records. */
 export async function recordRecovery(input: {
   userId: string;
   caseId: string;
@@ -35,10 +34,7 @@ export async function recordRecovery(input: {
     disputeId = d?.id ?? null;
   }
 
-  const feeRate = defaultFeeRate();
-  const feeAmount = computeFee(input.amount, feeRate);
-
-  // A recovery is purely the money record + success fee. Finding statuses, the
+  // A recovery is purely the money record. Finding statuses, the
   // dispute outcome, AND the case's RESOLVED status are all owned by
   // logResponseAction (WON/PARTIAL/DENIED) — recording money does not change
   // case state, so an unrelated recovery row can't side-effect a case to
@@ -52,8 +48,9 @@ export async function recordRecovery(input: {
       disputeId,
       amount: input.amount.toFixed(2),
       kind: input.kind,
-      feeRate,
-      feeAmount: feeAmount.toFixed(2),
+      // Paxer never takes a contingency — these legacy columns stay 0.
+      feeRate: 0,
+      feeAmount: '0.00',
       notes: input.notes ?? null,
     })
     .returning();
@@ -77,18 +74,15 @@ export async function getRecoveriesForUser(userId: string): Promise<RecoveryRow[
 
 export interface RecoveryTotals {
   totalRecovered: number;
-  totalFees: number;
-  netToPatient: number;
+  netToPatient: number; // == totalRecovered (Paxer never takes a contingency)
   count: number;
 }
 
 export function sumRecoveries(rows: RecoveryRow[]): RecoveryTotals {
   const totalRecovered = rows.reduce((s, r) => s + Number(r.recovery.amount), 0);
-  const totalFees = rows.reduce((s, r) => s + Number(r.recovery.feeAmount), 0);
   return {
     totalRecovered,
-    totalFees,
-    netToPatient: totalRecovered - totalFees,
+    netToPatient: totalRecovered,
     count: rows.length,
   };
 }

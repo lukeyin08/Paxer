@@ -61,7 +61,7 @@ const RESPONSE = `{
 
 const ERROR_CODES: [string, string][] = [
   ['200', 'Findings returned. summary.estimatedRecoverable is capped so it never exceeds total patient responsibility.'],
-  ['400', 'Invalid request body — e.g. missing or malformed lineItems. The response “error” field explains.'],
+  ['400', 'Invalid request body — e.g. missing or malformed lineItems. The response "error" field explains.'],
   ['401', 'Missing or invalid API key. Send it as Authorization: Bearer pax_live_… (or the x-api-key header).'],
   ['402', 'Monthly quota exceeded — this calendar month’s audit allotment is used up. Upgrade for a higher quota.'],
   ['429', 'Rate limited (120 requests/min per key). Retry after the window resets.'],

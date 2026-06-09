@@ -1,7 +1,6 @@
 import { requireUser } from '@/lib/auth/session';
 import { getRecoveriesForUser, sumRecoveries } from '@/lib/recoveries/repo';
 import { getDisputeForUser } from '@/lib/disputes/repo';
-import { defaultFeeRate } from '@/lib/audit/fees';
 import { Kicker } from '@/components/brand/kicker';
 import { StatBlock } from '@/components/brand/stat-block';
 import { Money } from '@/components/brand/money';
@@ -9,7 +8,7 @@ import { EmptyState } from '@/components/brand/empty-state';
 import { StatusPill } from '@/components/brand/status-pill';
 import { Card, CardContent } from '@/components/ui/card';
 import { Disclaimer } from '@/components/brand/disclaimer';
-import { formatUsd, formatDate } from '@/lib/utils';
+import { formatDate } from '@/lib/utils';
 import { RecordRecoveryForm } from './record-form';
 
 export default async function RecoveriesPage({
@@ -21,8 +20,6 @@ export default async function RecoveriesPage({
   const { disputeId } = await searchParams;
   const rows = await getRecoveriesForUser(user.id);
   const totals = sumRecoveries(rows);
-  const feeRate = defaultFeeRate();
-  const isFree = feeRate === 0;
 
   // If arriving from a dispute, prefill a record form.
   let recordContext: { caseId: string; disputeId: string; defaultAmount: number } | null = null;
@@ -43,18 +40,12 @@ export default async function RecoveriesPage({
     <div className="flex flex-col gap-8 animate-fade-up">
       <div>
         <Kicker className="mb-2">Recoveries</Kicker>
-        <h1 className="font-sans text-3xl font-semibold">{isFree ? 'Recoveries' : 'Recoveries & fees'}</h1>
+        <h1 className="font-sans text-3xl font-semibold">Recoveries</h1>
       </div>
 
-      <section className={`grid gap-6 ${isFree ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2 sm:grid-cols-4'}`}>
+      <section className="grid grid-cols-2 gap-6 sm:grid-cols-3">
         <StatBlock label="Recovered" value={<Money amount={totals.totalRecovered} />} />
         <StatBlock label="You kept" value={<Money amount={totals.netToPatient} />} />
-        {!isFree && (
-          <StatBlock
-            label={`Fees (${Math.round(feeRate * 100)}%)`}
-            value={<Money amount={totals.totalFees} />}
-          />
-        )}
         <StatBlock label="Recoveries" value={totals.count} />
       </section>
 
@@ -63,7 +54,6 @@ export default async function RecoveriesPage({
           caseId={recordContext.caseId}
           disputeId={recordContext.disputeId}
           defaultAmount={recordContext.defaultAmount}
-          feeRate={feeRate}
         />
       )}
 
@@ -72,11 +62,7 @@ export default async function RecoveriesPage({
         {rows.length === 0 ? (
           <EmptyState
             title="No recoveries yet"
-            description={
-              isFree
-                ? 'When a dispute is won, log the amount returned here. Paxer never takes a cut — you keep everything you recover.'
-                : 'When a dispute is won, log the amount returned here. Paxer computes the success fee and shows what you keep.'
-            }
+            description="When a dispute is won, log the amount returned here. Paxer never takes a cut — you keep everything you recover."
           />
         ) : (
           <div className="flex flex-col gap-3">
@@ -95,14 +81,6 @@ export default async function RecoveriesPage({
                       <p className="kicker">Recovered</p>
                       <Money amount={Number(recovery.amount)} size="sm" />
                     </div>
-                    {!isFree && (
-                      <div>
-                        <p className="kicker">Fee</p>
-                        <span className="text-sm tabular-nums text-muted">
-                          {formatUsd(Number(recovery.feeAmount))}
-                        </span>
-                      </div>
-                    )}
                     <StatusPill label="recorded" tone="success" />
                   </div>
                 </CardContent>

@@ -20,12 +20,10 @@ export function RecordRecoveryForm({
   caseId,
   disputeId,
   defaultAmount,
-  feeRate,
 }: {
   caseId: string;
   disputeId: string | null;
   defaultAmount: number;
-  feeRate: number;
 }) {
   const [amount, setAmount] = useState(defaultAmount ? String(defaultAmount) : '');
   const [kind, setKind] = useState<(typeof KINDS)[number]['value']>('BILL_REDUCTION');
@@ -34,9 +32,6 @@ export function RecordRecoveryForm({
   const [error, setError] = useState<string | null>(null);
 
   const amt = Number(amount) || 0;
-  const fee = Math.round(amt * feeRate * 100) / 100;
-  const net = amt - fee;
-  const isFree = feeRate === 0;
 
   function submit() {
     setError(null);
@@ -94,28 +89,12 @@ export function RecordRecoveryForm({
         {/* Summary — payment processing is not wired up in v1 */}
         <div className="rounded-md border border-rule bg-soft/40 p-4">
           <p className="kicker mb-2">Summary</p>
-          {isFree ? (
-            <>
-              <div className="flex flex-col gap-1 text-sm">
-                <Row label="Recovered for you" value={formatUsd(amt)} strong />
-              </div>
-              <p className="mt-3 font-mono text-[0.65rem] uppercase tracking-wider text-accent2">
-                No contingency — you keep 100%.
-              </p>
-            </>
-          ) : (
-            <>
-              <div className="flex flex-col gap-1 text-sm">
-                <Row label="Recovered for you" value={formatUsd(amt)} />
-                <Row label={`Paxer success fee (${Math.round(feeRate * 100)}%)`} value={`- ${formatUsd(fee)}`} />
-                <div className="my-1 h-px bg-rule" />
-                <Row label="You keep" value={formatUsd(net)} strong />
-              </div>
-              <p className="mt-3 font-mono text-[0.65rem] uppercase tracking-wider text-accent2">
-                Preview only — no payment is processed yet.
-              </p>
-            </>
-          )}
+          <div className="flex flex-col gap-1 text-sm">
+            <Row label="Recovered for you" value={formatUsd(amt)} strong />
+          </div>
+          <p className="mt-3 font-mono text-[0.65rem] uppercase tracking-wider text-accent2">
+            No contingency — you keep 100%.
+          </p>
         </div>
 
         {error && <p className="text-sm text-danger">{error}</p>}

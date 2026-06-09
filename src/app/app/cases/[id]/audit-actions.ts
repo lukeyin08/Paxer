@@ -31,7 +31,7 @@ export async function runAuditAction(
     revalidatePath(`/app/cases/${caseId}`);
     return {
       ok: true,
-      message: `Audit complete: ${result.findingCount} finding(s)${result.usedAi ? '' : ' (rules only — set ANTHROPIC_API_KEY for AI explanations)'}.`,
+      message: `Audit complete: ${result.findingCount} finding(s)${result.usedAi ? '' : ' (rules-based)'}.`,
     };
   } catch (err) {
     return { ok: false, message: err instanceof Error ? err.message : 'Audit failed.' };

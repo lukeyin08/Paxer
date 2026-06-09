@@ -59,7 +59,7 @@ const FAQS = (priceLabel: string) => [
   },
   {
     q: 'What kinds of errors does it find?',
-    a: `${ERROR_TYPES.map((e) => e.title).join(', ')} — see the example above for how each looks on a real bill.`,
+    a: `${ERROR_TYPES.map((e) => e.title).join(', ')} — see the example above for how each looks on an example bill.`,
   },
   {
     q: 'Is my information secure?',
@@ -109,7 +109,7 @@ export default function HowItWorksPage() {
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted">
               You add a bill, Paxer audits every charge against your plan and regional prices, flags
               the errors with the math, and drafts the dispute letter you review and send — keeping
-              you in control the whole way. Here&rsquo;s what that looks like on a real example.
+              you in control the whole way. Here&rsquo;s what that looks like on a worked example.
             </p>
           </div>
         </section>

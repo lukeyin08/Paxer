@@ -37,14 +37,6 @@ const envSchema = z.object({
   STRIPE_PRICE_CONSUMER: optionalString(), // price_… for the Paxer Plus consumer subscription
   STRIPE_PORTAL_RETURN_URL: optionalString(), // defaults to AUTH_URL/app/settings
   PAXER_CONSUMER_PRICE_LABEL: optionalString(), // display label, default '$19/mo'
-  // Stays 0 — Paxer never takes a contingency/success cut of patient recoveries
-  // (consumer revenue is the flat Paxer Plus subscription, not a fee). The fee
-  // plumbing is retained for a possible future B2B / shared-savings tier.
-  // Treat an empty string as unset so the default applies.
-  PAXER_FEE_RATE: z.preprocess(
-    (v) => (v === '' || v === undefined ? undefined : v),
-    z.coerce.number().min(0).max(1).default(0),
-  ),
   PAXER_DAILY_AI_BUDGET_USD: z.preprocess(
     (v) => (v === '' || v === undefined ? undefined : v),
     z.coerce.number().min(0).default(10),
