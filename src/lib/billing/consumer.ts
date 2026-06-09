@@ -12,10 +12,10 @@ import {
 export type { ConsumerEntitlement };
 
 /**
- * Consumer (patient) subscription: "Paxer Plus". Model: audits are free for
- * everyone; generating a dispute draft requires an active Plus subscription
- * (the demo account bypasses it). This is a flat software subscription, NOT a
- * contingency fee — patients still keep 100% of what they recover.
+ * Consumer (patient) subscription: "Paxer Plus". Model: the FIRST bill audit is
+ * free; after that, auditing more cases AND generating dispute drafts require an
+ * active Plus subscription (the demo account bypasses both). Flat software
+ * subscription, NOT a contingency fee — patients keep 100% of what they recover.
  */
 export const CONSUMER_PLAN = {
   id: 'plus' as const,

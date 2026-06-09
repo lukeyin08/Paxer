@@ -63,9 +63,9 @@ export default function LandingPage() {
             </Reveal>
             <Reveal delay={90}>
               <StatBlock
-                label="Saved by Paxer users"
+                label="Recoverable on a complex bill"
                 value="$10k+"
-                hint="In duplicate charges, denials, and cost-share errors caught and recovered."
+                hint="Duplicate charges, denials, and cost-share errors on a single itemized hospital bill can add up to thousands — industry estimates."
               />
             </Reveal>
             <Reveal delay={180}>
@@ -136,8 +136,7 @@ export default function LandingPage() {
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted">
                 For {API_BUYERS} — the parties whose incentives line up with the patient. Check a
-                bill for errors with one API call. Individuals start free; the API is usage-based
-                for businesses.
+                bill for errors with one API call. Free to start, then usage-based.
               </p>
             </div>
             <div className="flex shrink-0 gap-3">

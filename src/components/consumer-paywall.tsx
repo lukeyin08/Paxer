@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { startConsumerCheckout } from '@/app/app/settings/billing-actions';
 
 /**
- * Paywall popup shown when a non-subscriber tries to generate a dispute draft.
- * Audits are free; this gates the draft. Subscribing kicks off Stripe Checkout.
+ * Paywall popup, shared by BOTH gates: the audit gate (after the first free
+ * audit) and the draft gate. Subscribing kicks off Stripe Checkout. Copy is
+ * gate-neutral so it reads correctly from either trigger.
  */
 export function ConsumerPaywall({
   open,
@@ -51,9 +52,9 @@ export function ConsumerPaywall({
                 Subscribe to Paxer Plus
               </Dialog.Title>
               <Dialog.Description className="mt-2 text-sm leading-relaxed text-muted">
-                Your first audit is on us. Paxer Plus ({priceLabel}) unlocks unlimited audits and
-                dispute letters so you can chase the money down. It&rsquo;s a flat subscription —
-                never a cut of what you recover.
+                The first bill audit is free. Paxer Plus ({priceLabel}) unlocks unlimited audits and
+                dispute letters so you can chase the money down — a flat subscription, never a cut of
+                what you recover.
               </Dialog.Description>
             </div>
 

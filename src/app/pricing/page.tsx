@@ -92,7 +92,8 @@ export default function PricingPage() {
             <Tier
               name="Paxer Plus"
               price={plusPrice}
-              sub="First audit free. Plus unlocks the rest."
+              sub="For patients. First audit free, then unlimited — flat, no contingency."
+              highlight
               features={[
                 'Your first bill audit — free to try',
                 'Plus: unlimited audits & AI dispute letters',
@@ -101,19 +102,18 @@ export default function PricingPage() {
                 'Cancel anytime',
               ]}
               cta="Get started free"
-              href="/login?next=/app/settings"
+              href="/login"
             />
             <Tier
               name="Audit API"
-              price={`Free → ${API_PLANS.pro.priceLabel}`}
-              sub={`Start free (${API_PLANS.free.monthlyQuota} audits/mo), upgrade to Pro (${API_PLANS.pro.monthlyQuota.toLocaleString()}/mo).`}
-              highlight
+              price={`Free → ${API_PLANS.scale.priceLabel}`}
+              sub="For developers embedding the audit engine in their own product (not for patients)."
               features={[
-                'Embedded /api/v1/audit endpoint',
-                `Free: ${API_PLANS.free.monthlyQuota} audits/mo · Pro: ${API_PLANS.pro.monthlyQuota.toLocaleString()}/mo`,
+                'Embedded /api/v1/audit endpoint — your code calls it',
+                `Free ${API_PLANS.free.monthlyQuota} · Pro ${API_PLANS.pro.monthlyQuota.toLocaleString()} · Scale ${API_PLANS.scale.monthlyQuota.toLocaleString()} API calls/mo`,
+                `Pro ${API_PLANS.pro.priceLabel} · Scale ${API_PLANS.scale.priceLabel}`,
                 'Bearer API keys — create & revoke anytime',
-                'The full deterministic audit engine, stateless',
-                'Higher volume & SLA — contact us',
+                'Enterprise volume & SLA — contact us',
               ]}
               cta="Get an API key — free"
               href="/login?next=/app/settings"
@@ -127,7 +127,7 @@ export default function PricingPage() {
                 'Per-member pricing (PEPM) or shared savings',
                 'Bulk / programmatic access',
                 'Dedicated support',
-                'Design-partner program — in design',
+                'Design-partner program — now onboarding',
               ]}
               cta="Contact us"
               href="mailto:ly3569@princeton.edu?subject=Paxer%20for%20employers"

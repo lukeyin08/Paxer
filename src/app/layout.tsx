@@ -83,11 +83,13 @@ const JSON_LD = {
       operatingSystem: 'Web',
       description: DESCRIPTION,
       offers: {
-        '@type': 'Offer',
-        price: '0',
+        '@type': 'AggregateOffer',
+        lowPrice: '0',
+        highPrice: '12',
         priceCurrency: 'USD',
+        offerCount: 2,
         description:
-          'Your first medical-bill audit is free. Paxer Plus is a flat subscription for unlimited audits and dispute letters — no contingency fee.',
+          'First medical-bill audit free; Paxer Plus is a flat monthly subscription for unlimited audits and dispute letters — no contingency fee.',
       },
       publisher: { '@id': `${SITE_URL}/#organization` },
     },

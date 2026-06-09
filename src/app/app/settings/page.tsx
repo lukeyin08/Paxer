@@ -117,9 +117,10 @@ export default async function SettingsPage() {
       <Card id="billing">
         <CardContent className="flex flex-col gap-4 pt-6">
           <div>
-            <h2 className="font-sans text-lg font-semibold">Billing — Audit API</h2>
+            <h2 className="font-sans text-lg font-semibold">Audit API (for developers)</h2>
             <p className="text-sm text-muted">
-              The consumer app is free. The Audit API is usage-priced for businesses.
+              Programmatic access to the audit engine, billed per API call. This is a separate
+              product for businesses — not your Paxer Plus plan above.
             </p>
           </div>
           <BillingClient
