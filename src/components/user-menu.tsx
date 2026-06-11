@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import * as DM from '@radix-ui/react-dropdown-menu';
-import { BarChart3, ChevronDown, LogOut, Moon, Settings, Sun } from 'lucide-react';
+import { BarChart3, ChevronDown, LogOut, Settings } from 'lucide-react';
 import { signOutAction } from '@/lib/auth/actions';
 import { cn } from '@/lib/utils';
 
@@ -11,31 +10,11 @@ const itemCls =
   'flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted outline-none transition-colors data-[highlighted]:bg-soft data-[highlighted]:text-ink focus-visible:ring-2 focus-visible:ring-ring';
 
 /**
- * Account menu — collapses the secondary nav (Settings, Benchmarks, API keys),
- * the theme toggle, and Sign out into one dropdown so the top bar stays focused
- * on the core workflow. Theme logic mirrors ThemeToggle (flips the `dark` class
- * on <html>, persisted to localStorage and read back by the no-flash script).
+ * Account menu — collapses the secondary nav (Settings, Benchmarks, API keys)
+ * and Sign out into one dropdown so the top bar stays focused on the core
+ * workflow.
  */
 export function UserMenu({ email }: { email?: string | null }) {
-  const [isDark, setIsDark] = useState(true);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    setIsDark(document.documentElement.classList.contains('dark'));
-  }, []);
-
-  const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle('dark', next);
-    try {
-      localStorage.setItem('theme', next ? 'dark' : 'light');
-    } catch {
-      /* localStorage unavailable — toggle still applies for this session */
-    }
-  };
-
   const initial = (email?.trim()?.[0] ?? 'U').toUpperCase();
 
   return (
@@ -68,11 +47,6 @@ export function UserMenu({ email }: { email?: string | null }) {
             <Link href="/app/benchmarks" className={itemCls}>
               <BarChart3 className="h-4 w-4" /> Benchmarks
             </Link>
-          </DM.Item>
-          <DM.Separator className="my-1 h-px bg-rule" />
-          <DM.Item className={itemCls} onSelect={(e) => { e.preventDefault(); toggleTheme(); }}>
-            {mounted && !isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-            {mounted ? (isDark ? 'Light mode' : 'Dark mode') : 'Theme'}
           </DM.Item>
           <DM.Separator className="my-1 h-px bg-rule" />
           <DM.Item

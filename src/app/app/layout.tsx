@@ -3,8 +3,15 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
 import { requireUser } from '@/lib/auth/session';
+import type { Metadata } from 'next';
 import { AppNav } from '@/components/app-nav';
 import { SiteFooter } from '@/components/site-footer';
+
+// Belt-and-suspenders with robots.txt: even if an /app URL leaks externally,
+// crawlers that reach it are told not to index it.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 // All /app routes are authenticated. Unconsented users are sent to onboarding.
 export default async function AppLayout({ children }: { children: React.ReactNode }) {

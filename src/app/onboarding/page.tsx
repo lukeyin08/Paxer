@@ -11,6 +11,7 @@ import { OnboardingForm } from './onboarding-form';
 
 export const metadata: Metadata = {
   title: 'Set up your account',
+  robots: { index: false, follow: false },
 };
 
 export default async function OnboardingPage() {

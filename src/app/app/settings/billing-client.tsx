@@ -65,7 +65,7 @@ export function BillingClient(props: BillingProps) {
       ) : (
         <p className="text-xs text-muted">
           Self-serve billing is being set up. For higher volume or an SLA,{' '}
-          <a className="text-accent hover:underline" href="mailto:ly3569@princeton.edu?subject=Paxer%20API%20upgrade">
+          <a className="text-accent hover:underline" href="mailto:hello@paxer.app?subject=Paxer%20API%20upgrade">
             contact us
           </a>
           .

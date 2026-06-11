@@ -47,9 +47,9 @@ solve" are not optional.
 - **Security headers.** Global CSP + `X-Frame-Options: DENY`, `nosniff`,
   `Referrer-Policy`, HSTS, and `Permissions-Policy` via `next.config.mjs`
   (nonce-based CSP is the noted next hardening step).
-- **Contact inboxes.** `/developers` + `/pricing` link to `hello@paxer.app`;
-  legal pages reference `support@paxer.app` / `privacy@paxer.app`. **Stand these
-  inboxes up before going public.**
+- **Contact inboxes.** The entire site (`/developers`, `/pricing`, footer,
+  legal pages, settings, JSON-LD) is standardized on `hello@paxer.app`.
+  **Stand this inbox up before going public.**
 
 ## Before deploying (operational — your action)
 
@@ -82,8 +82,8 @@ solve" are not optional.
 3. **Counsel-reviewed Privacy Policy + Terms.** The scaffolds at `/privacy` and
    `/terms` are placeholders, not enforceable legal documents. Once counsel
    finalizes them, remove the yellow "Draft — not yet legal advice" banner in
-   `src/components/legal-layout.tsx`, and confirm the `privacy@paxer.app` /
-   `support@paxer.app` inboxes referenced there are real and monitored.
+   `src/components/legal-layout.tsx`, and confirm the `hello@paxer.app`
+   inbox referenced there is real and monitored.
 4. **Confirm HIPAA posture.** Whether Paxer is a covered entity/business
    associate determines obligations beyond BAAs (breach notification, access
    controls, audit). Get a determination from counsel.

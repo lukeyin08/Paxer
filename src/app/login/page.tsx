@@ -4,7 +4,6 @@ import { Wordmark } from '@/components/brand/wordmark';
 import { Kicker } from '@/components/brand/kicker';
 import { Card, CardContent } from '@/components/ui/card';
 import { Disclaimer } from '@/components/brand/disclaimer';
-import { ThemeToggle } from '@/components/theme-toggle';
 import { DEMO_ENABLED } from '@/lib/auth/demo';
 import { DemoButton, MagicLinkForm } from './login-forms';
 
@@ -23,10 +22,7 @@ export default async function LoginPage({
   // Only forward same-site /app destinations (e.g. developers land in Settings).
   const callbackUrl = next && next.startsWith('/app') && !next.startsWith('//') ? next : undefined;
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center gap-6 px-6 py-12">
-      <div className="absolute right-4 top-4">
-        <ThemeToggle />
-      </div>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 py-12 animate-fade-up">
       <Wordmark size="lg" />
       <Card className="w-full max-w-md">
         <CardContent className="flex flex-col gap-6 pt-6">

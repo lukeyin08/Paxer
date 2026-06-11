@@ -26,7 +26,9 @@ export function AppNav({ email }: { email?: string | null }) {
         href={item.href}
         className={cn(
           'whitespace-nowrap rounded-md px-3 py-1.5 text-sm transition-colors',
-          active ? 'bg-soft text-ink' : 'text-muted hover:text-ink',
+          active
+            ? 'bg-accent/10 text-ink ring-1 ring-inset ring-accent/20'
+            : 'text-muted hover:bg-soft hover:text-ink',
         )}
       >
         {item.label}
@@ -35,7 +37,7 @@ export function AppNav({ email }: { email?: string | null }) {
   });
 
   return (
-    <header className="sticky top-0 z-20 border-b border-rule bg-paper/90 backdrop-blur">
+    <header className="glass sticky top-0 z-20 border-b">
       <div className="container flex h-16 items-center justify-between gap-4">
         <div className="flex min-w-0 items-center gap-8">
           {/* Logo returns to the public homepage (always visible); the Dashboard

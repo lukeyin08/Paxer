@@ -38,7 +38,7 @@ export default async function SettingsPage() {
     quota: usage.quota,
     isFreePlan: usage.plan.id === 'free',
     // No self-serve billing yet — upgrade requests come to us by email.
-    upgradeHref: 'mailto:ly3569@princeton.edu?subject=Paxer%20API%20upgrade',
+    upgradeHref: 'mailto:hello@paxer.app?subject=Paxer%20API%20upgrade',
   };
 
   return (

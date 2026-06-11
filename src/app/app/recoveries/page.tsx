@@ -44,8 +44,14 @@ export default async function RecoveriesPage({
       </div>
 
       <section className="grid grid-cols-2 gap-6 sm:grid-cols-3">
-        <StatBlock label="Recovered" value={<Money amount={totals.totalRecovered} />} />
-        <StatBlock label="You kept" value={<Money amount={totals.netToPatient} />} />
+        <StatBlock
+          label="Recovered"
+          value={<Money amount={totals.totalRecovered} size="inherit" />}
+        />
+        <StatBlock
+          label="You kept"
+          value={<Money amount={totals.netToPatient} size="inherit" />}
+        />
         <StatBlock label="Recoveries" value={totals.count} />
       </section>
 

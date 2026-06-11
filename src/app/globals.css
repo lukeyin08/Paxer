@@ -3,86 +3,61 @@
 @tailwind utilities;
 
 /*
- * Paxer brand tokens — black & blue theme. Hex source values:
- *   ink (text) #E6EBF2   paper (bg) #0A0E14   accent (blue) #3B82F6
- *   accent2 (sky) #60A5FA   muted #8B97A8   rule #1E2A3A   soft #131A24
- *   card #111722   success #34D399   danger #F87171   warning #FBBF24
- * The palette is dark by default: "paper" is near-black, "ink" is light.
+ * Paxer brand tokens — a single "deep slate" dark colorway (dark only; the
+ * toggle was removed). A few steps lighter than near-black so surfaces have
+ * depth. Hex source values:
+ *   ink (text) #E5EAF4   paper (bg) #0B101E   accent (blue) #3D7DFF
+ *   accent2 (sky) #4FC3FF   muted #939EB4   rule #2B3447   soft #18222F
+ *   card #131A2A   success #34D399   danger #F87171   warning #FBBF24
  * Stored as HSL triplets so Tailwind can apply opacity modifiers.
  */
 @layer base {
-  /* LIGHT theme (default for users who prefer / select it) */
   :root {
-    color-scheme: light;
-    --ink: 222 47% 11%;
-    --paper: 0 0% 100%;
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
-    --accent2: 217 91% 45%;
-    --muted: 215 16% 42%;
-    --muted-foreground: 215 16% 42%;
-    --rule: 214 25% 90%;
-    --soft: 210 40% 97%;
-    --success: 160 84% 30%;
-    --danger: 0 72% 48%;
-    --warning: 30 90% 38%;
-
-    --background: var(--paper);
-    --foreground: var(--ink);
-    --card: 0 0% 100%;
-    --card-foreground: var(--ink);
-    --popover: 0 0% 100%;
-    --popover-foreground: var(--ink);
-    --primary: var(--accent);
-    --primary-foreground: var(--accent-foreground);
-    --secondary: var(--soft);
-    --secondary-foreground: var(--ink);
-    --destructive: var(--danger);
-    --destructive-foreground: 0 0% 100%;
-    --border: var(--rule);
-    --input: var(--rule);
-    --ring: var(--accent);
-    --radius: 0.5rem;
-  }
-
-  /* DARK theme (brand default — applied via the `dark` class on <html>) */
-  .dark {
     color-scheme: dark;
-    --ink: 215 33% 92%;
-    --paper: 215 33% 6%;
-    --accent: 217 91% 60%;
-    --accent-foreground: 210 40% 98%;
-    --accent2: 213 94% 68%;
-    --muted: 213 14% 60%;
-    --muted-foreground: 213 14% 60%;
-    --rule: 213 32% 17%;
-    --soft: 213 30% 11%;
-    --success: 160 64% 52%;
+
+    /* Brand primitives */
+    --ink: 217 40% 93%;
+    --paper: 222 44% 8%;
+    --accent: 219 100% 62%;
+    --accent-foreground: 0 0% 100%;
+    --accent2: 199 100% 65%;
+    --muted: 218 17% 65%;
+    --muted-foreground: 218 17% 65%;
+    --rule: 217 27% 23%;
+    --soft: 219 32% 14%;
+    --success: 158 64% 52%;
     --danger: 0 91% 71%;
     --warning: 43 96% 56%;
 
+    /* Glow hue used by box-shadows and the ambient backdrop */
+    --glow: 219 100% 62%;
+
+    /* Semantic aliases (mapped to brand) */
     --background: var(--paper);
     --foreground: var(--ink);
-    --card: 215 33% 9%;
+    --card: 221 38% 12%;
     --card-foreground: var(--ink);
-    --popover: 215 33% 9%;
+    --popover: 221 40% 11%;
     --popover-foreground: var(--ink);
     --primary: var(--accent);
     --primary-foreground: var(--accent-foreground);
     --secondary: var(--soft);
     --secondary-foreground: var(--ink);
     --destructive: var(--danger);
-    --destructive-foreground: 215 33% 6%;
+    --destructive-foreground: 222 50% 5%;
     --border: var(--rule);
     --input: var(--rule);
     --ring: var(--accent);
-    --radius: 0.5rem;
+    --radius: 0.625rem;
   }
 }
 
 @layer base {
   * {
     @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
   }
   body {
     @apply bg-paper text-ink font-sans antialiased;
@@ -94,6 +69,41 @@
   h4 {
     @apply font-sans font-semibold tracking-tight;
   }
+  /* Techy text selection */
+  ::selection {
+    background-color: hsl(var(--accent) / 0.3);
+    color: hsl(var(--ink));
+  }
+  /* Slim, on-brand scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--rule)) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--rule));
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--accent) / 0.6);
+  }
+
+  /* Respect users who ask for less motion — kill the ambient/looping animations. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 @layer components {
@@ -104,6 +114,24 @@
   .hairline {
     @apply border-rule;
   }
+
+  /* Accent-clipped gradient text for emphasis words and figures */
+  .text-gradient {
+    @apply bg-gradient-to-r from-accent2 to-accent bg-clip-text text-transparent;
+  }
+
+  /* Frosted translucent surface for sticky headers and overlays */
+  .glass {
+    @apply border-rule/60 bg-paper/70 backdrop-blur-xl backdrop-saturate-150;
+  }
+
+  /* Opt-in card interaction: lift + accent edge glow on hover */
+  .card-hover {
+    @apply transition-[transform,box-shadow,border-color] duration-300 ease-out
+      hover:-translate-y-1 hover:border-accent/40
+      hover:shadow-[0_10px_44px_-14px_hsl(var(--glow)/0.5)];
+  }
+
   /* Dispute letter editor / preview typography */
   .dispute-prose p {
     @apply mb-3;

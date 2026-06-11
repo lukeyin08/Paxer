@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(vercel --version)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('scripts',{}\\), indent=2\\)\\); print\\('--- deps ---'\\); print\\(' '.join\\(sorted\\(d.get\\('dependencies',{}\\).keys\\(\\)\\)\\)\\)\")",
+      "Bash(vercel whoami *)",
+      "Bash(vercel env *)",
+      "Bash(awk -F= '/^RESEND_API_KEY=/{gsub\\(/\"/,\"\",$2\\); print \"RESEND_API_KEY length:\", length\\($2\\)}' /tmp/paxer-prod.env)",
+      "Bash(rm -f /tmp/paxer-prod.env)",
+      "Bash(vercel domains *)",
+      "Bash(vercel dns *)",
+      "Bash(echo \"--- exit: $? ---\")",
+      "Bash(curl -s https://paxer.vercel.app)",
+      "Bash(curl -s -o /dev/null -w \"paxer.app -> HTTP %{http_code}, final: %{url_effective}\\\\n\" -L https://paxer.app)",
+      "Bash(pnpm build *)",
+      "Bash(grep -rn -iE '\\\\$[0-9]+|per member|pepm|/mo' /Users/lukeyin/Desktop/Paxer/src/components/pricing/ /Users/lukeyin/Desktop/Paxer/src/app/pricing/)",
+      "Bash(grep -rn \"Free → \\\\|Free →\\\\|\\\\$499\" /Users/lukeyin/Desktop/Paxer/src/components/pricing/ /Users/lukeyin/Desktop/Paxer/src/lib/marketing.ts)",
+      "Bash(xargs sed -i '' 's/ly3569@princeton\\\\.edu/hello@paxer.app/g')"
+    ]
+  }
+}

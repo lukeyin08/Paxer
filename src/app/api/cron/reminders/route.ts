@@ -16,6 +16,7 @@ export const maxDuration = 60;
 const REMINDER_WINDOW_DAYS = 7;
 const DAY_MS = 24 * 60 * 60 * 1000;
 const MAX_PER_RUN = 200;
+const SITE_URL = process.env.AUTH_URL || 'https://paxer.app';
 
 /**
  * Daily cron (Section 7.9): for simulated-sent disputes, send a reminder as the
@@ -78,7 +79,7 @@ export async function GET(req: NextRequest) {
       await sendEmail({
         to: row.email,
         subject: `Paxer: no response on your dispute for "${row.caseTitle}"`,
-        text: `The response deadline (${formatDate(deadline)}) has passed with no logged response. Paxer suggests escalating to the next level. Open the dispute to continue.`,
+        text: `The response deadline (${formatDate(deadline)}) has passed with no logged response. Paxer suggests escalating to the next level. Open the dispute to continue: ${SITE_URL}/app/disputes/${row.dispute.id}`,
       });
       escalated++;
     } else if (msLeft <= REMINDER_WINDOW_DAYS * DAY_MS && !alreadyReminded.has(row.dispute.id)) {
@@ -86,7 +87,7 @@ export async function GET(req: NextRequest) {
       await sendEmail({
         to: row.email,
         subject: `Paxer reminder: response due soon for "${row.caseTitle}"`,
-        text: `Your dispute response is due ${formatDate(deadline)}. If you have heard back, log the response in Paxer so we can record any recovery.`,
+        text: `Your dispute response is due ${formatDate(deadline)}. If you have heard back, log the response in Paxer so we can record any recovery: ${SITE_URL}/app/disputes/${row.dispute.id}`,
       });
       reminders++;
     }

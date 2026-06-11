@@ -83,7 +83,7 @@ export default async function ConfirmSignInPage({
           ) : (
             <>
               <p className="text-sm text-danger">
-                This sign-in link is missing or invalid — it may have already been used or expired.
+                This sign-in link is missing or invalid. It may have already been used or expired.
                 Request a fresh one and try again.
               </p>
               <Button asChild className="w-full">

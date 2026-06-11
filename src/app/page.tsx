@@ -1,21 +1,31 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Kicker } from '@/components/brand/kicker';
-import { StatBlock } from '@/components/brand/stat-block';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
 import { HeroBillDemo } from '@/components/hero-bill-demo';
 import { Reveal } from '@/components/reveal';
+import { StatShowcase } from '@/components/landing/stat-showcase';
+import { ErrorTypes } from '@/components/landing/error-types';
+import { ProcessSteps } from '@/components/landing/process-steps';
+import { ScrollShowcase } from '@/components/landing/scroll-showcase';
 import { DEMO_ENABLED } from '@/lib/auth/demo';
-import { PROCESS_STEPS, ERROR_TYPES, API_BUYERS } from '@/lib/marketing';
+import { API_BUYERS, REQUEST_DEMO_URL } from '@/lib/marketing';
 
-// The instant demo only exists in non-production (the Credentials provider is
-// disabled in prod). So the public CTA points to the real sign-in there instead
-// of dead-ending on a "demo" that isn't available.
-const PRIMARY_CTA = DEMO_ENABLED
-  ? { href: '/login?demo=1', label: 'View the demo' }
-  : { href: '/login', label: 'Get started' };
+// The homepage canonical lives here (not in the root layout) so other routes
+// don't inherit a canonical pointing at "/".
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+};
+
+// "Request a demo" (a guided walkthrough, booked off-site) is the primary CTA.
+// Self-serve sign-in stays one click away so visitors can start on their own;
+// the magic link both registers new users and signs in returning ones. The
+// in-app instant demo (?demo=1) only exists outside production.
+const SELF_SERVE = DEMO_ENABLED
+  ? { href: '/login?demo=1', label: 'Try the instant demo' }
+  : { href: '/login', label: 'Sign in to get started' };
 
 export default function LandingPage() {
   return (
@@ -27,55 +37,50 @@ export default function LandingPage() {
         <section className="container py-20 md:py-28">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
             <div className="max-w-2xl animate-fade-up">
-            <Kicker className="mb-5">Patient-side medical billing advocate</Kicker>
-            <h1 className="font-sans text-4xl font-semibold leading-[1.1] text-ink md:text-5xl">
-              The only advocate on the patient&rsquo;s side of the bill.
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
-              Paxer audits the medical bills and EOBs you actually receive, finds the errors, and
-              helps you get your own money back. Every other tool in medical billing works for the
-              hospital. Paxer works for you.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button asChild size="lg">
-                <Link href={PRIMARY_CTA.href}>{PRIMARY_CTA.label}</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/how-it-works">See how it works</Link>
-              </Button>
+              <Kicker className="mb-5">Patient-side medical billing advocate</Kicker>
+              <h1 className="font-sans text-4xl font-semibold leading-[1.08] text-ink md:text-5xl">
+                The <span className="text-gradient">advocate</span> on the patient&rsquo;s side of
+                the bill.
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
+                Paxer audits the medical bills and EOBs you actually receive, finds the errors, and
+                helps you get your own money back. Most tools in medical billing work for the
+                hospital. Paxer works for you.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Button asChild size="lg">
+                  <a href={REQUEST_DEMO_URL} target="_blank" rel="noopener noreferrer">
+                    Request a demo
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                </Button>
+                <Button asChild size="lg" variant="outline">
+                  <Link href="/how-it-works">How it works</Link>
+                </Button>
+              </div>
+              <p className="mt-4 text-sm text-muted">
+                Prefer to dive in yourself?{' '}
+                <Link href={SELF_SERVE.href} className="font-medium text-accent hover:underline">
+                  {SELF_SERVE.label} &rarr;
+                </Link>
+              </p>
             </div>
-            </div>
-            <div className="flex justify-center animate-fade-up [animation-delay:120ms] lg:justify-end">
-              <HeroBillDemo />
+            <div className="relative flex justify-center animate-fade-up [animation-delay:120ms] lg:justify-end">
+              {/* Soft accent halo behind the floating demo card */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,hsl(var(--accent)/0.22),transparent_70%)] blur-2xl"
+              />
+              <div className="relative animate-float">
+                <HeroBillDemo />
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Stat blocks */}
+        {/* Stat blocks — three distinct, animated visuals */}
         <section className="border-y border-rule bg-soft/40">
-          <div className="container grid grid-cols-1 gap-8 py-12 sm:grid-cols-3">
-            <Reveal delay={0}>
-              <StatBlock
-                label="Of bills contain errors"
-                value="80%"
-                hint="Industry estimates put error rates on complex, itemized hospital bills in this range."
-              />
-            </Reveal>
-            <Reveal delay={90}>
-              <StatBlock
-                label="Recoverable on a complex bill"
-                value="$10k+"
-                hint="Duplicate charges, denials, and cost-share errors on a single itemized hospital bill can add up to thousands — industry estimates."
-              />
-            </Reveal>
-            <Reveal delay={180}>
-              <StatBlock
-                label="You keep"
-                value="100%"
-                hint="Paxer Plus is a flat subscription — never a cut of what you recover."
-              />
-            </Reveal>
-          </div>
+          <StatShowcase />
         </section>
 
         {/* Error types */}
@@ -84,14 +89,7 @@ export default function LandingPage() {
           <h2 className="max-w-2xl font-sans text-3xl font-semibold text-ink">
             Four kinds of error, hiding in plain sight.
           </h2>
-          <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-2">
-            {ERROR_TYPES.map((e, i) => (
-              <Reveal key={e.title} className="bg-card p-8" delay={i * 70}>
-                <h3 className="font-sans text-xl font-semibold text-ink">{e.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted">{e.body}</p>
-              </Reveal>
-            ))}
-          </div>
+          <ErrorTypes />
         </section>
 
         {/* How it works — at-a-glance teaser; the worked example lives on /how-it-works */}
@@ -101,53 +99,46 @@ export default function LandingPage() {
             <h2 className="max-w-2xl font-sans text-3xl font-semibold text-ink">
               Three steps, and you stay in control.
             </h2>
-            <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-              {PROCESS_STEPS.map((c, i) => (
-                <Reveal key={c.step} delay={i * 90}>
-                  <Card className="h-full transition duration-200 hover:-translate-y-1 hover:shadow-md">
-                    <CardContent className="pt-6">
-                      <span className="font-mono text-sm text-accent">{c.step}</span>
-                      <h3 className="mt-3 font-sans text-xl font-semibold text-ink">{c.title}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-muted">{c.body}</p>
-                    </CardContent>
-                  </Card>
-                </Reveal>
-              ))}
-            </div>
-            <div className="mt-8">
+            <ProcessSteps />
+            <div className="mt-10">
               <Link
                 href="/how-it-works"
                 className="text-sm font-medium text-accent hover:underline"
               >
-                See it on a real bill — a worked example &amp; FAQ &rarr;
+                See it on an example bill: a full walkthrough and FAQ &rarr;
               </Link>
             </div>
           </div>
         </section>
 
+        {/* Product showcase — scroll-driven dashboard reveal */}
+        <section className="overflow-hidden">
+          <ScrollShowcase />
+        </section>
+
         {/* For businesses & developers */}
         <section className="container py-20">
           <Reveal>
-          <div className="flex flex-col items-start justify-between gap-6 rounded-lg border border-rule bg-soft/40 p-8 md:flex-row md:items-center">
-            <div className="max-w-xl">
-              <Kicker className="mb-2">For businesses &amp; developers</Kicker>
-              <h2 className="font-sans text-2xl font-semibold text-ink">
-                The same audit engine, as an API.
-              </h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted">
-                For {API_BUYERS} — the parties whose incentives line up with the patient. Check a
-                bill for errors with one API call. Free to start, then usage-based.
-              </p>
+            <div className="flex flex-col items-start justify-between gap-6 rounded-lg border border-rule bg-soft/40 p-8 md:flex-row md:items-center">
+              <div className="max-w-xl">
+                <Kicker className="mb-2">For businesses &amp; developers</Kicker>
+                <h2 className="font-sans text-2xl font-semibold text-ink">
+                  The same audit engine, as an API.
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted">
+                  For {API_BUYERS}, the parties whose incentives line up with the patient. Check a
+                  bill for errors with one API call. Free to start, then tiered plans.
+                </p>
+              </div>
+              <div className="flex shrink-0 gap-3">
+                <Button asChild variant="outline">
+                  <Link href="/developers">Developers</Link>
+                </Button>
+                <Button asChild variant="outline">
+                  <Link href="/pricing">Pricing</Link>
+                </Button>
+              </div>
             </div>
-            <div className="flex shrink-0 gap-3">
-              <Button asChild variant="outline">
-                <Link href="/developers">Developers</Link>
-              </Button>
-              <Button asChild variant="outline">
-                <Link href="/pricing">Pricing</Link>
-              </Button>
-            </div>
-          </div>
           </Reveal>
         </section>
 
@@ -158,13 +149,17 @@ export default function LandingPage() {
               See what your bill is hiding.
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-muted">
-              {DEMO_ENABLED
-                ? 'Walk the full loop on a seeded demo case. No sign-up required.'
-                : 'Add your first bill and see what it’s hiding in minutes.'}
+              Book a guided walkthrough, or add your first bill and get your findings in minutes.
             </p>
-            <div className="mt-8">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild size="lg">
-                <Link href={PRIMARY_CTA.href}>{PRIMARY_CTA.label}</Link>
+                <a href={REQUEST_DEMO_URL} target="_blank" rel="noopener noreferrer">
+                  Request a demo
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link href={SELF_SERVE.href}>{SELF_SERVE.label}</Link>
               </Button>
             </div>
           </Reveal>

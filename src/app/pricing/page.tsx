@@ -5,15 +5,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
+import { TierReveal } from '@/components/pricing/tier-reveal';
 import { Check } from 'lucide-react';
-import { env } from '@/lib/env';
 import { API_PLANS } from '@/lib/billing/plans';
+import { CONSUMER_PLAN } from '@/lib/billing/consumer';
+
+const description =
+  'Your first medical-bill audit is free. Paxer Plus unlocks unlimited audits and dispute letters: a flat subscription, keep 100% of recoveries.';
 
 export const metadata: Metadata = {
-  title: 'Pricing — Paxer Plus & Audit API',
-  description:
-    'Your first medical-bill audit is free. Paxer Plus unlocks unlimited audits and dispute letters — a flat subscription, no contingency, keep 100% of recoveries. The Audit API is usage-based for businesses.',
+  title: 'Pricing',
+  description,
   alternates: { canonical: '/pricing' },
+  openGraph: { title: 'Pricing · Paxer', description, url: '/pricing' },
 };
 
 function Tier({
@@ -37,8 +41,8 @@ function Tier({
 }) {
   return (
     <Card
-      className={`h-full transition duration-200 hover:-translate-y-1 hover:shadow-md ${
-        highlight ? 'border-2 border-accent' : ''
+      className={`card-hover h-full ${
+        highlight ? 'border-2 border-accent shadow-glow' : ''
       }`}
     >
       <CardContent className="flex h-full flex-col gap-5 pt-6">
@@ -69,76 +73,82 @@ function Tier({
 }
 
 export default function PricingPage() {
-  const plusPrice = env.PAXER_CONSUMER_PRICE_LABEL || '$19/mo';
+  const plusPrice = CONSUMER_PLAN.priceLabel;
 
   return (
     <div className="flex min-h-screen flex-col">
       <MarketingHeader />
       <main className="flex-1">
         <section className="container py-16 md:py-20">
-          <div className="max-w-2xl animate-fade-up">
+          <div className="mx-auto max-w-2xl text-center animate-fade-up">
             <Kicker className="mb-4">Pricing</Kicker>
             <h1 className="font-sans text-4xl font-semibold leading-[1.1] text-ink md:text-5xl">
               Your first audit is free.
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-muted">
-              Your first bill audit is free. Paxer Plus unlocks unlimited audits and dispute
-              letters — a flat subscription, never a cut of your recovery. The same engine is
-              available to businesses as an API.
+              Paxer Plus unlocks unlimited audits and dispute letters: a flat subscription,
+              never a cut of your recovery. The same engine is available to businesses as an
+              API.
             </p>
           </div>
 
           <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-            <Tier
-              name="Paxer Plus"
-              price={plusPrice}
-              sub="For patients. First audit free; Plus unlocks unlimited audits + dispute letters. Flat, no contingency."
-              highlight
-              features={[
-                'Unlimited bill audits',
-                'AI-drafted dispute letters (you review & send)',
-                'Track outcomes and recoveries',
-                'Keep 100% of what you recover — no contingency',
-                'Cancel anytime',
-              ]}
-              cta="Get started free"
-              href="/login"
-            />
-            <Tier
-              name="Audit API"
-              price={`Free → ${API_PLANS.scale.priceLabel}`}
-              sub="For developers: embed the audit engine in your own software. Self-serve, billed per API call."
-              features={[
-                'Embedded /api/v1/audit endpoint — your code calls it',
-                `Free to start — ${API_PLANS.free.monthlyQuota} API calls/mo`,
-                `Pro — ${API_PLANS.pro.priceLabel} for ${API_PLANS.pro.monthlyQuota.toLocaleString()} calls`,
-                `Scale — ${API_PLANS.scale.priceLabel} for ${API_PLANS.scale.monthlyQuota.toLocaleString()} calls`,
-                'Enterprise volume & SLA — contact us',
-              ]}
-              cta="Get an API key — free"
-              href="/login?next=/app/settings"
-            />
-            <Tier
-              name="Employers & TPAs"
-              price="Let’s talk"
-              sub="Give your workforce Paxer as a benefit — per-member (PEPM) or shared-savings, sales-led."
-              features={[
-                'Bill-review benefit for your whole population',
-                'Per-member pricing (PEPM) or shared savings',
-                'Aggregate savings reporting (your people recovered $X)',
-                'Member roster import & rollout',
-                'Dedicated support · design-partner program now onboarding',
-              ]}
-              cta="Contact us"
-              href="mailto:ly3569@princeton.edu?subject=Paxer%20for%20employers"
-              external
-            />
+            <TierReveal index={0} highlight>
+              <Tier
+                name="Paxer Plus"
+                price={plusPrice}
+                sub="For patients. First audit free; Paxer Plus unlocks unlimited audits and dispute letters. Flat, no contingency."
+                highlight
+                features={[
+                  'Unlimited bill audits',
+                  'AI-drafted dispute letters (you review & send)',
+                  'Track outcomes and recoveries',
+                  'Keep 100% of what you recover, no contingency',
+                  'Cancel anytime',
+                ]}
+                cta="Get started free"
+                href="/login"
+              />
+            </TierReveal>
+            <TierReveal index={1}>
+              <Tier
+                name="Audit API"
+                price={`Free → ${API_PLANS.scale.priceLabel}`}
+                sub="For developers: embed the audit engine in your own software. Self-serve monthly plans, sized by call volume."
+                features={[
+                  'Embedded /api/v1/audit endpoint: your code calls it',
+                  `Free to start: ${API_PLANS.free.monthlyQuota} API calls/mo`,
+                  `Pro: ${API_PLANS.pro.priceLabel} for ${API_PLANS.pro.monthlyQuota.toLocaleString()} calls`,
+                  `Scale: ${API_PLANS.scale.priceLabel} for ${API_PLANS.scale.monthlyQuota.toLocaleString()} calls`,
+                  'Enterprise volume & SLA: contact us',
+                ]}
+                cta="Get a free API key"
+                href="/login?next=/app/settings"
+              />
+            </TierReveal>
+            <TierReveal index={2}>
+              <Tier
+                name="Employers & TPAs"
+                price="Let’s talk"
+                sub="Give your workforce Paxer as a benefit: per-member (PEPM), sales-led."
+                features={[
+                  'Bill-review benefit for your whole population',
+                  'Per-member pricing (PEPM)',
+                  'Aggregate savings reporting for your population',
+                  'Member roster import & rollout',
+                  'Dedicated support · design-partner program now onboarding',
+                ]}
+                cta="Contact us"
+                href="mailto:hello@paxer.app?subject=Paxer%20for%20employers"
+                external
+              />
+            </TierReveal>
           </div>
 
           <p className="mt-10 text-center text-sm text-muted">
             Questions about pricing?{' '}
-            <a className="text-accent hover:underline" href="mailto:ly3569@princeton.edu?subject=Paxer%20pricing">
-              ly3569@princeton.edu
+            <a className="text-accent hover:underline" href="mailto:hello@paxer.app?subject=Paxer%20pricing">
+              hello@paxer.app
             </a>
           </p>
         </section>

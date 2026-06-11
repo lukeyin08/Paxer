@@ -38,7 +38,8 @@ export function ConsumerPaywall({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=open]:fade-in" />
         <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-rule bg-card p-6 shadow-xl focus:outline-none data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95">
-          <Dialog.Close className="absolute right-4 top-4 text-muted transition-colors hover:text-ink">
+          {/* Padded hit area: a bare 16px icon is nearly untappable on phones. */}
+          <Dialog.Close className="absolute right-1 top-1 rounded-md p-3 text-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <X className="h-4 w-4" />
             <span className="sr-only">Close</span>
           </Dialog.Close>
@@ -53,7 +54,7 @@ export function ConsumerPaywall({
               </Dialog.Title>
               <Dialog.Description className="mt-2 text-sm leading-relaxed text-muted">
                 Paxer Plus ({priceLabel}) unlocks unlimited audits and dispute letters so you can
-                chase the money down — a flat subscription, never a cut of what you recover.
+                chase the money down. A flat subscription, never a cut of what you recover.
               </Dialog.Description>
             </div>
 
@@ -73,11 +74,11 @@ export function ConsumerPaywall({
 
             {configured ? (
               <Button onClick={subscribe} disabled={pending} className="w-full">
-                {pending ? 'Starting checkout…' : `Subscribe — ${priceLabel}`}
+                {pending ? 'Starting checkout…' : `Subscribe for ${priceLabel}`}
               </Button>
             ) : (
               <p className="rounded-md border border-rule bg-soft/50 p-3 text-xs text-muted">
-                Subscriptions aren&rsquo;t switched on yet — check back shortly.
+                Subscriptions aren&rsquo;t switched on yet. Check back shortly.
               </p>
             )}
             {error && <p className="text-sm text-danger">{error}</p>}

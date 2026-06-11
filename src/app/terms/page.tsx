@@ -2,9 +2,14 @@ import type { Metadata } from 'next';
 import { LegalLayout, LegalSection } from '@/components/legal-layout';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service — Paxer',
+  title: 'Terms of Service',
   description: 'The terms that govern your use of Paxer.',
   alternates: { canonical: '/terms' },
+  openGraph: {
+    title: 'Terms of Service · Paxer',
+    description: 'The terms that govern your use of Paxer.',
+    url: '/terms',
+  },
 };
 
 export default function TermsPage() {
@@ -36,7 +41,7 @@ export default function TermsPage() {
       <LegalSection heading="3. Fees & subscription">
         <p>
           Your first bill audit is free. Additional audits and generating dispute letters require a
-          <strong> Paxer Plus</strong> subscription — a flat recurring software fee, shown to you
+          <strong> Paxer Plus</strong> subscription, a flat recurring software fee, shown to you
           before you subscribe. This is <strong>not</strong> a contingency or success fee: Paxer
           never takes a percentage of any amount you recover, and you keep 100% of your recoveries.
         </p>
@@ -92,7 +97,7 @@ export default function TermsPage() {
       <LegalSection heading="8. Contact us">
         <p>
           Questions about these Terms? Contact us at{' '}
-          <span className="font-mono">ly3569@princeton.edu</span>.
+          <span className="font-mono">hello@paxer.app</span>.
         </p>
       </LegalSection>
     </LegalLayout>

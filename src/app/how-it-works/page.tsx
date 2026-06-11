@@ -1,19 +1,22 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Kicker } from '@/components/brand/kicker';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
-import { formatUsd } from '@/lib/utils';
-import { env } from '@/lib/env';
+import { Reveal } from '@/components/reveal';
+import { WorkedExample } from '@/components/how-it-works/worked-example';
+import { CONSUMER_PLAN } from '@/lib/billing/consumer';
 import { ERROR_TYPES } from '@/lib/marketing';
 
+const description =
+  'See how Paxer audits a medical bill, finds the errors, drafts a dispute letter, and helps you recover your money — including a worked example.';
+
 export const metadata: Metadata = {
-  title: 'How Paxer audits & disputes your medical bills',
-  description:
-    'See how Paxer audits a medical bill, finds the errors, drafts a dispute letter, and helps you recover your money — with a worked example.',
+  title: 'How it works',
+  description,
   alternates: { canonical: '/how-it-works' },
+  openGraph: { title: 'How it works · Paxer', description, url: '/how-it-works' },
 };
 
 // Illustrative example (not a real patient). Dollar figures are made up to show
@@ -38,8 +41,8 @@ const EXAMPLE_FINDINGS = [
   },
   {
     title: 'Surprise / balance bill',
-    body: 'The out-of-network ER physician billed above your in-network cost-share — a likely No Surprises Act violation.',
-    amount: 240,
+    body: 'The out-of-network ER physician billed above your in-network cost-share, a likely No Surprises Act violation.',
+    amount: 260,
   },
   {
     title: 'Benchmark overcharge',
@@ -51,15 +54,15 @@ const EXAMPLE_FINDINGS = [
 const FAQS = (priceLabel: string) => [
   {
     q: 'How much does Paxer cost?',
-    a: `Your first bill audit is free. After that, Paxer Plus — ${priceLabel}, a flat subscription (not a contingency fee) — unlocks unlimited audits and dispute letters. You keep 100% of anything you recover, and can cancel anytime.`,
+    a: `Your first bill audit is free. After that, Paxer Plus is ${priceLabel}: a flat subscription (not a contingency fee) that unlocks unlimited audits and dispute letters. You keep 100% of anything you recover, and can cancel anytime.`,
   },
   {
     q: 'Will Paxer contact my provider or insurer for me?',
-    a: 'No — you stay in control. Paxer drafts the dispute letter; you review it and send it yourself, so nothing goes out without your say-so.',
+    a: 'No. You stay in control. Paxer drafts the dispute letter; you review it and send it yourself, so nothing goes out without your say-so.',
   },
   {
     q: 'What kinds of errors does it find?',
-    a: `${ERROR_TYPES.map((e) => e.title).join(', ')} — see the example above for how each looks on an example bill.`,
+    a: `${ERROR_TYPES.map((e) => e.title).join(', ')}. The worked example shows several of these on a single ER bill.`,
   },
   {
     q: 'Is my information secure?',
@@ -71,12 +74,12 @@ const FAQS = (priceLabel: string) => [
   },
   {
     q: 'What if my dispute isn’t successful?',
-    a: 'Your Paxer Plus subscription is the same flat price either way — Paxer never takes a cut of recoveries, and dispute outcomes are never guaranteed.',
+    a: 'Your Paxer Plus subscription is the same flat price either way. Paxer never takes a cut of recoveries, and dispute outcomes are never guaranteed.',
   },
 ];
 
 export default function HowItWorksPage() {
-  const plusPrice = env.PAXER_CONSUMER_PRICE_LABEL || '$19/mo';
+  const plusPrice = CONSUMER_PLAN.priceLabel;
   // FAQ structured data (schema.org) — eligible for FAQ rich results in search.
   const faqLd = {
     '@context': 'https://schema.org',
@@ -87,9 +90,6 @@ export default function HowItWorksPage() {
       acceptedAnswer: { '@type': 'Answer', text: f.a },
     })),
   };
-  const totalBilled = EXAMPLE_LINES.reduce((s, l) => s + l.charge, 0);
-  const totalFound = EXAMPLE_FINDINGS.reduce((s, f) => s + f.amount, 0);
-
   return (
     <div className="flex min-h-screen flex-col">
       <script
@@ -101,14 +101,14 @@ export default function HowItWorksPage() {
       <main className="flex-1">
         {/* Intro — orient in prose, then prove it with the worked example below */}
         <section className="container py-16 md:py-24">
-          <div className="max-w-3xl">
+          <div className="mx-auto max-w-3xl text-center">
             <Kicker className="mb-4">How it works</Kicker>
             <h1 className="text-4xl font-semibold leading-[1.1] text-ink md:text-5xl">
               See exactly what your bill is hiding.
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted">
+            <p className="mt-5 mx-auto max-w-2xl text-lg leading-relaxed text-muted">
               You add a bill, Paxer audits every charge against your plan and regional prices, flags
-              the errors with the math, and drafts the dispute letter you review and send — keeping
+              the errors with the math, and drafts the dispute letter you review and send, keeping
               you in control the whole way. Here&rsquo;s what that looks like on a worked example.
             </p>
           </div>
@@ -122,70 +122,20 @@ export default function HowItWorksPage() {
               See it on an example ER bill.
             </h2>
             <p className="mt-2 max-w-2xl text-muted">
-              Illustrative only — not a real patient. It shows the kinds of errors Paxer surfaces.
+              Illustrative only, not a real patient. It shows the kinds of errors Paxer surfaces.
             </p>
 
-            <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
-              {/* The bill */}
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="kicker mb-4">The bill</p>
-                  <div className="flex flex-col divide-y divide-rule">
-                    {EXAMPLE_LINES.map((l, i) => (
-                      <div key={i} className="flex items-center justify-between gap-3 py-3 text-sm">
-                        <span className="text-ink">
-                          {l.desc}
-                          {l.note && (
-                            <span className="ml-2 font-mono text-[0.65rem] uppercase tracking-wider text-warning">
-                              {l.note}
-                            </span>
-                          )}
-                        </span>
-                        <span className="tabular-nums text-muted">{formatUsd(l.charge)}</span>
-                      </div>
-                    ))}
-                    <div className="flex items-center justify-between py-3 text-sm font-semibold">
-                      <span className="text-ink">Total billed</span>
-                      <span className="tabular-nums text-ink">{formatUsd(totalBilled)}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+            <WorkedExample lines={EXAMPLE_LINES} findings={EXAMPLE_FINDINGS} />
 
-              {/* The findings */}
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="kicker mb-4">What Paxer finds</p>
-                  <div className="flex flex-col gap-4">
-                    {EXAMPLE_FINDINGS.map((f) => (
-                      <div key={f.title} className="flex items-start justify-between gap-4">
-                        <div>
-                          <p className="text-sm font-medium text-ink">{f.title}</p>
-                          <p className="text-sm leading-relaxed text-muted">{f.body}</p>
-                        </div>
-                        <span className="shrink-0 tabular-nums font-semibold text-success">
-                          {formatUsd(f.amount)}
-                        </span>
-                      </div>
-                    ))}
-                    <div className="mt-1 flex items-center justify-between border-t border-rule pt-4 text-sm font-semibold">
-                      <span className="text-ink">Estimated recoverable</span>
-                      <span className="tabular-nums text-success">{formatUsd(totalFound)}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="mt-6 rounded-md border border-rule bg-card p-6">
+            <Reveal className="mt-6 rounded-md border border-rule bg-card p-6">
               <p className="text-sm leading-relaxed text-muted">
                 <span className="font-medium text-ink">Then Paxer drafts the letter.</span> It cites
                 each finding and the math, in plain language. You review and edit it, download the
                 PDF, and send it to your provider or insurer. Paxer tracks the response deadline and
-                reminds you — and when money comes back, you log the recovery and see exactly what you
+                reminds you, and when money comes back, you log the recovery and see exactly what you
                 keep.
               </p>
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -194,11 +144,11 @@ export default function HowItWorksPage() {
           <Kicker className="mb-3">FAQ</Kicker>
           <h2 className="text-3xl font-semibold text-ink">Common questions.</h2>
           <div className="mt-8 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-rule bg-rule md:grid-cols-2">
-            {FAQS(plusPrice).map((f) => (
-              <div key={f.q} className="bg-card p-6">
+            {FAQS(plusPrice).map((f, i) => (
+              <Reveal key={f.q} delay={i * 70} className="h-full bg-card p-6">
                 <h3 className="text-base font-semibold text-ink">{f.q}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{f.a}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </section>
@@ -210,7 +160,7 @@ export default function HowItWorksPage() {
           </h2>
           <div className="mt-8">
             <Button asChild size="lg">
-              <Link href="/login">Start a case</Link>
+              <Link href="/login">Audit your first bill</Link>
             </Button>
           </div>
         </section>

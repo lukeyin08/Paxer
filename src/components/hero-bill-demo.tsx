@@ -1,4 +1,3 @@
-import { AlertTriangle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 function Row({
@@ -11,83 +10,87 @@ function Row({
   amount: string;
 }) {
   return (
-    <div className="flex items-baseline justify-between gap-3">
-      <span className="text-sm text-muted">
-        {desc} <span className="font-mono text-xs text-muted">{code}</span>
+    <div className="flex items-baseline justify-between gap-4 text-base text-muted">
+      <span>
+        {desc} <span className="font-mono text-sm text-muted/70">{code}</span>
       </span>
-      <span className="font-mono text-sm text-muted">{amount}</span>
+      <span className="font-mono tabular-nums">{amount}</span>
     </div>
   );
 }
 
 /**
  * Illustrative hero visual — a sample EOB with one error Paxer caught (a
- * cost-share overcharge), shown as billed-vs-correct so the mistake is obvious,
- * plus the resulting overcharge. Static/decorative; labelled as an example.
+ * cost-share overcharge). The wrong and right amounts sit side by side in
+ * labelled boxes so the mistake reads at a glance, and the recovered total
+ * anchors the card. Static/decorative; labelled as an example.
  */
 export function HeroBillDemo() {
   return (
-    <div className="w-full max-w-md">
-      <Card className="overflow-hidden shadow-sm">
+    <div className="w-full max-w-lg">
+      <Card className="overflow-hidden border-accent/20 shadow-glow">
         <CardContent className="p-0">
-          <div className="flex items-center justify-between border-b border-rule px-5 py-3">
-            <span className="font-sans text-sm font-semibold text-ink">Riverside Medical Center</span>
-            <span className="font-mono text-[0.6rem] uppercase tracking-wider text-muted">
-              Your EOB
+          <div className="flex items-center justify-between border-b border-rule px-6 py-4">
+            <span className="text-base font-semibold text-ink">Riverside Medical Center</span>
+            <span className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
+              EOB
             </span>
           </div>
 
-          <div className="flex flex-col gap-3 px-5 py-4">
+          <div className="flex flex-col gap-4 px-6 py-5">
             <Row desc="Office visit, established" code="99213" amount="$30.00" />
 
-            {/* The flagged line — billed vs. correct, with the why. */}
-            <div className="-mx-5 border-y border-rule bg-soft px-5 py-3">
+            {/* The flagged line — wrong vs. right, side by side, with the why. */}
+            <div className="-mx-6 border-y border-rule bg-soft px-6 py-4">
               <div className="flex items-center justify-between gap-3">
-                <span className="text-sm font-semibold text-ink">
-                  MRI, lumbar spine <span className="font-mono text-xs text-muted">72148</span>
+                <span className="text-base font-semibold text-ink">
+                  MRI, lumbar spine{' '}
+                  <span className="font-mono text-sm font-normal text-muted">72148</span>
                 </span>
-                <span className="rounded-full bg-danger/10 px-2 py-0.5 font-mono text-[0.6rem] font-medium uppercase tracking-wider text-danger">
+                <span className="shrink-0 rounded-full bg-danger/10 px-2.5 py-1 font-mono text-[0.65rem] font-medium uppercase tracking-wider text-danger">
                   Overcharged
                 </span>
               </div>
 
-              <div className="mt-2.5 flex flex-col gap-1.5 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted">What you were billed</span>
-                  <span className="font-mono text-muted line-through">$720.00</span>
+              <div className="mt-3 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
+                <div className="rounded-lg border border-danger/20 bg-danger/[0.04] px-4 py-3">
+                  <p className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
+                    You were billed
+                  </p>
+                  <p className="mt-1 font-mono text-xl font-semibold tabular-nums text-danger md:text-2xl">
+                    $720.00
+                  </p>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-ink">Your share under your plan</span>
-                  <span className="font-mono font-semibold text-ink">$240.00</span>
+                <div className="rounded-lg border border-success/25 bg-success/[0.06] px-4 py-3">
+                  <p className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
+                    Your correct share
+                  </p>
+                  <p className="mt-1 font-mono text-xl font-semibold tabular-nums text-success md:text-2xl">
+                    $240.00
+                  </p>
                 </div>
               </div>
 
-              <div className="mt-2.5 flex items-start gap-1.5 text-xs font-medium text-danger">
-                <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                <span>Cost-share error — billed at 60% coinsurance; your plan is 20%.</span>
-              </div>
+              <p className="mt-3 text-sm leading-relaxed text-muted">
+                You were billed at 60% coinsurance. Your plan says 20%.
+              </p>
             </div>
 
             <Row desc="Physical therapy, 30 min" code="97110" amount="$95.00" />
           </div>
 
-          <div className="flex items-center justify-between border-t border-rule bg-soft/60 px-5 py-4">
-            <div>
-              <p className="font-mono text-[0.6rem] uppercase tracking-wider text-muted">
-                Paxer found
-              </p>
-              <p className="font-sans text-sm text-ink">1 cost-share error</p>
-            </div>
+          <div className="flex items-center justify-between gap-4 border-t border-rule bg-soft/60 px-6 py-5">
+            <span className="text-base text-muted">Paxer caught 1 error</span>
             <div className="text-right">
-              <p className="font-mono text-[0.6rem] uppercase tracking-wider text-muted">
-                You were overcharged
+              <p className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
+                Overcharged by
               </p>
-              <p className="font-sans text-xl font-semibold text-accent">$480</p>
+              <p className="mt-0.5 text-3xl font-semibold leading-none text-accent">$480</p>
             </div>
           </div>
         </CardContent>
       </Card>
-      <p className="mt-3 text-center text-xs text-muted">Illustrative example, not a real bill.</p>
+      <p className="mt-3 text-center text-sm text-muted">Illustrative example, not a real bill.</p>
     </div>
   );
 }

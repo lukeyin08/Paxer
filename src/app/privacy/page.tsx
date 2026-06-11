@@ -2,9 +2,14 @@ import type { Metadata } from 'next';
 import { LegalLayout, LegalSection } from '@/components/legal-layout';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — Paxer',
+  title: 'Privacy Policy',
   description: 'How Paxer collects, uses, protects, and shares your information.',
   alternates: { canonical: '/privacy' },
+  openGraph: {
+    title: 'Privacy Policy · Paxer',
+    description: 'How Paxer collects, uses, protects, and shares your information.',
+    url: '/privacy',
+  },
 };
 
 export default function PrivacyPage() {
@@ -33,7 +38,7 @@ export default function PrivacyPage() {
           our audit engine to identify potential billing errors; generate dispute-letter drafts for
           your review; send you account and reminder emails; and improve the accuracy of our price
           benchmarks using de-identified, aggregated charge data (billing code, region, and amount
-          only — never your identity).
+          only, never your identity).
         </p>
       </LegalSection>
 
@@ -43,8 +48,8 @@ export default function PrivacyPage() {
           process it on our behalf under contract, including: our cloud hosting and database
           provider; our file-storage provider; our email-delivery provider; and our AI provider,
           which processes document contents to extract charges and draft letters. Where required for
-          handling protected health information, we will enter into Business Associate Agreements
-          (BAAs) with these providers before processing real patient data.
+          handling protected health information, we enter into Business Associate Agreements (BAAs)
+          with these providers.
         </p>
         <p>
           We may also disclose information when required by law, or to protect the rights, safety,
@@ -81,7 +86,7 @@ export default function PrivacyPage() {
       <LegalSection heading="7. Contact us">
         <p>
           Questions about this policy or your data? Contact us at{' '}
-          <span className="font-mono">ly3569@princeton.edu</span>.
+          <span className="font-mono">hello@paxer.app</span>.
         </p>
       </LegalSection>
     </LegalLayout>

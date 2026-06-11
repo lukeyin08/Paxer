@@ -1,7 +1,6 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  darkMode: ['class'],
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     container: {
@@ -69,14 +68,39 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      boxShadow: {
+        // Accent glow used by the primary button and floating surfaces.
+        'glow-sm': '0 4px 24px -8px hsl(var(--glow) / 0.45)',
+        glow: '0 0 0 1px hsl(var(--accent) / 0.18), 0 12px 48px -12px hsl(var(--glow) / 0.55)',
+      },
+      transitionTimingFunction: {
+        // Soft "ease-out-expo"-ish curve used by reveals/entrances.
+        reveal: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      },
       keyframes: {
         'fade-up': {
-          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '0%': { opacity: '0', transform: 'translateY(12px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        aurora: {
+          '0%, 100%': { transform: 'translate3d(0, 0, 0) scale(1)' },
+          '33%': { transform: 'translate3d(3%, -4%, 0) scale(1.08)' },
+          '66%': { transform: 'translate3d(-3%, 2%, 0) scale(0.94)' },
+        },
+        'glow-pulse': {
+          '0%, 100%': { opacity: '0.35' },
+          '50%': { opacity: '0.7' },
         },
       },
       animation: {
-        'fade-up': 'fade-up 0.5s ease-out both',
+        'fade-up': 'fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both',
+        float: 'float 6s ease-in-out infinite',
+        aurora: 'aurora 18s ease-in-out infinite',
+        'glow-pulse': 'glow-pulse 5s ease-in-out infinite',
       },
     },
   },

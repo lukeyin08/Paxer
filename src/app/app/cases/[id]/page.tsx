@@ -53,7 +53,9 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
       <section className="grid grid-cols-2 gap-6 sm:grid-cols-3">
         <StatBlock
           label="Total billed"
-          value={<Money amount={c.totalBilled === null ? null : Number(c.totalBilled)} />}
+          value={
+            <Money amount={c.totalBilled === null ? null : Number(c.totalBilled)} size="inherit" />
+          }
         />
         <StatBlock
           label="You were charged"
@@ -64,6 +66,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
                   ? null
                   : Number(c.totalPatientResponsibility)
               }
+              size="inherit"
             />
           }
         />
@@ -71,6 +74,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
           label="Est. recoverable"
           value={
             <Money
+              size="inherit"
               amount={c.estimatedRecoverable === null ? null : Number(c.estimatedRecoverable)}
               estimate
             />

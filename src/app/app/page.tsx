@@ -42,8 +42,14 @@ export default async function DashboardPage() {
 
       <section className="grid grid-cols-2 gap-6 sm:grid-cols-4">
         <StatBlock label="Cases" value={myCases.length} />
-        <StatBlock label="Est. recoverable" value={<Money amount={totalEstimated} estimate />} />
-        <StatBlock label="Recovered" value={<Money amount={recovered.totalRecovered} />} />
+        <StatBlock
+          label="Est. recoverable"
+          value={<Money amount={totalEstimated} estimate size="inherit" />}
+        />
+        <StatBlock
+          label="Recovered"
+          value={<Money amount={recovered.totalRecovered} size="inherit" />}
+        />
         <StatBlock label="Open disputes" value={openDisputes} />
       </section>
 

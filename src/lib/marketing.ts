@@ -32,6 +32,9 @@ export const PROCESS_STEPS = [
 export const API_BUYERS =
   'patient-billing platforms, TPAs, self-insured employers, and HSA/FSA admins';
 
+/** External booking link for a guided demo (Google Calendar appointment page). */
+export const REQUEST_DEMO_URL = 'https://calendar.app.google/JNSip5vZvhQBQgiTA';
+
 export const ERROR_TYPES = [
   {
     title: 'Duplicate & unbundled charges',

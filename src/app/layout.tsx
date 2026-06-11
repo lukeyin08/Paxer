@@ -1,19 +1,22 @@
 import type { Metadata } from 'next';
 import { cn } from '@/lib/utils';
 import { fontSans, fontMono } from '@/lib/fonts';
+import { SiteBackground } from '@/components/site-background';
+import { CONSUMER_PLAN } from '@/lib/billing/consumer';
 import './globals.css';
 
 const SITE_URL = process.env.AUTH_URL || 'https://paxer.app';
-const TITLE = 'Paxer — the advocate on the patient’s side of the bill';
+const TITLE = 'Paxer: the advocate on the patient’s side of the bill';
 const DESCRIPTION =
-  'Paxer audits your medical bills and EOBs, finds billing errors — overcharges, duplicates, denials, surprise bills — and drafts the dispute letters to get your money back. Your first audit is free.';
+  'Paxer audits your medical bills and EOBs, finds the billing errors, and drafts the dispute letters to get your money back. Your first audit is free.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  // Keyword-rich default for search; sub-pages append "· Paxer" via the template.
+  // Tab titles are just the section name (e.g. "Pricing"); the home tab is
+  // "Paxer". Richer phrasing lives in the OG/Twitter title for social cards.
   title: {
-    default: 'Paxer — Find & Dispute Medical Bill Errors',
-    template: '%s · Paxer',
+    default: 'Paxer',
+    template: '%s',
   },
   description: DESCRIPTION,
   applicationName: 'Paxer',
@@ -29,7 +32,6 @@ export const metadata: Metadata = {
     'overcharged medical bill',
     'medical bill help',
   ],
-  alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
     siteName: 'Paxer',
@@ -45,10 +47,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Applies the saved theme (default: dark, the brand default) before first paint
-// so there's no flash of the wrong theme. Light is opt-in via the toggle.
-const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem('theme')||'dark';if(t==='dark')document.documentElement.classList.add('dark');}catch(e){document.documentElement.classList.add('dark');}})();`;
-
 // Structured data (schema.org) so search engines understand the brand + site.
 const JSON_LD = {
   '@context': 'https://schema.org',
@@ -62,7 +60,7 @@ const JSON_LD = {
       description: DESCRIPTION,
       contactPoint: {
         '@type': 'ContactPoint',
-        email: 'ly3569@princeton.edu',
+        email: 'hello@paxer.app',
         contactType: 'customer support',
       },
     },
@@ -85,11 +83,12 @@ const JSON_LD = {
       offers: {
         '@type': 'AggregateOffer',
         lowPrice: '0',
-        highPrice: '19',
+        // Keep structured data in lock-step with the displayed Paxer Plus price.
+        highPrice: CONSUMER_PLAN.priceLabel.match(/\d+(\.\d+)?/)?.[0] ?? '19',
         priceCurrency: 'USD',
         offerCount: 2,
         description:
-          'First medical-bill audit free; Paxer Plus is a flat monthly subscription for unlimited audits and dispute letters — no contingency fee.',
+          'First medical-bill audit free; Paxer Plus is a flat monthly subscription for unlimited audits and dispute letters, no contingency fee.',
       },
       publisher: { '@id': `${SITE_URL}/#organization` },
     },
@@ -100,9 +99,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-scroll-behavior="smooth">
       <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }}
@@ -118,6 +116,7 @@ export default function RootLayout({
           'min-h-screen bg-paper text-ink',
         )}
       >
+        <SiteBackground />
         {children}
       </body>
     </html>

@@ -17,14 +17,17 @@ export function Money({
   estimate?: boolean;
   cents?: boolean;
   className?: string;
-  size?: 'sm' | 'base' | 'lg' | 'xl';
+  size?: 'sm' | 'base' | 'lg' | 'xl' | 'inherit';
 }) {
   const value = typeof amount === 'number' ? amount : null;
+  // 'inherit' sets no size class so a styled wrapper (e.g. StatBlock's big
+  // number) controls the size instead of being overridden by `text-base`.
   const sizeClass = {
     sm: 'text-sm',
     base: 'text-base',
     lg: 'font-sans text-2xl',
     xl: 'font-sans text-4xl',
+    inherit: '',
   }[size];
 
   return (

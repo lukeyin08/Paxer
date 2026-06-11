@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const alt = 'Paxer — the advocate on the patient’s side of the bill';
+export const alt = 'Paxer: the advocate on the patient’s side of the bill';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -50,7 +50,7 @@ export default function OpengraphImage() {
             maxWidth: '900px',
           }}
         >
-          The only advocate on the patient’s side of the bill.
+          The advocate on the patient’s side of the bill.
         </div>
         <div style={{ marginTop: '28px', fontSize: '28px', color: '#8a94a3', maxWidth: '880px' }}>
           Audit your medical bills, find the errors, and get your own money back.

@@ -20,6 +20,15 @@ const bodySchema = z.object({
 const err = (status: number, message: string, extra?: Record<string, unknown>) =>
   NextResponse.json({ error: message, ...extra }, { status });
 
+// Browsers and curious integrators GET this URL; answer with a JSON 405 + Allow
+// header instead of Next's bare empty 405.
+export function GET() {
+  return NextResponse.json(
+    { error: 'Method not allowed. POST your audit request to this endpoint.' },
+    { status: 405, headers: { Allow: 'POST' } },
+  );
+}
+
 /**
  * Embedded audit API (B2B). Authenticate with an API key, run the deterministic
  * audit engine over caller-supplied line items + plan benefits, and return
