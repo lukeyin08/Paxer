@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/next';
 import { cn } from '@/lib/utils';
 import { fontSans, fontMono } from '@/lib/fonts';
 import { SiteBackground } from '@/components/site-background';
@@ -118,6 +119,7 @@ export default function RootLayout({
       >
         <SiteBackground />
         {children}
+        <Analytics />
       </body>
     </html>
   );
