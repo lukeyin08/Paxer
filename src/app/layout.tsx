@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { cn } from '@/lib/utils';
 import { fontSans, fontMono } from '@/lib/fonts';
 import { SiteBackground } from '@/components/site-background';
@@ -118,6 +119,7 @@ export default function RootLayout({
       >
         <SiteBackground />
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
