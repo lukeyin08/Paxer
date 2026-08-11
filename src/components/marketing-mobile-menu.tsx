@@ -48,7 +48,7 @@ export function MarketingMobileMenu({
       <nav
         id="marketing-mobile-nav"
         hidden={!open}
-        className="glass absolute inset-x-0 top-full border-b shadow-lg"
+        className="absolute inset-x-0 top-full border-b border-rule bg-paper"
       >
         <div className="container flex flex-col py-3">
           {links.map((l) => (

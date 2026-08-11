@@ -30,7 +30,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
   const needsReviewDocs = documents.some((d) => d.ingestStatus === 'NEEDS_REVIEW');
 
   return (
-    <div className="flex flex-col gap-10 animate-fade-up">
+    <div className="flex flex-col gap-10">
       {/* Header */}
       <div className="flex flex-col gap-4">
         <Link href="/app" className="text-sm text-accent hover:underline">

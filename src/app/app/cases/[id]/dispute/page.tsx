@@ -26,7 +26,7 @@ export default async function DisputeDraftPage({
   const entitlement = await getConsumerEntitlement(user.id);
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-8 animate-fade-up">
+    <div className="mx-auto flex max-w-3xl flex-col gap-8">
       <div>
         <Link href={`/app/cases/${id}`} className="text-sm text-accent hover:underline">
           ← Back to case

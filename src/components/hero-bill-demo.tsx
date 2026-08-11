@@ -23,12 +23,12 @@ function Row({
  * Illustrative hero visual — a sample EOB with one error Paxer caught (a
  * cost-share overcharge). The wrong and right amounts sit side by side in
  * labelled boxes so the mistake reads at a glance, and the recovered total
- * anchors the card. Static/decorative; labelled as an example.
+ * anchors the card. Labelled as an example.
  */
 export function HeroBillDemo() {
   return (
     <div className="w-full max-w-lg">
-      <Card className="overflow-hidden border-accent/20 shadow-glow">
+      <Card className="overflow-hidden border-accent/20">
         <CardContent className="p-0">
           <div className="flex items-center justify-between border-b border-rule px-6 py-4">
             <span className="text-base font-semibold text-ink">Riverside Medical Center</span>

@@ -37,7 +37,7 @@ export default async function RecoveriesPage({
   }
 
   return (
-    <div className="flex flex-col gap-8 animate-fade-up">
+    <div className="flex flex-col gap-8">
       <div>
         <Kicker className="mb-2">Recoveries</Kicker>
         <h1 className="font-sans text-3xl font-semibold">Recoveries</h1>

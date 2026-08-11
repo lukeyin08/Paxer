@@ -1,7 +1,4 @@
-'use client';
-
 import { CheckCircle2 } from 'lucide-react';
-import { ContainerScroll } from '@/components/ui/container-scroll-animation';
 
 // Illustrative case findings (not a real patient). Kept distinct from the other
 // examples on the site (the hero EOB and the /how-it-works worked example) so we
@@ -15,24 +12,18 @@ const FINDINGS = [
 ];
 
 /**
- * Landing-page showcase: a Paxer case dashboard mocked up inside the
- * scroll-driven 3D card reveal. Built from on-brand markup (no remote images,
- * so it stays within the site's `img-src 'self'` CSP).
+ * Landing-page showcase: a Paxer case dashboard mocked up in on-brand markup
+ * (no remote images, so it stays within the site's `img-src 'self'` CSP).
  */
-export function ScrollShowcase() {
+export function ProductShowcase() {
   return (
-    <ContainerScroll
-      titleComponent={
-        <div className="mb-2 px-4">
-          <p className="kicker mb-3">Your dashboard</p>
-          <h2 className="font-sans text-3xl font-semibold text-ink md:text-5xl">
-            Every finding, every dollar,{' '}
-            <span className="text-gradient">in one place.</span>
-          </h2>
-        </div>
-      }
-    >
-      <div className="flex h-full flex-col text-left">
+    <section className="container py-20">
+      <p className="kicker mb-3">Your dashboard</p>
+      <h2 className="max-w-2xl font-sans text-3xl font-semibold text-ink">
+        Every finding, every dollar, in one place.
+      </h2>
+
+      <div className="mt-10 overflow-hidden rounded-lg border border-rule bg-paper text-left">
         {/* Faux app chrome */}
         <div className="flex items-center gap-2 border-b border-rule bg-soft/70 px-4 py-3">
           <span className="h-3 w-3 rounded-full bg-danger/70" />
@@ -44,9 +35,9 @@ export function ScrollShowcase() {
         </div>
 
         {/* Dashboard body */}
-        <div className="grid flex-1 grid-cols-1 gap-5 overflow-hidden p-5 md:grid-cols-[1.5fr_1fr] md:gap-6 md:p-8">
+        <div className="grid grid-cols-1 gap-5 p-5 md:grid-cols-[1.5fr_1fr] md:gap-6 md:p-8">
           {/* Left: findings list */}
-          <div className="flex min-h-0 flex-col">
+          <div className="flex flex-col">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="kicker mb-1">Case · Lakeshore Surgical</p>
@@ -76,22 +67,22 @@ export function ScrollShowcase() {
           </div>
 
           {/* Right: recoverable total + drafted letter. On phones it stacks
-              below the findings (the card height grows with its content). */}
+              below the findings. */}
           <div className="flex flex-col gap-4 rounded-xl border border-accent/20 bg-accent/[0.06] p-5 md:gap-5 md:p-6">
             <div>
               <p className="kicker mb-2">Estimated recoverable</p>
-              <p className="text-gradient font-sans text-4xl font-semibold md:text-5xl">$1,500</p>
+              <p className="font-sans text-4xl font-semibold text-ink md:text-5xl">$1,500</p>
               <p className="mt-2 text-sm text-muted">across 4 findings on one bill</p>
             </div>
             <div className="rounded-lg border border-rule bg-paper/60 px-4 py-3 text-sm leading-relaxed text-muted">
               Paxer drafted a dispute letter citing each finding, ready for you to review and send.
             </div>
-            <div className="mt-auto inline-flex items-center justify-center rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-accent-foreground shadow-glow-sm">
+            <div className="mt-auto inline-flex items-center justify-center rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-accent-foreground">
               Review the letter &rarr;
             </div>
           </div>
         </div>
       </div>
-    </ContainerScroll>
+    </section>
   );
 }

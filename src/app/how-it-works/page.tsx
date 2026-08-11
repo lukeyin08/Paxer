@@ -4,7 +4,6 @@ import { Kicker } from '@/components/brand/kicker';
 import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
-import { Reveal } from '@/components/reveal';
 import { WorkedExample } from '@/components/how-it-works/worked-example';
 import { CONSUMER_PLAN } from '@/lib/billing/consumer';
 import { ERROR_TYPES } from '@/lib/marketing';
@@ -127,7 +126,7 @@ export default function HowItWorksPage() {
 
             <WorkedExample lines={EXAMPLE_LINES} findings={EXAMPLE_FINDINGS} />
 
-            <Reveal className="mt-6 rounded-md border border-rule bg-card p-6">
+            <div className="mt-6 rounded-md border border-rule bg-card p-6">
               <p className="text-sm leading-relaxed text-muted">
                 <span className="font-medium text-ink">Then Paxer drafts the letter.</span> It cites
                 each finding and the math, in plain language. You review and edit it, download the
@@ -135,7 +134,7 @@ export default function HowItWorksPage() {
                 reminds you, and when money comes back, you log the recovery and see exactly what you
                 keep.
               </p>
-            </Reveal>
+            </div>
           </div>
         </section>
 
@@ -144,11 +143,11 @@ export default function HowItWorksPage() {
           <Kicker className="mb-3">FAQ</Kicker>
           <h2 className="text-3xl font-semibold text-ink">Common questions.</h2>
           <div className="mt-8 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-rule bg-rule md:grid-cols-2">
-            {FAQS(plusPrice).map((f, i) => (
-              <Reveal key={f.q} delay={i * 70} className="h-full bg-card p-6">
+            {FAQS(plusPrice).map((f) => (
+              <div key={f.q} className="h-full bg-card p-6">
                 <h3 className="text-base font-semibold text-ink">{f.q}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{f.a}</p>
-              </Reveal>
+              </div>
             ))}
           </div>
         </section>

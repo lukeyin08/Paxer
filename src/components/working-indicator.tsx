@@ -10,8 +10,9 @@ export interface WorkStep {
 
 /**
  * Live "still working" indicator for long-running (AI) actions, so users don't
- * assume the app hung. Shows a pulsing dot, a step message that advances over
- * time, and a ticking elapsed-seconds counter. Render only while `active`.
+ * assume the app hung. Shows a step message that advances over time and a
+ * ticking elapsed-seconds counter (the tick is the liveness signal). Render
+ * only while `active`.
  */
 export function WorkingIndicator({ active, steps }: { active: boolean; steps: WorkStep[] }) {
   const [elapsed, setElapsed] = useState(0);
@@ -30,10 +31,7 @@ export function WorkingIndicator({ active, steps }: { active: boolean; steps: Wo
 
   return (
     <div className="flex items-center gap-2 text-xs text-muted" role="status" aria-live="polite">
-      <span className="relative flex h-2 w-2 shrink-0">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
-      </span>
+      <span className="h-2 w-2 shrink-0 rounded-full bg-accent" />
       <span>
         {step?.text}… <span className="tabular-nums">{elapsed}s</span>
       </span>

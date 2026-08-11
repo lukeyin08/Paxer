@@ -5,7 +5,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
-import { Reveal } from '@/components/reveal';
 import { CodeDemo } from '@/components/developers/code-demo';
 import { API_BUYERS } from '@/lib/marketing';
 import { API_PLANS } from '@/lib/billing/plans';
@@ -80,7 +79,7 @@ export default function DevelopersPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="container py-20 md:py-24">
-          <div className="mx-auto max-w-3xl text-center animate-fade-up">
+          <div className="mx-auto max-w-3xl text-center">
             <Kicker className="mb-5">Audit API</Kicker>
             <h1 className="font-sans text-4xl font-semibold leading-[1.1] text-ink md:text-5xl">
               The medical-bill audit engine, as an API.
@@ -130,16 +129,16 @@ export default function DevelopersPage() {
             One call, every common billing error.
           </h2>
           <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-rule bg-rule sm:grid-cols-2">
-            {DETECTS.map(([title, body], i) => (
-              <Reveal key={title} delay={i * 70} className="h-full bg-card p-6">
+            {DETECTS.map(([title, body]) => (
+              <div key={title} className="h-full bg-card p-6">
                 <h3 className="font-sans text-lg font-semibold text-ink">{title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{body}</p>
-              </Reveal>
+              </div>
             ))}
           </div>
         </section>
 
-        {/* Example — types itself out like a terminal as you scroll to it */}
+        {/* Example request & response */}
         <section className="border-t border-rule bg-soft/40">
           <CodeDemo request={CURL} response={RESPONSE} />
         </section>
@@ -175,15 +174,13 @@ export default function DevelopersPage() {
               ['Stateless & private', 'Nothing you send is stored. No data is retained or shared, and responses contain only findings.'],
               ['Authentication', 'Bearer API keys, created and revoked in Settings → Developers. Keys are shown once and stored hashed.'],
               ['Limits & pricing', 'Free to start, rate-limited per key. For production volume or an SLA, get in touch about Enterprise pricing.'],
-            ].map(([title, body], i) => (
-              <Reveal key={title} delay={i * 90} className="h-full">
-                <Card className="card-hover h-full">
-                  <CardContent className="pt-6">
-                    <h3 className="font-sans text-lg font-semibold text-ink">{title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted">{body}</p>
-                  </CardContent>
-                </Card>
-              </Reveal>
+            ].map(([title, body]) => (
+              <Card key={title} className="h-full">
+                <CardContent className="pt-6">
+                  <h3 className="font-sans text-lg font-semibold text-ink">{title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{body}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </section>

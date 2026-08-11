@@ -9,7 +9,7 @@ export default async function NewCasePage() {
   await requireUser();
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-8 animate-fade-up">
+    <div className="mx-auto flex max-w-3xl flex-col gap-8">
       <div>
         <Kicker className="mb-2">New case</Kicker>
         <h1 className="font-sans text-3xl font-semibold">Add a case</h1>

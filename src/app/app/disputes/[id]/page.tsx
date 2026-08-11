@@ -15,7 +15,7 @@ export default async function DisputePage({ params }: { params: Promise<{ id: st
   const pastDeadline = dispute.deadlineAt ? new Date(dispute.deadlineAt) < new Date() : false;
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-6 animate-fade-up">
+    <div className="mx-auto flex max-w-3xl flex-col gap-6">
       <div>
         <Link href={`/app/cases/${dispute.caseId}`} className="text-sm text-accent hover:underline">
           ← Back to case

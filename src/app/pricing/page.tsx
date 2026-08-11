@@ -5,7 +5,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
-import { TierReveal } from '@/components/pricing/tier-reveal';
 import { Check } from 'lucide-react';
 import { API_PLANS } from '@/lib/billing/plans';
 import { CONSUMER_PLAN } from '@/lib/billing/consumer';
@@ -40,11 +39,7 @@ function Tier({
   external?: boolean;
 }) {
   return (
-    <Card
-      className={`card-hover h-full ${
-        highlight ? 'border-2 border-accent shadow-glow' : ''
-      }`}
-    >
+    <Card className={`h-full ${highlight ? 'border-accent' : ''}`}>
       <CardContent className="flex h-full flex-col gap-5 pt-6">
         {highlight && (
           <span className="-mt-1 self-start rounded-full bg-accent/10 px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-wider text-accent">
@@ -80,7 +75,7 @@ export default function PricingPage() {
       <MarketingHeader />
       <main className="flex-1">
         <section className="container py-16 md:py-20">
-          <div className="mx-auto max-w-2xl text-center animate-fade-up">
+          <div className="mx-auto max-w-2xl text-center">
             <Kicker className="mb-4">Pricing</Kicker>
             <h1 className="font-sans text-4xl font-semibold leading-[1.1] text-ink md:text-5xl">
               Your first audit is free.
@@ -93,56 +88,50 @@ export default function PricingPage() {
           </div>
 
           <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-            <TierReveal index={0} highlight>
-              <Tier
-                name="Paxer Plus"
-                price={plusPrice}
-                sub="For patients. First audit free; Paxer Plus unlocks unlimited audits and dispute letters. Flat, no contingency."
-                highlight
-                features={[
-                  'Unlimited bill audits',
-                  'AI-drafted dispute letters (you review & send)',
-                  'Track outcomes and recoveries',
-                  'Keep 100% of what you recover, no contingency',
-                  'Cancel anytime',
-                ]}
-                cta="Get started free"
-                href="/login"
-              />
-            </TierReveal>
-            <TierReveal index={1}>
-              <Tier
-                name="Audit API"
-                price={`Free → ${API_PLANS.scale.priceLabel}`}
-                sub="For developers: embed the audit engine in your own software. Self-serve monthly plans, sized by call volume."
-                features={[
-                  'Embedded /api/v1/audit endpoint: your code calls it',
-                  `Free to start: ${API_PLANS.free.monthlyQuota} API calls/mo`,
-                  `Pro: ${API_PLANS.pro.priceLabel} for ${API_PLANS.pro.monthlyQuota.toLocaleString()} calls`,
-                  `Scale: ${API_PLANS.scale.priceLabel} for ${API_PLANS.scale.monthlyQuota.toLocaleString()} calls`,
-                  'Enterprise volume & SLA: contact us',
-                ]}
-                cta="Get a free API key"
-                href="/login?next=/app/settings"
-              />
-            </TierReveal>
-            <TierReveal index={2}>
-              <Tier
-                name="Employers & TPAs"
-                price="Let’s talk"
-                sub="Give your workforce Paxer as a benefit: per-member (PEPM), sales-led."
-                features={[
-                  'Bill-review benefit for your whole population',
-                  'Per-member pricing (PEPM)',
-                  'Aggregate savings reporting for your population',
-                  'Member roster import & rollout',
-                  'Dedicated support · design-partner program now onboarding',
-                ]}
-                cta="Contact us"
-                href="mailto:hello@paxer.app?subject=Paxer%20for%20employers"
-                external
-              />
-            </TierReveal>
+            <Tier
+              name="Paxer Plus"
+              price={plusPrice}
+              sub="For patients. First audit free; Paxer Plus unlocks unlimited audits and dispute letters. Flat, no contingency."
+              highlight
+              features={[
+                'Unlimited bill audits',
+                'AI-drafted dispute letters (you review & send)',
+                'Track outcomes and recoveries',
+                'Keep 100% of what you recover, no contingency',
+                'Cancel anytime',
+              ]}
+              cta="Get started free"
+              href="/login"
+            />
+            <Tier
+              name="Audit API"
+              price={`Free → ${API_PLANS.scale.priceLabel}`}
+              sub="For developers: embed the audit engine in your own software. Self-serve monthly plans, sized by call volume."
+              features={[
+                'Embedded /api/v1/audit endpoint: your code calls it',
+                `Free to start: ${API_PLANS.free.monthlyQuota} API calls/mo`,
+                `Pro: ${API_PLANS.pro.priceLabel} for ${API_PLANS.pro.monthlyQuota.toLocaleString()} calls`,
+                `Scale: ${API_PLANS.scale.priceLabel} for ${API_PLANS.scale.monthlyQuota.toLocaleString()} calls`,
+                'Enterprise volume & SLA: contact us',
+              ]}
+              cta="Get a free API key"
+              href="/login?next=/app/settings"
+            />
+            <Tier
+              name="Employers & TPAs"
+              price="Let’s talk"
+              sub="Give your workforce Paxer as a benefit: per-member (PEPM), sales-led."
+              features={[
+                'Bill-review benefit for your whole population',
+                'Per-member pricing (PEPM)',
+                'Aggregate savings reporting for your population',
+                'Member roster import & rollout',
+                'Dedicated support · design-partner program now onboarding',
+              ]}
+              cta="Contact us"
+              href="mailto:hello@paxer.app?subject=Paxer%20for%20employers"
+              external
+            />
           </div>
 
           <p className="mt-10 text-center text-sm text-muted">

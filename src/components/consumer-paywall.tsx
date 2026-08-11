@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Sparkles, X, Check } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { startConsumerCheckout } from '@/app/app/settings/billing-actions';
 
@@ -36,8 +36,8 @@ export function ConsumerPaywall({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=open]:fade-in" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-rule bg-card p-6 shadow-xl focus:outline-none data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95">
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/40" />
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-rule bg-card p-6 focus:outline-none">
           {/* Padded hit area: a bare 16px icon is nearly untappable on phones. */}
           <Dialog.Close className="absolute right-1 top-1 rounded-md p-3 text-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <X className="h-4 w-4" />
@@ -45,9 +45,6 @@ export function ConsumerPaywall({
           </Dialog.Close>
 
           <div className="flex flex-col gap-4">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 text-accent">
-              <Sparkles className="h-5 w-5" />
-            </span>
             <div>
               <Dialog.Title className="font-sans text-xl font-semibold text-ink">
                 Subscribe to Paxer Plus

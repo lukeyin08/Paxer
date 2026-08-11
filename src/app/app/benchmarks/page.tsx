@@ -17,7 +17,7 @@ export default async function BenchmarksPage() {
   const aggregated = rows.filter((b) => b.source === 'AGGREGATE').length;
 
   return (
-    <div className="flex flex-col gap-8 animate-fade-up">
+    <div className="flex flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <Kicker className="mb-2">Benchmarks</Kicker>

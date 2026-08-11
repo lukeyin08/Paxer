@@ -13,7 +13,7 @@ const LINKS = [
 /** Shared public/marketing top bar so every public page exposes the same nav. */
 export function MarketingHeader() {
   return (
-    <header className="glass sticky top-0 z-40 border-b">
+    <header className="sticky top-0 z-40 border-b border-rule bg-paper">
       <div className="container relative flex h-16 items-center justify-between gap-3 max-[359px]:gap-2">
         <Wordmark />
 
@@ -25,10 +25,9 @@ export function MarketingHeader() {
             <Link
               key={l.href}
               href={l.href}
-              className="group relative rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-ink focus-visible:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-ink focus-visible:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {l.label}
-              <span className="absolute inset-x-3 -bottom-px h-px origin-left scale-x-0 bg-gradient-to-r from-accent to-accent2 transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100" />
             </Link>
           ))}
         </nav>

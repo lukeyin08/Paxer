@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { cn } from '@/lib/utils';
 import { fontSans, fontMono } from '@/lib/fonts';
-import { SiteBackground } from '@/components/site-background';
 import { CONSUMER_PLAN } from '@/lib/billing/consumer';
 import './globals.css';
 
@@ -99,7 +98,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en">
       <head>
         <script
           type="application/ld+json"
@@ -116,7 +115,6 @@ export default function RootLayout({
           'min-h-screen bg-paper text-ink',
         )}
       >
-        <SiteBackground />
         {children}
       </body>
     </html>

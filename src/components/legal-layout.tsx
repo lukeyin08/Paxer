@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { Wordmark } from '@/components/brand/wordmark';
 import { Kicker } from '@/components/brand/kicker';
 import { SiteFooter } from '@/components/site-footer';
-import { Reveal } from '@/components/reveal';
 
 /** Shared shell for the legal pages (Privacy, Terms). */
 export function LegalLayout({
@@ -18,7 +17,7 @@ export function LegalLayout({
 }) {
   return (
     <div className="min-h-screen">
-      <header className="glass sticky top-0 z-40 border-b">
+      <header className="sticky top-0 z-40 border-b border-rule bg-paper">
         <div className="container flex items-center justify-between py-5">
           {/* Wordmark already links to "/" — no outer <Link> (would nest <a>). */}
           <Wordmark size="sm" />
@@ -34,7 +33,7 @@ export function LegalLayout({
       </header>
 
       <main className="container max-w-3xl py-12">
-        <div className="animate-fade-up">
+        <div>
           <Kicker className="mb-2">{kicker}</Kicker>
           <h1 className="font-sans text-3xl font-semibold">{title}</h1>
           <p className="mt-2 text-sm text-muted">Last updated: {lastUpdated}</p>
@@ -50,13 +49,9 @@ export function LegalLayout({
 
 export function LegalSection({ heading, children }: { heading: string; children: React.ReactNode }) {
   return (
-    <section>
-      {/* Gentle scroll-in keeps the legal pages on the site's animation
-          language without being showy. */}
-      <Reveal className="flex flex-col gap-2">
-        <h2 className="font-sans text-lg font-semibold">{heading}</h2>
-        <div className="flex flex-col gap-2 text-muted">{children}</div>
-      </Reveal>
+    <section className="flex flex-col gap-2">
+      <h2 className="font-sans text-lg font-semibold">{heading}</h2>
+      <div className="flex flex-col gap-2 text-muted">{children}</div>
     </section>
   );
 }

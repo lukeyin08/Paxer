@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { FileText, Sparkles } from 'lucide-react';
+import { FileText, ScanText } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { StatusPill } from '@/components/brand/status-pill';
@@ -75,7 +75,7 @@ function DocumentCard({ doc, aiConfigured }: { doc: DocRow; aiConfigured: boolea
                 })
               }
             >
-              <Sparkles className="h-4 w-4" />
+              <ScanText className="h-4 w-4" />
               {pending ? 'Extracting…' : 'Extract line items'}
             </Button>
           )}

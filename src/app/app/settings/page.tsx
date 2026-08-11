@@ -42,7 +42,7 @@ export default async function SettingsPage() {
   };
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-8 animate-fade-up">
+    <div className="mx-auto flex max-w-2xl flex-col gap-8">
       <div>
         <Kicker className="mb-2">Settings</Kicker>
         <h1 className="font-sans text-3xl font-semibold">Account</h1>

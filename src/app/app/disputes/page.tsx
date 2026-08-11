@@ -14,7 +14,7 @@ export default async function DisputesPage() {
   const rows = await getDisputesForUser(user.id);
 
   return (
-    <div className="flex flex-col gap-8 animate-fade-up">
+    <div className="flex flex-col gap-8">
       <div>
         <Kicker className="mb-2">Disputes</Kicker>
         <h1 className="font-sans text-3xl font-semibold">Your disputes</h1>

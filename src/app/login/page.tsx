@@ -22,7 +22,7 @@ export default async function LoginPage({
   // Only forward same-site /app destinations (e.g. developers land in Settings).
   const callbackUrl = next && next.startsWith('/app') && !next.startsWith('//') ? next : undefined;
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 py-12 animate-fade-up">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 py-12">
       <Wordmark size="lg" />
       <Card className="w-full max-w-md">
         <CardContent className="flex flex-col gap-6 pt-6">

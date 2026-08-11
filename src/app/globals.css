@@ -29,9 +29,6 @@
     --danger: 0 91% 71%;
     --warning: 43 96% 56%;
 
-    /* Glow hue used by box-shadows and the ambient backdrop */
-    --glow: 219 100% 62%;
-
     /* Semantic aliases (mapped to brand) */
     --background: var(--paper);
     --foreground: var(--ink);
@@ -56,9 +53,6 @@
   * {
     @apply border-border;
   }
-  html {
-    scroll-behavior: smooth;
-  }
   body {
     @apply bg-paper text-ink font-sans antialiased;
     font-feature-settings: 'liga' 1, 'calt' 1;
@@ -69,7 +63,6 @@
   h4 {
     @apply font-sans font-semibold tracking-tight;
   }
-  /* Techy text selection */
   ::selection {
     background-color: hsl(var(--accent) / 0.3);
     color: hsl(var(--ink));
@@ -93,7 +86,7 @@
     background-color: hsl(var(--accent) / 0.6);
   }
 
-  /* Respect users who ask for less motion — kill the ambient/looping animations. */
+  /* Respect users who ask for less motion (loading spinners, skeletons). */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -101,7 +94,6 @@
       animation-duration: 0.001ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.001ms !important;
-      scroll-behavior: auto !important;
     }
   }
 }
@@ -115,21 +107,9 @@
     @apply border-rule;
   }
 
-  /* Accent-clipped gradient text for emphasis words and figures */
-  .text-gradient {
-    @apply bg-gradient-to-r from-accent2 to-accent bg-clip-text text-transparent;
-  }
-
-  /* Frosted translucent surface for sticky headers and overlays */
-  .glass {
-    @apply border-rule/60 bg-paper/70 backdrop-blur-xl backdrop-saturate-150;
-  }
-
-  /* Opt-in card interaction: lift + accent edge glow on hover */
+  /* Opt-in card interaction: a plain border change on hover, nothing more. */
   .card-hover {
-    @apply transition-[transform,box-shadow,border-color] duration-300 ease-out
-      hover:-translate-y-1 hover:border-accent/40
-      hover:shadow-[0_10px_44px_-14px_hsl(var(--glow)/0.5)];
+    @apply transition-colors hover:border-accent/40;
   }
 
   /* Dispute letter editor / preview typography */

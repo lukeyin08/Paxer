@@ -34,7 +34,7 @@ export default async function DashboardPage() {
     .slice(0, 3);
 
   return (
-    <div className="flex flex-col gap-10 animate-fade-up">
+    <div className="flex flex-col gap-10">
       <div>
         <Kicker className="mb-2">Your dashboard</Kicker>
         <h1 className="font-sans text-3xl font-semibold">Overview</h1>
