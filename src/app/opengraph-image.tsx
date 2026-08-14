@@ -44,7 +44,7 @@ export default function OpengraphImage() {
           maxWidth: '900px',
         }}
       >
-        Audit your medical bills, find the errors, and get your own money back.
+        Check your medical bills against your insurance plan for billing errors.
       </div>
     </div>,
     { ...size },

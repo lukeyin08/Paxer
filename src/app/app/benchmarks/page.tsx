@@ -23,9 +23,9 @@ export default async function BenchmarksPage() {
           <Kicker className="mb-2">Benchmarks</Kicker>
           <h1 className="text-2xl font-bold">Price benchmarks</h1>
           <p className="mt-1 max-w-2xl text-muted">
-            The compounding asset: anonymized prices accrued across cases (code + region + amount
-            only, no identifiers). As more bills are audited, these benchmarks sharpen and power the
-            overcharge detector.
+            Anonymized prices collected across cases: billing code, region, and amount only, with no
+            identifiers. The overcharge detector compares each charge against these figures, so they
+            get more accurate as more bills are audited.
           </p>
         </div>
         {isAdmin && <RecomputeButton />}

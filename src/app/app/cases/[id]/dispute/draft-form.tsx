@@ -293,8 +293,8 @@ export function DraftForm({
           <div className="flex flex-col gap-3">
             <span className="kicker">Claim details</span>
             <p className="text-xs text-muted">
-              From your insurance card and Explanation of Benefits. Leave blank if not applicable —
-              we&rsquo;ll simply omit them.
+              From your insurance card and Explanation of Benefits. Leave blank if not applicable
+              and they will be omitted.
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field

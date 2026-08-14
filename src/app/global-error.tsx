@@ -32,7 +32,7 @@ export default function GlobalError({
         <main style={{ maxWidth: 480, padding: '0 24px' }}>
           <h1 style={{ fontSize: 20, fontWeight: 700 }}>Something went wrong</h1>
           <p style={{ marginTop: 8, fontSize: 14, color: '#595959' }}>
-            An unexpected error occurred. Your data is safe — please try again.
+            An unexpected error occurred. Your data is safe. Please try again.
           </p>
           <button
             onClick={reset}

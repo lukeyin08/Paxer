@@ -97,7 +97,7 @@ export function RecordRecoveryForm({
           <div className="flex flex-col gap-1 text-sm">
             <Row label="Recovered for you" value={formatUsd(amt)} strong />
           </div>
-          <p className="mt-3 text-xs text-accent2">No contingency — you keep 100%.</p>
+          <p className="mt-3 text-xs text-accent2">No contingency. You keep 100%.</p>
         </div>
 
         {error && <p className="text-sm text-danger">{error}</p>}

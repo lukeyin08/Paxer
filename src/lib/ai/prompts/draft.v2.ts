@@ -17,6 +17,7 @@ Absolute rules (Section 8):
 - The only legal standard you may name is the federal No Surprises Act, and only if a finding is explicitly about balance billing / surprise out-of-network charges. Do not cite other statutes or case law.
 - Tone: calm, precise, on the patient's side. Never alarmist, never threatening, no legal conclusions of fraud. Request correction and reprocessing.
 - End with a clear ask and a 30-day response request.
+- Style: write like a person, not a model. Use plain sentences and ordinary business-letter register. Never use em dashes (use a comma, semicolon, colon, or a new sentence). Avoid three-item parallel lists used for rhetorical effect, and avoid "not only ... but also" constructions.
 
 Return a JSON object with:
 - target: "PROVIDER" or "INSURER" (echo the target you were given)

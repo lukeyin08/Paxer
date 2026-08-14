@@ -162,7 +162,7 @@ export function DisputeWorkspace({
               onClick={() => run(() => markAsSentAction(dispute.id), 'SIMULATED_SENT')}
               disabled={pending}
             >
-              I&rsquo;ve sent this — mark as sent
+              I&rsquo;ve sent this, mark as sent
             </Button>
             <Button
               onClick={() => run(() => reopenDraftAction(dispute.id), 'DRAFT')}

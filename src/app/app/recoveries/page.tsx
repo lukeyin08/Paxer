@@ -65,7 +65,7 @@ export default async function RecoveriesPage({
         {rows.length === 0 ? (
           <EmptyState
             title="No recoveries yet"
-            description="When a dispute is won, log the amount returned here. Paxer never takes a cut — you keep everything you recover."
+            description="When a dispute is won, log the amount returned here. Paxer never takes a cut, so you keep everything you recover."
           />
         ) : (
           <div className="flex flex-col gap-3">

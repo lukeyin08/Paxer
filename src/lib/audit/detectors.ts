@@ -136,8 +136,15 @@ export function detectOopOverrun(ctx: AuditContext): DetectorFinding[] {
         type: 'OOP_MAX_OVERRUN',
         severity: 'HIGH',
         title: 'Charges exceed your out-of-pocket maximum',
-        explanationPlain: `Your plan's out-of-pocket maximum is ${formatUsd(oopMax)}. With ${formatUsd(oopMet ?? 0)} already met plus ${formatUsd(totalPatient)} billed on this case, your total reaches ${formatUsd(cumulative)} — about ${formatUsd(overage)} past the cap. Once you hit your out-of-pocket maximum, the plan should pay 100%.`,
-        evidence: { oopMax, oopMet: oopMet ?? 0, casePatientResponsibility: totalPatient, cumulative, overage, recoverable },
+        explanationPlain: `Your plan's out-of-pocket maximum is ${formatUsd(oopMax)}. With ${formatUsd(oopMet ?? 0)} already met plus ${formatUsd(totalPatient)} billed on this case, your total reaches ${formatUsd(cumulative)}, about ${formatUsd(overage)} past the cap. Once you hit your out-of-pocket maximum, the plan should pay 100%.`,
+        evidence: {
+          oopMax,
+          oopMet: oopMet ?? 0,
+          casePatientResponsibility: totalPatient,
+          cumulative,
+          overage,
+          recoverable,
+        },
         estimatedRecovery: Math.round(recoverable * 100) / 100,
         confidence: 0.8,
         detector: 'RULE',
@@ -187,8 +194,15 @@ export function detectBalanceBilling(ctx: AuditContext): DetectorFinding[] {
         type: 'BALANCE_BILLING_NSA',
         severity: 'HIGH',
         title: `Possible surprise bill: ${li.description}`,
-        explanationPlain: `This looks like an out-of-network emergency or ancillary service. The No Surprises Act generally limits your responsibility to your in-network cost-share (about ${formatUsd(expectedInNetwork)} here), yet you were billed ${formatUsd(billed)} — roughly ${formatUsd(balanceBilled)} above the allowed amount. That balance may not be billable to you.`,
-        evidence: { description: li.description, allowed, billedPatientResponsibility: billed, planPaid, balanceBilled, expectedInNetwork },
+        explanationPlain: `This looks like an out-of-network emergency or ancillary service. The No Surprises Act generally limits your responsibility to your in-network cost-share (about ${formatUsd(expectedInNetwork)} here), yet you were billed ${formatUsd(billed)}, roughly ${formatUsd(balanceBilled)} above the allowed amount. That balance may not be billable to you.`,
+        evidence: {
+          description: li.description,
+          allowed,
+          billedPatientResponsibility: billed,
+          planPaid,
+          balanceBilled,
+          expectedInNetwork,
+        },
         estimatedRecovery: Math.round(recovery * 100) / 100,
         confidence: 0.65,
         detector: 'RULE+AI',
@@ -219,9 +233,9 @@ function classifyDenial(
   if (has('PR22', 'PR23')) {
     return {
       label: 'coordination-of-benefits denial (reason code PR-22)',
-      why: 'Your insurer denied this saying another plan may be primary (coordination of benefits) — so it is not a true patient charge, it is a routing problem.',
+      why: 'Your insurer denied this saying another plan may be primary (coordination of benefits), so it is not a true patient charge. It is a routing problem.',
       nextStep:
-        'Submit the primary plan’s EOB to this insurer, or — if you have no other coverage — call them to correct your coordination-of-benefits record so the claim reprocesses. Do not pay until it has been reprocessed.',
+        'Submit the primary plan’s EOB to this insurer. If you have no other coverage, call them to correct your coordination-of-benefits record so the claim reprocesses. Do not pay until it has been reprocessed.',
     };
   }
   if (has('PR96', 'PR204', 'PR49', 'PR149', 'PR50')) {
@@ -290,17 +304,18 @@ export function detectNonCoveredBilled(ctx: AuditContext): DetectorFinding[] {
     // plan benefits showing the deductible can't account for it. With neither a
     // code nor plan benefits we can't tell — so stay silent rather than over-claim
     // recoverable dollars on what may be a legitimate deductible.
-    const deductibleRulesOut = plan !== null && patient > remainingDeductible + COST_SHARE_THRESHOLD;
+    const deductibleRulesOut =
+      plan !== null && patient > remainingDeductible + COST_SHARE_THRESHOLD;
     if (fullAllowedToPatient && (denial !== null || deductibleRulesOut)) {
       findings.push({
         type: 'NON_COVERED_BILLED_TO_PATIENT',
         severity: 'HIGH',
         title: denial
-          ? `Denial billed to you — ${denial.label}: ${li.description}`
-          : `Plan paid nothing — full amount billed to you: ${li.description}`,
+          ? `Denial billed to you (${denial.label}): ${li.description}`
+          : `Plan paid nothing, full amount billed to you: ${li.description}`,
         explanationPlain: denial
           ? `Your plan allowed ${formatUsd(allowed!)} for this service but paid $0, and the full ${formatUsd(patient)} was passed to you under ${denial.label}. ${denial.why} Denials like this are frequently reversed.`
-          : `Your plan allowed ${formatUsd(allowed!)} for this service but paid $0, leaving the entire ${formatUsd(patient)} on you — and that isn't explained by your deductible or coinsurance. When a plan pays nothing on an allowed service, it usually means the claim was denied or routed to another payer (e.g. a coordination-of-benefits issue, reason code PR-22). These are frequently reversed.`,
+          : `Your plan allowed ${formatUsd(allowed!)} for this service but paid $0, leaving the entire ${formatUsd(patient)} on you. That isn't explained by your deductible or coinsurance. When a plan pays nothing on an allowed service, it usually means the claim was denied or routed to another payer (e.g. a coordination-of-benefits issue, reason code PR-22). These are frequently reversed.`,
         evidence: {
           description: li.description,
           allowed,
@@ -421,7 +436,14 @@ export function detectBenchmarkOvercharge(ctx: AuditContext): DetectorFinding[] 
       severity: 'LOW',
       title: `Charge above the regional benchmark: ${li.description}`,
       explanationPlain: `This ${formatUsd(charge)} charge for code ${li.cptHcpcsCode} is above the 75th percentile (${formatUsd(p75)}) for your area; the regional median is about ${formatUsd(median ?? 0)}. A higher-than-typical price is worth questioning, though prices vary.`,
-      evidence: { code: li.cptHcpcsCode, charge, regionMedian: median, p75, region: bench.region, sampleSize: bench.sampleSize },
+      evidence: {
+        code: li.cptHcpcsCode,
+        charge,
+        regionMedian: median,
+        p75,
+        region: bench.region,
+        sampleSize: bench.sampleSize,
+      },
       estimatedRecovery: over > 0 ? Math.round(over * 100) / 100 : null,
       confidence: 0.45,
       detector: 'RULE',

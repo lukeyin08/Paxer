@@ -23,7 +23,7 @@ export async function runAuditAction(
     return {
       ok: false,
       code: 'subscription_required',
-      message: 'You’ve used your free audit — subscribe to Paxer Plus for unlimited audits.',
+      message: 'You’ve used your free audit. Subscribe to Paxer Plus for unlimited audits.',
     };
   }
   try {

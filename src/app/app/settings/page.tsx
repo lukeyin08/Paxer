@@ -19,7 +19,10 @@ export default async function SettingsPage() {
   const sessionUser = await requireUser();
   const [user] = await db.select().from(users).where(eq(users.id, sessionUser.id)).limit(1);
   const [myCases, allKeys, usage] = await Promise.all([
-    db.select().from(cases).where(and(eq(cases.userId, sessionUser.id), isNull(cases.deletedAt))),
+    db
+      .select()
+      .from(cases)
+      .where(and(eq(cases.userId, sessionUser.id), isNull(cases.deletedAt))),
     listApiKeys(sessionUser.id),
     usageSnapshot(sessionUser.id),
   ]);
@@ -100,8 +103,9 @@ export default async function SettingsPage() {
           <div>
             <h2 className="font-bold">Paxer Plus</h2>
             <p className="text-sm text-muted">
-              Your first bill audit is free. Paxer Plus unlocks unlimited audits and dispute
-              letters — a flat subscription, never a cut of what you recover.
+              Your first bill audit is free. After that, Paxer Plus is a flat monthly subscription
+              covering unlimited audits and dispute letters. Paxer never takes a cut of what you
+              recover.
             </p>
           </div>
           <ConsumerBillingClient
@@ -120,7 +124,7 @@ export default async function SettingsPage() {
             <h2 className="font-bold">Audit API (for developers)</h2>
             <p className="text-sm text-muted">
               Programmatic access to the audit engine, billed per API call. This is a separate
-              product for businesses — not your Paxer Plus plan above.
+              product for businesses, not your Paxer Plus plan above.
             </p>
           </div>
           <BillingClient
@@ -142,7 +146,7 @@ export default async function SettingsPage() {
       <Card id="developers">
         <CardContent className="flex flex-col gap-4 pt-6">
           <div>
-            <h2 className="font-bold">Developers — Audit API</h2>
+            <h2 className="font-bold">Developers: Audit API</h2>
             <p className="text-sm text-muted">
               Run Paxer’s deterministic audit engine on your own line items via API.
             </p>

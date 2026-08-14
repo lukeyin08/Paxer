@@ -54,7 +54,7 @@ export function BillingClient(props: BillingProps) {
               onClick={() => go(() => startCheckout(p.id))}
             >
               {props.planId === p.id
-                ? `${p.label} — current`
+                ? `${p.label} (current)`
                 : `Upgrade to ${p.label} · ${p.priceLabel}`}
             </Button>
           ))}

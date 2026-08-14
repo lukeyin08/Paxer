@@ -70,7 +70,7 @@ export function ApiKeysClient({ keys, usage }: { keys: KeyRow[]; usage: Usage })
         <code className="rounded bg-soft px-1 py-0.5 font-mono text-xs">
           Authorization: Bearer &lt;key&gt;
         </code>
-        . Keys are shown once — store them securely.
+        . Keys are shown once, so store them securely.
       </p>
 
       {/* Usage / plan */}
@@ -99,7 +99,7 @@ export function ApiKeysClient({ keys, usage }: { keys: KeyRow[]; usage: Usage })
       {created && (
         <div className="border border-ink p-3">
           <p className="text-sm font-medium text-ink">
-            Your new API key — copy it now. You won’t be able to see it again.
+            Your new API key. Copy it now; you won’t be able to see it again.
           </p>
           <div className="mt-2 flex items-center gap-2">
             <code className="flex-1 overflow-x-auto whitespace-nowrap rounded bg-soft px-2 py-1.5 font-mono text-xs">

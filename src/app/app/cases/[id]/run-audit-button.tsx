@@ -11,8 +11,8 @@ const AUDIT_STEPS = [
   { at: 0, text: 'Reading your line items' },
   { at: 5, text: 'Checking for duplicate & excessive charges' },
   { at: 14, text: 'Cross-checking cost-share, denials & benchmarks' },
-  { at: 28, text: 'Writing up what it found' },
-  { at: 45, text: 'Almost there — this one’s taking a little longer' },
+  { at: 28, text: 'Writing up the findings' },
+  { at: 45, text: 'Still working, this one is taking longer than usual' },
 ];
 
 export function RunAuditButton({

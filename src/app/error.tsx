@@ -21,7 +21,7 @@ export default function Error({
       <div>
         <h1 className="text-xl font-bold text-ink">Something went wrong</h1>
         <p className="mt-2 text-sm text-muted">
-          An unexpected error occurred. Your data is safe — please try again.
+          An unexpected error occurred. Your data is safe. Please try again.
         </p>
       </div>
       <div className="flex gap-3">

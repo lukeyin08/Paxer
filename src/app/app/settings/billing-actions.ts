@@ -65,7 +65,7 @@ export async function openBillingPortal(): Promise<Result> {
   if (!stripeConfigured()) return { error: 'Billing isn’t available yet.' };
   try {
     const billing = await getUserBilling(user.id);
-    if (!billing?.stripeCustomerId) return { error: 'No billing account yet — upgrade first.' };
+    if (!billing?.stripeCustomerId) return { error: 'No billing account yet. Upgrade first.' };
     const session = await getStripe().billingPortal.sessions.create({
       customer: billing.stripeCustomerId,
       return_url: billingReturnUrl(),

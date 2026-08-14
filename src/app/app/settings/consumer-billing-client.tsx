@@ -30,7 +30,8 @@ export function ConsumerBillingClient({
       else setError(res.error);
     });
 
-  const active = plan === 'plus' && (status === 'active' || status === 'trialing' || status === 'past_due');
+  const active =
+    plan === 'plus' && (status === 'active' || status === 'trialing' || status === 'past_due');
 
   return (
     <div className="flex flex-col gap-3">
@@ -41,23 +42,36 @@ export function ConsumerBillingClient({
             {status && status !== 'active' ? ` (${status})` : ''}.
           </>
         ) : (
-          <>You&rsquo;re on the free plan — your first audit is free; more audits and dispute letters need Paxer Plus.</>
+          <>
+            You&rsquo;re on the free plan. Your first audit is free; more audits and dispute
+            letters need Paxer Plus.
+          </>
         )}
       </p>
       <div className="flex flex-wrap items-center gap-2">
         {active ? (
-          <Button size="sm" variant="outline" disabled={pending} onClick={() => go(openBillingPortal)}>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={pending}
+            onClick={() => go(openBillingPortal)}
+          >
             Manage billing
           </Button>
         ) : configured ? (
           <Button size="sm" disabled={pending} onClick={() => go(startConsumerCheckout)}>
-            Subscribe — {priceLabel}
+            Subscribe for {priceLabel}
           </Button>
         ) : (
           <p className="text-xs text-muted">Subscriptions aren&rsquo;t switched on yet.</p>
         )}
         {!active && hasCustomer && configured && (
-          <Button size="sm" variant="ghost" disabled={pending} onClick={() => go(openBillingPortal)}>
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={pending}
+            onClick={() => go(openBillingPortal)}
+          >
             Manage billing
           </Button>
         )}
