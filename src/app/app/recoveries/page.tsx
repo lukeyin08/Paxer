@@ -40,7 +40,7 @@ export default async function RecoveriesPage({
     <div className="flex flex-col gap-8">
       <div>
         <Kicker className="mb-2">Recoveries</Kicker>
-        <h1 className="font-sans text-3xl font-semibold">Recoveries</h1>
+        <h1 className="text-2xl font-bold">Recoveries</h1>
       </div>
 
       <section className="grid grid-cols-2 gap-6 sm:grid-cols-3">
@@ -48,10 +48,7 @@ export default async function RecoveriesPage({
           label="Recovered"
           value={<Money amount={totals.totalRecovered} size="inherit" />}
         />
-        <StatBlock
-          label="You kept"
-          value={<Money amount={totals.netToPatient} size="inherit" />}
-        />
+        <StatBlock label="You kept" value={<Money amount={totals.netToPatient} size="inherit" />} />
         <StatBlock label="Recoveries" value={totals.count} />
       </section>
 
@@ -64,7 +61,7 @@ export default async function RecoveriesPage({
       )}
 
       <section className="flex flex-col gap-4">
-        <h2 className="font-sans text-xl font-semibold">History</h2>
+        <h2 className="text-lg font-bold">History</h2>
         {rows.length === 0 ? (
           <EmptyState
             title="No recoveries yet"

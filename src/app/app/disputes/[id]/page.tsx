@@ -17,11 +17,11 @@ export default async function DisputePage({ params }: { params: Promise<{ id: st
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-6">
       <div>
-        <Link href={`/app/cases/${dispute.caseId}`} className="text-sm text-accent hover:underline">
+        <Link href={`/app/cases/${dispute.caseId}`} className="text-sm text-accent underline">
           ← Back to case
         </Link>
         <Kicker className="mb-2 mt-3">Dispute</Kicker>
-        <h1 className="font-sans text-3xl font-semibold">
+        <h1 className="text-2xl font-bold">
           {dispute.target === 'INSURER' ? 'Insurer appeal' : 'Provider letter'}
         </h1>
       </div>

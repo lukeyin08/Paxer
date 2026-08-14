@@ -21,7 +21,7 @@ export default async function BenchmarksPage() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <Kicker className="mb-2">Benchmarks</Kicker>
-          <h1 className="font-sans text-3xl font-semibold">Price benchmarks</h1>
+          <h1 className="text-2xl font-bold">Price benchmarks</h1>
           <p className="mt-1 max-w-2xl text-muted">
             The compounding asset: anonymized prices accrued across cases (code + region + amount
             only, no identifiers). As more bills are audited, these benchmarks sharpen and power the
@@ -38,12 +38,15 @@ export default async function BenchmarksPage() {
       </section>
 
       {rows.length === 0 ? (
-        <EmptyState title="No benchmarks yet" description="Price benchmarks build up as more bills are audited across Paxer." />
+        <EmptyState
+          title="No benchmarks yet"
+          description="Price benchmarks build up as more bills are audited across Paxer."
+        />
       ) : (
         <div className="overflow-x-auto rounded-md border border-rule">
           <table className="w-full min-w-[640px] text-sm">
             <thead className="border-b border-rule bg-soft/40 text-left">
-              <tr className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
+              <tr className="text-xs text-muted">
                 <th className="p-3 font-normal">Code</th>
                 <th className="p-3 font-normal">Region</th>
                 <th className="p-3 text-right font-normal">25th pct</th>
@@ -59,13 +62,18 @@ export default async function BenchmarksPage() {
                   <td className="p-3 font-mono text-xs">{b.cptHcpcsCode}</td>
                   <td className="p-3 text-muted">{b.region}</td>
                   <td className="p-3 text-right tabular-nums">{formatUsd(Number(b.p25 ?? 0))}</td>
-                  <td className="p-3 text-right tabular-nums font-medium">
+                  <td className="p-3 text-right font-medium tabular-nums">
                     {formatUsd(Number(b.medianCharge ?? 0))}
                   </td>
                   <td className="p-3 text-right tabular-nums">{formatUsd(Number(b.p75 ?? 0))}</td>
-                  <td className="p-3 text-right tabular-nums text-muted">{b.sampleSize.toLocaleString()}</td>
+                  <td className="p-3 text-right tabular-nums text-muted">
+                    {b.sampleSize.toLocaleString()}
+                  </td>
                   <td className="p-3">
-                    <StatusPill label={b.source} tone={b.source === 'AGGREGATE' ? 'success' : 'muted'} />
+                    <StatusPill
+                      label={b.source}
+                      tone={b.source === 'AGGREGATE' ? 'success' : 'muted'}
+                    />
                   </td>
                 </tr>
               ))}

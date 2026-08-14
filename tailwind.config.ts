@@ -57,20 +57,29 @@ const config: Config = {
         ring: 'hsl(var(--ring))',
       },
       fontFamily: {
-        // Single sans family for display + body (matches the logo). `serif` is
-        // kept as an alias of sans so any stray `font-serif` stays on-brand.
-        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
-        serif: ['var(--font-sans)', 'system-ui', 'sans-serif'],
-        mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
+        // System type only — no webfonts. `serif` is kept as an alias of sans so
+        // any stray `font-serif` stays consistent.
+        sans: ['var(--font-sans)'],
+        serif: ['var(--font-sans)'],
+        mono: ['var(--font-mono)'],
       },
+      // Square corners everywhere. `full` survives for the handful of genuinely
+      // circular elements (status dots); every other step is flattened to 0 so a
+      // stray `rounded-xl` can't reintroduce the pill-and-bubble look.
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        none: '0',
+        sm: '0',
+        DEFAULT: '0',
+        md: '0',
+        lg: '0',
+        xl: '0',
+        '2xl': '0',
+        '3xl': '0',
+        full: '9999px',
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [],
 };
 
 export default config;

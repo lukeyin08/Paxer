@@ -40,7 +40,7 @@ export function MarketingMobileMenu({
         aria-controls="marketing-mobile-nav"
         aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
         onClick={() => setOpen((v) => !v)}
-        className="flex h-10 w-10 items-center justify-center rounded-md text-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="flex h-10 w-10 items-center justify-center border border-ink text-ink"
       >
         {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>
@@ -56,7 +56,7 @@ export function MarketingMobileMenu({
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="rounded-md px-2 py-3 text-base text-ink transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="px-2 py-3 text-base text-ink hover:underline"
             >
               {l.label}
             </Link>
@@ -66,7 +66,7 @@ export function MarketingMobileMenu({
           <Link
             href="/login"
             onClick={() => setOpen(false)}
-            className="mt-1 rounded-md border-t border-rule px-2 pb-2 pt-4 text-base text-muted transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:hidden"
+            className="mt-1 border-t border-rule px-2 pb-2 pt-4 text-base text-ink hover:underline sm:hidden"
           >
             Sign in
           </Link>

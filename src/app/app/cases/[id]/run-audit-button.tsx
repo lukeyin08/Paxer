@@ -3,7 +3,6 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Loader2, ShieldCheck } from 'lucide-react';
 import { runAuditAction } from './audit-actions';
 import { WorkingIndicator } from '@/components/working-indicator';
 import { ConsumerPaywall } from '@/components/consumer-paywall';
@@ -56,8 +55,12 @@ export function RunAuditButton({
 
   return (
     <div className="flex flex-col gap-2">
-      <Button size="sm" variant={hasFindings ? 'outline' : 'default'} disabled={pending} onClick={run}>
-        {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
+      <Button
+        size="sm"
+        variant={hasFindings ? 'outline' : 'default'}
+        disabled={pending}
+        onClick={run}
+      >
         {pending ? 'Auditing…' : hasFindings ? 'Re-run audit' : 'Run audit'}
       </Button>
       <WorkingIndicator active={pending} steps={AUDIT_STEPS} />

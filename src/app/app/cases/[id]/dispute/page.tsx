@@ -2,7 +2,11 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireUser } from '@/lib/auth/session';
 import { getCaseForUser } from '@/lib/cases/repo';
-import { getConsumerEntitlement, consumerBillingConfigured, CONSUMER_PLAN } from '@/lib/billing/consumer';
+import {
+  getConsumerEntitlement,
+  consumerBillingConfigured,
+  CONSUMER_PLAN,
+} from '@/lib/billing/consumer';
 import { Kicker } from '@/components/brand/kicker';
 import { EmptyState } from '@/components/brand/empty-state';
 import { Button } from '@/components/ui/button';
@@ -28,11 +32,11 @@ export default async function DisputeDraftPage({
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-8">
       <div>
-        <Link href={`/app/cases/${id}`} className="text-sm text-accent hover:underline">
+        <Link href={`/app/cases/${id}`} className="text-sm text-accent underline">
           ← Back to case
         </Link>
         <Kicker className="mb-2 mt-3">New dispute</Kicker>
-        <h1 className="font-sans text-3xl font-semibold">Draft a dispute</h1>
+        <h1 className="text-2xl font-bold">Draft a dispute</h1>
         <p className="mt-1 text-muted">
           Choose the findings to include. Paxer drafts a letter you can edit and approve, then
           download and send to your provider or insurer.

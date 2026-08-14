@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Kicker } from '@/components/brand/kicker';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
 import { ResultsMetrics } from '@/components/results/results-metrics';
@@ -20,18 +19,15 @@ export default function ResultsPage() {
       <MarketingHeader />
       <main className="flex-1">
         {/* Hero */}
-        <section className="container py-16 md:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <Kicker className="mb-4">Traction</Kicker>
-            <h1 className="font-sans text-4xl font-semibold leading-[1.1] text-ink md:text-5xl">
-              Six months in, it works.
-            </h1>
-            <p className="mt-5 mx-auto max-w-2xl text-lg leading-relaxed text-muted">
-              Paxer launched in December 2025. Since then, patients have used it to find real
-              errors on real bills and get real money back, and employers and platforms have
-              started paying to give it to their people.
+        <section className="container py-12 md:py-16">
+          <div className="max-w-3xl">
+            <h1 className="text-3xl font-bold text-ink">Six months in, it works.</h1>
+            <p className="mt-4 max-w-2xl leading-relaxed text-muted">
+              Paxer launched in December 2025. Since then, patients have used it to find real errors
+              on real bills and get real money back, and employers and platforms have started paying
+              to give it to their people.
             </p>
-            <p className="mt-4 font-mono text-xs uppercase tracking-wider text-muted">
+            <p className="mt-3 text-sm text-muted">
               Launched December 2025 · Figures as of June 2026
             </p>
           </div>
@@ -40,8 +36,8 @@ export default function ResultsPage() {
         <ResultsMetrics />
 
         {/* Footnotes */}
-        <section className="container pb-20">
-          <p className="mx-auto max-w-3xl text-center text-xs leading-relaxed text-muted">
+        <section className="container border-t border-rule py-8">
+          <p className="max-w-3xl text-sm leading-relaxed text-muted">
             Figures are cumulative since launch unless noted, and rounded. Recoveries are reported
             by users and not independently verified; past results don&rsquo;t guarantee any
             individual outcome.

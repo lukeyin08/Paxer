@@ -16,9 +16,7 @@ export function StatBlock({
   return (
     <div className={cn('flex flex-col gap-1', className)}>
       <Kicker>{label}</Kicker>
-      <div className="font-sans text-2xl font-semibold leading-tight tabular-nums text-ink sm:text-3xl">
-        {value}
-      </div>
+      <div className="text-xl font-bold tabular-nums text-ink">{value}</div>
       {hint && <p className="text-sm text-muted">{hint}</p>}
     </div>
   );

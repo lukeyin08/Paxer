@@ -1,7 +1,7 @@
 // Lightweight skeleton shown while an authenticated page's server data loads.
 export default function Loading() {
   return (
-    <div className="flex animate-pulse flex-col gap-8" aria-hidden="true">
+    <div className="flex flex-col gap-8" aria-hidden="true">
       <div className="flex flex-col gap-2">
         <div className="h-3 w-28 rounded bg-soft" />
         <div className="h-8 w-48 rounded bg-soft" />

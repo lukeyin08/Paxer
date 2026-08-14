@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { X, Check } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { startConsumerCheckout } from '@/app/app/settings/billing-actions';
 
@@ -36,17 +36,17 @@ export function ConsumerPaywall({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/40" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-rule bg-card p-6 focus:outline-none">
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/50" />
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 border border-ink bg-paper p-6 focus:outline-none">
           {/* Padded hit area: a bare 16px icon is nearly untappable on phones. */}
-          <Dialog.Close className="absolute right-1 top-1 rounded-md p-3 text-muted transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <Dialog.Close className="absolute right-1 top-1 p-3 text-muted hover:text-ink">
             <X className="h-4 w-4" />
             <span className="sr-only">Close</span>
           </Dialog.Close>
 
           <div className="flex flex-col gap-4">
             <div>
-              <Dialog.Title className="font-sans text-xl font-semibold text-ink">
+              <Dialog.Title className="text-lg font-bold text-ink">
                 Subscribe to Paxer Plus
               </Dialog.Title>
               <Dialog.Description className="mt-2 text-sm leading-relaxed text-muted">
@@ -55,16 +55,15 @@ export function ConsumerPaywall({
               </Dialog.Description>
             </div>
 
-            <ul className="flex flex-col gap-2 text-sm text-ink">
+            <ul className="list-disc pl-5 text-sm text-ink">
               {[
                 'Unlimited AI-drafted dispute letters',
                 'Unlimited bill audits',
                 'Keep 100% of what you recover',
                 'Cancel anytime',
               ].map((f) => (
-                <li key={f} className="flex items-center gap-2">
-                  <Check className="h-4 w-4 shrink-0 text-accent" />
-                  <span>{f}</span>
+                <li key={f} className="py-0.5">
+                  {f}
                 </li>
               ))}
             </ul>
@@ -74,7 +73,7 @@ export function ConsumerPaywall({
                 {pending ? 'Starting checkout…' : `Subscribe for ${priceLabel}`}
               </Button>
             ) : (
-              <p className="rounded-md border border-rule bg-soft/50 p-3 text-xs text-muted">
+              <p className="border border-rule p-3 text-xs text-muted">
                 Subscriptions aren&rsquo;t switched on yet. Check back shortly.
               </p>
             )}

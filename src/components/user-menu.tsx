@@ -7,7 +7,7 @@ import { signOutAction } from '@/lib/auth/actions';
 import { cn } from '@/lib/utils';
 
 const itemCls =
-  'flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted outline-none transition-colors data-[highlighted]:bg-soft data-[highlighted]:text-ink focus-visible:ring-2 focus-visible:ring-ring';
+  'flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted outline-none  data-[highlighted]:bg-soft data-[highlighted]:text-ink focus-visible:ring-2 focus-visible:ring-ring';
 
 /**
  * Account menu — collapses the secondary nav (Settings, Benchmarks, API keys)
@@ -21,10 +21,10 @@ export function UserMenu({ email }: { email?: string | null }) {
     <DM.Root>
       <DM.Trigger asChild>
         <button
-          className="inline-flex items-center gap-1.5 rounded-full border border-rule p-0.5 pr-1.5 text-muted transition-colors hover:bg-soft hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex items-center gap-1.5 border border-rule px-1.5 py-1 text-ink hover:bg-soft"
           aria-label="Account menu"
         >
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-xs font-semibold text-accent-foreground">
+          <span className="flex h-6 w-6 items-center justify-center bg-ink text-xs font-semibold text-paper">
             {initial}
           </span>
           <ChevronDown className="h-3.5 w-3.5" />
@@ -34,7 +34,7 @@ export function UserMenu({ email }: { email?: string | null }) {
         <DM.Content
           align="end"
           sideOffset={6}
-          className="z-50 min-w-[12rem] rounded-lg border border-rule bg-card p-1 text-card-foreground shadow-lg"
+          className="z-50 min-w-[12rem] rounded-lg border border-rule bg-card p-1 text-card-foreground"
         >
           {email && <div className="truncate px-2 py-1.5 text-xs text-muted">{email}</div>}
           <DM.Separator className="my-1 h-px bg-rule" />

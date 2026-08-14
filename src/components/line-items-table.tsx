@@ -12,7 +12,7 @@ export function LineItemsTable({ items }: { items: LineItem[] }) {
     <div className="overflow-x-auto rounded-md border border-rule">
       <table className="w-full min-w-[720px] text-sm">
         <thead className="border-b border-rule bg-soft/40 text-left">
-          <tr className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
+          <tr className="text-xs text-muted">
             <th className="p-3 font-normal">Description</th>
             <th className="p-3 font-normal">Code</th>
             <th className="p-3 font-normal">Date</th>

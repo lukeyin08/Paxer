@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
-import { RefreshCw } from 'lucide-react';
 import { recomputeBenchmarksAction } from './actions';
 
 export function RecomputeButton() {
@@ -21,7 +20,6 @@ export function RecomputeButton() {
           })
         }
       >
-        <RefreshCw className="h-4 w-4" />
         {pending ? 'Recomputing…' : 'Recompute from data'}
       </Button>
       {msg && <span className="text-xs text-success">{msg}</span>}

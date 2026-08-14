@@ -82,19 +82,39 @@ export function ManualCaseForm() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="m-title">Case title</Label>
-          <Input id="m-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="ER visit, March 2025" />
+          <Input
+            id="m-title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="ER visit, March 2025"
+          />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="m-dos">Date of service</Label>
-          <Input id="m-dos" type="date" value={dateOfService} onChange={(e) => setDateOfService(e.target.value)} />
+          <Input
+            id="m-dos"
+            type="date"
+            value={dateOfService}
+            onChange={(e) => setDateOfService(e.target.value)}
+          />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="m-provider">Provider</Label>
-          <Input id="m-provider" value={providerName} onChange={(e) => setProviderName(e.target.value)} placeholder="St. Marin Medical Center" />
+          <Input
+            id="m-provider"
+            value={providerName}
+            onChange={(e) => setProviderName(e.target.value)}
+            placeholder="St. Marin Medical Center"
+          />
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="m-payer">Insurer / payer</Label>
-          <Input id="m-payer" value={payerName} onChange={(e) => setPayerName(e.target.value)} placeholder="Brightpath Health" />
+          <Input
+            id="m-payer"
+            value={payerName}
+            onChange={(e) => setPayerName(e.target.value)}
+            placeholder="Brightpath Health"
+          />
         </div>
       </div>
 
@@ -103,7 +123,7 @@ export function ManualCaseForm() {
         <div className="overflow-x-auto rounded-md border border-rule">
           <table className="w-full min-w-[640px] text-sm">
             <thead className="border-b border-rule bg-soft/40 text-left">
-              <tr className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
+              <tr className="text-xs text-muted">
                 <th className="p-2 font-normal">Description</th>
                 <th className="p-2 font-normal">Code</th>
                 <th className="p-2 font-normal">Units</th>
@@ -116,22 +136,60 @@ export function ManualCaseForm() {
               {rows.map((r, i) => (
                 <tr key={i} className="border-b border-rule last:border-0">
                   <td className="p-1.5">
-                    <Input aria-label={`Line ${i + 1} description`} value={r.description} onChange={(e) => setRow(i, { description: e.target.value })} placeholder="CT scan, head" />
+                    <Input
+                      aria-label={`Line ${i + 1} description`}
+                      value={r.description}
+                      onChange={(e) => setRow(i, { description: e.target.value })}
+                      placeholder="CT scan, head"
+                    />
                   </td>
                   <td className="p-1.5">
-                    <Input aria-label={`Line ${i + 1} CPT/HCPCS code`} value={r.cptHcpcsCode} onChange={(e) => setRow(i, { cptHcpcsCode: e.target.value })} placeholder="70450" className="w-24" />
+                    <Input
+                      aria-label={`Line ${i + 1} CPT/HCPCS code`}
+                      value={r.cptHcpcsCode}
+                      onChange={(e) => setRow(i, { cptHcpcsCode: e.target.value })}
+                      placeholder="70450"
+                      className="w-24"
+                    />
                   </td>
                   <td className="p-1.5">
-                    <Input aria-label={`Line ${i + 1} units`} inputMode="numeric" value={r.units} onChange={(e) => setRow(i, { units: e.target.value })} className="w-16" />
+                    <Input
+                      aria-label={`Line ${i + 1} units`}
+                      inputMode="numeric"
+                      value={r.units}
+                      onChange={(e) => setRow(i, { units: e.target.value })}
+                      className="w-16"
+                    />
                   </td>
                   <td className="p-1.5">
-                    <Input aria-label={`Line ${i + 1} charge amount`} inputMode="decimal" value={r.chargeAmount} onChange={(e) => setRow(i, { chargeAmount: e.target.value })} placeholder="1240" className="w-24" />
+                    <Input
+                      aria-label={`Line ${i + 1} charge amount`}
+                      inputMode="decimal"
+                      value={r.chargeAmount}
+                      onChange={(e) => setRow(i, { chargeAmount: e.target.value })}
+                      placeholder="1240"
+                      className="w-24"
+                    />
                   </td>
                   <td className="p-1.5">
-                    <Input aria-label={`Line ${i + 1} amount you owe`} inputMode="decimal" value={r.patientResponsibility} onChange={(e) => setRow(i, { patientResponsibility: e.target.value })} placeholder="248" className="w-24" />
+                    <Input
+                      aria-label={`Line ${i + 1} amount you owe`}
+                      inputMode="decimal"
+                      value={r.patientResponsibility}
+                      onChange={(e) => setRow(i, { patientResponsibility: e.target.value })}
+                      placeholder="248"
+                      className="w-24"
+                    />
                   </td>
                   <td className="p-1.5">
-                    <Button type="button" variant="ghost" size="icon" onClick={() => removeRow(i)} disabled={rows.length === 1} aria-label="Remove row">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeRow(i)}
+                      disabled={rows.length === 1}
+                      aria-label="Remove row"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </td>

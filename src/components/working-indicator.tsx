@@ -31,7 +31,7 @@ export function WorkingIndicator({ active, steps }: { active: boolean; steps: Wo
 
   return (
     <div className="flex items-center gap-2 text-xs text-muted" role="status" aria-live="polite">
-      <span className="h-2 w-2 shrink-0 rounded-full bg-accent" />
+      <span className="h-2 w-2 shrink-0 bg-ink" />
       <span>
         {step?.text}… <span className="tabular-nums">{elapsed}s</span>
       </span>

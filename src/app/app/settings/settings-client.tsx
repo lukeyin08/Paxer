@@ -84,7 +84,7 @@ export function DeleteAccountCard() {
   return (
     <Card className="border-danger/30">
       <CardContent className="flex flex-col gap-3 pt-6">
-        <h2 className="font-sans text-lg font-semibold text-danger">Delete account</h2>
+        <h2 className="font-bold text-danger">Delete account</h2>
         <p className="text-sm text-muted">
           Permanently deletes your account and all cases, documents, findings, disputes, and
           recoveries. This cannot be undone. Type <strong>DELETE</strong> to confirm.

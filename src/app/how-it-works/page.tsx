@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Kicker } from '@/components/brand/kicker';
 import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
@@ -99,13 +98,10 @@ export default function HowItWorksPage() {
 
       <main className="flex-1">
         {/* Intro — orient in prose, then prove it with the worked example below */}
-        <section className="container py-16 md:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <Kicker className="mb-4">How it works</Kicker>
-            <h1 className="text-4xl font-semibold leading-[1.1] text-ink md:text-5xl">
-              See exactly what your bill is hiding.
-            </h1>
-            <p className="mt-5 mx-auto max-w-2xl text-lg leading-relaxed text-muted">
+        <section className="container py-12 md:py-16">
+          <div className="max-w-3xl">
+            <h1 className="text-3xl font-bold text-ink">See exactly what your bill is hiding.</h1>
+            <p className="mt-4 max-w-2xl leading-relaxed text-muted">
               You add a bill, Paxer audits every charge against your plan and regional prices, flags
               the errors with the math, and drafts the dispute letter you review and send, keeping
               you in control the whole way. Here&rsquo;s what that looks like on a worked example.
@@ -114,50 +110,44 @@ export default function HowItWorksPage() {
         </section>
 
         {/* Worked example */}
-        <section className="border-y border-rule bg-soft/40">
-          <div className="container py-16 md:py-20">
-            <Kicker className="mb-3">A worked example</Kicker>
-            <h2 className="max-w-2xl text-3xl font-semibold text-ink">
-              See it on an example ER bill.
-            </h2>
+        <section className="border-t border-rule">
+          <div className="container py-14">
+            <h2 className="max-w-2xl text-2xl font-bold text-ink">See it on an example ER bill.</h2>
             <p className="mt-2 max-w-2xl text-muted">
               Illustrative only, not a real patient. It shows the kinds of errors Paxer surfaces.
             </p>
 
             <WorkedExample lines={EXAMPLE_LINES} findings={EXAMPLE_FINDINGS} />
 
-            <div className="mt-6 rounded-md border border-rule bg-card p-6">
+            <div className="mt-6 max-w-3xl">
               <p className="text-sm leading-relaxed text-muted">
-                <span className="font-medium text-ink">Then Paxer drafts the letter.</span> It cites
-                each finding and the math, in plain language. You review and edit it, download the
-                PDF, and send it to your provider or insurer. Paxer tracks the response deadline and
-                reminds you, and when money comes back, you log the recovery and see exactly what you
-                keep.
+                <span className="font-semibold text-ink">Then Paxer drafts the letter.</span> It
+                cites each finding and the math, in plain language. You review and edit it, download
+                the PDF, and send it to your provider or insurer. Paxer tracks the response deadline
+                and reminds you, and when money comes back, you log the recovery and see exactly
+                what you keep.
               </p>
             </div>
           </div>
         </section>
 
         {/* FAQ */}
-        <section className="container py-16 md:py-20">
-          <Kicker className="mb-3">FAQ</Kicker>
-          <h2 className="text-3xl font-semibold text-ink">Common questions.</h2>
-          <div className="mt-8 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-rule bg-rule md:grid-cols-2">
+        <section className="container border-t border-rule py-14">
+          <h2 className="text-2xl font-bold text-ink">Common questions</h2>
+          <dl className="mt-6 grid grid-cols-1 gap-x-12 gap-y-6 md:grid-cols-2">
             {FAQS(plusPrice).map((f) => (
-              <div key={f.q} className="h-full bg-card p-6">
-                <h3 className="text-base font-semibold text-ink">{f.q}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{f.a}</p>
+              <div key={f.q}>
+                <dt className="font-semibold text-ink">{f.q}</dt>
+                <dd className="mt-1 text-sm leading-relaxed text-muted">{f.a}</dd>
               </div>
             ))}
-          </div>
+          </dl>
         </section>
 
         {/* CTA */}
-        <section className="container pb-24 text-center">
-          <h2 className="mx-auto max-w-2xl text-3xl font-semibold text-ink">
-            Put your bill to the test.
-          </h2>
-          <div className="mt-8">
+        <section className="container border-t border-rule py-14">
+          <h2 className="max-w-2xl text-2xl font-bold text-ink">Put your bill to the test.</h2>
+          <div className="mt-6">
             <Button asChild size="lg">
               <Link href="/login">Audit your first bill</Link>
             </Button>

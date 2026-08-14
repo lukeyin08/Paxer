@@ -2,16 +2,18 @@ import { cn } from '@/lib/utils';
 
 type Tone = 'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'muted';
 
+// Tone only changes the text colour; every status uses the same square, unfilled
+// tag so the page doesn't turn into a field of coloured pills.
 const toneStyles: Record<Tone, string> = {
-  neutral: 'border-rule bg-soft text-ink',
-  accent: 'border-accent/30 bg-accent/10 text-accent',
-  success: 'border-success/30 bg-success/10 text-success',
-  warning: 'border-warning/30 bg-warning/10 text-warning',
-  danger: 'border-danger/30 bg-danger/10 text-danger',
-  muted: 'border-rule bg-transparent text-muted',
+  neutral: 'text-ink',
+  accent: 'text-accent',
+  success: 'text-success',
+  warning: 'text-warning',
+  danger: 'text-danger',
+  muted: 'text-muted',
 };
 
-/** StatusPill renders an enum status with a brand tone. */
+/** StatusPill renders an enum status as a plain bordered tag. */
 export function StatusPill({
   label,
   tone = 'neutral',
@@ -24,7 +26,7 @@ export function StatusPill({
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-wider',
+        'inline-flex items-center border border-rule px-1.5 py-0.5 text-xs',
         toneStyles[tone],
         className,
       )}

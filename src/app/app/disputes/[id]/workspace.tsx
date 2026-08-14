@@ -115,7 +115,7 @@ export function DisputeWorkspace({
       </div>
 
       {status === 'SIMULATED_SENT' && (
-        <div className="rounded-md border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-ink">
+        <div className="border border-ink px-4 py-3 text-sm text-ink">
           Marked as sent. Download the letter above and send it to your provider or insurer (mail,
           fax, or their portal). We&rsquo;ll track the response deadline and remind you.
         </div>
@@ -128,7 +128,9 @@ export function DisputeWorkspace({
             contentEditable={editable}
             suppressContentEditableWarning
             className={`dispute-prose max-h-[60vh] overflow-y-auto rounded-md border p-6 text-sm leading-relaxed focus:outline-none ${
-              editable ? 'border-rule bg-card focus:ring-2 focus:ring-ring' : 'border-transparent bg-soft/30'
+              editable
+                ? 'border-rule bg-card focus:ring-2 focus:ring-ring'
+                : 'border-transparent bg-soft/30'
             }`}
             dangerouslySetInnerHTML={{ __html: dispute.letterHtml }}
           />
@@ -156,10 +158,17 @@ export function DisputeWorkspace({
         )}
         {status === 'AWAITING_USER_APPROVAL' && (
           <>
-            <Button onClick={() => run(() => markAsSentAction(dispute.id), 'SIMULATED_SENT')} disabled={pending}>
+            <Button
+              onClick={() => run(() => markAsSentAction(dispute.id), 'SIMULATED_SENT')}
+              disabled={pending}
+            >
               I&rsquo;ve sent this — mark as sent
             </Button>
-            <Button onClick={() => run(() => reopenDraftAction(dispute.id), 'DRAFT')} variant="ghost" disabled={pending}>
+            <Button
+              onClick={() => run(() => reopenDraftAction(dispute.id), 'DRAFT')}
+              variant="ghost"
+              disabled={pending}
+            >
               Keep editing
             </Button>
           </>
@@ -167,7 +176,11 @@ export function DisputeWorkspace({
         {(status === 'SIMULATED_SENT' || status === 'RESPONSE_RECEIVED') && !partialMode && (
           <>
             <span className="kicker">Log the response:</span>
-            <Button size="sm" onClick={() => run(() => logResponseAction(dispute.id, 'WON'), 'WON')} disabled={pending}>
+            <Button
+              size="sm"
+              onClick={() => run(() => logResponseAction(dispute.id, 'WON'), 'WON')}
+              disabled={pending}
+            >
               Won
             </Button>
             <Button
@@ -178,11 +191,21 @@ export function DisputeWorkspace({
             >
               Partial
             </Button>
-            <Button size="sm" variant="outline" onClick={() => run(() => logResponseAction(dispute.id, 'DENIED'), 'DENIED')} disabled={pending}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => run(() => logResponseAction(dispute.id, 'DENIED'), 'DENIED')}
+              disabled={pending}
+            >
               Denied
             </Button>
             {pastDeadline && (
-              <Button size="sm" variant="ghost" onClick={() => run(() => escalateDisputeAction(dispute.id), 'ESCALATED')} disabled={pending}>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => run(() => escalateDisputeAction(dispute.id), 'ESCALATED')}
+                disabled={pending}
+              >
                 Escalate (deadline passed)
               </Button>
             )}
@@ -191,8 +214,8 @@ export function DisputeWorkspace({
         {(status === 'SIMULATED_SENT' || status === 'RESPONSE_RECEIVED') && partialMode && (
           <div className="flex w-full flex-col gap-3 rounded-md border border-rule bg-soft/40 p-4">
             <p className="text-sm text-ink">
-              Which findings were resolved in your favor? The rest return to your open findings so you
-              can re-dispute or escalate them.
+              Which findings were resolved in your favor? The rest return to your open findings so
+              you can re-dispute or escalate them.
             </p>
             <div className="flex flex-col gap-2">
               {findings.map((f) => (
@@ -211,10 +234,7 @@ export function DisputeWorkspace({
               <Button
                 size="sm"
                 onClick={() =>
-                  run(
-                    () => logResponseAction(dispute.id, 'PARTIAL', [...recovered]),
-                    'PARTIAL',
-                  )
+                  run(() => logResponseAction(dispute.id, 'PARTIAL', [...recovered]), 'PARTIAL')
                 }
                 disabled={pending || recovered.size === 0}
               >
@@ -225,7 +245,12 @@ export function DisputeWorkspace({
                   Select at least one finding, or use “Denied”.
                 </span>
               )}
-              <Button size="sm" variant="ghost" onClick={() => setPartialMode(false)} disabled={pending}>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setPartialMode(false)}
+                disabled={pending}
+              >
                 Cancel
               </Button>
             </div>
@@ -237,7 +262,11 @@ export function DisputeWorkspace({
           </Button>
         )}
         {status === 'DENIED' && (
-          <Button onClick={() => run(() => escalateDisputeAction(dispute.id), 'ESCALATED')} disabled={pending} variant="outline">
+          <Button
+            onClick={() => run(() => escalateDisputeAction(dispute.id), 'ESCALATED')}
+            disabled={pending}
+            variant="outline"
+          >
             Escalate
           </Button>
         )}
@@ -245,13 +274,11 @@ export function DisputeWorkspace({
 
       {/* Events timeline */}
       <div className="flex flex-col gap-2">
-        <h2 className="font-sans text-lg font-semibold">Activity</h2>
+        <h2 className="font-bold">Activity</h2>
         <ol className="flex flex-col gap-1 text-sm">
           {events.map((e, i) => (
             <li key={i} className="flex items-center gap-3 text-muted">
-              <span className="font-mono text-[0.65rem] uppercase tracking-wider">
-                {e.type.replace(/_/g, ' ')}
-              </span>
+              <span className="text-xs">{e.type.replace(/_/g, ' ')}</span>
               <span className="text-xs">{formatDate(e.occurredAt)}</span>
             </li>
           ))}

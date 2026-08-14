@@ -16,15 +16,10 @@ export function EmptyState({
   className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        'flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-rule bg-card/50 px-6 py-16 text-center',
-        className,
-      )}
-    >
+    <div className={cn('flex flex-col items-start gap-2 border border-rule px-6 py-10', className)}>
       {kicker && <Kicker>{kicker}</Kicker>}
-      <h3 className="font-sans text-xl font-semibold text-ink">{title}</h3>
-      {description && <p className="max-w-md text-sm text-muted">{description}</p>}
+      <h3 className="text-lg font-bold text-ink">{title}</h3>
+      {description && <p className="max-w-xl text-sm leading-relaxed text-muted">{description}</p>}
       {action && <div className="mt-2">{action}</div>}
     </div>
   );

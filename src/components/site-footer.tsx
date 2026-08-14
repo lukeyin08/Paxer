@@ -30,7 +30,7 @@ const COLUMNS: { title: string; links: { label: string; href: string }[] }[] = [
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 border-t border-rule">
+    <footer className="mt-16 border-t border-rule">
       <div className="container flex flex-col gap-10 py-12">
         <div className="flex flex-col gap-10 md:flex-row md:justify-between">
           <div className="max-w-xs">
@@ -42,16 +42,11 @@ export function SiteFooter() {
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 md:gap-12">
             {COLUMNS.map((col) => (
               <div key={col.title} className="flex flex-col gap-3">
-                <p className="font-mono text-[0.65rem] uppercase tracking-wider text-muted/70">
-                  {col.title}
-                </p>
+                <p className="text-sm font-semibold text-ink">{col.title}</p>
                 <ul className="flex flex-col gap-2 text-sm">
                   {col.links.map((l) => (
                     <li key={l.href}>
-                      <Link
-                        href={l.href}
-                        className="inline-block py-1 text-muted hover:text-ink hover:underline"
-                      >
+                      <Link href={l.href} className="inline-block py-1 text-accent underline">
                         {l.label}
                       </Link>
                     </li>

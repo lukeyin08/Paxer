@@ -6,17 +6,17 @@
 
 export const PROCESS_STEPS = [
   {
-    step: '01',
+    step: '1',
     title: 'Add your bill',
     body: 'Upload a medical bill or EOB, or enter the charges by hand. Paxer reads the document and pulls out every line item.',
   },
   {
-    step: '02',
+    step: '2',
     title: 'See the findings',
     body: 'The audit engine checks each charge against your plan and regional benchmarks, and flags errors with the evidence and the math behind each one.',
   },
   {
-    step: '03',
+    step: '3',
     title: 'Send & recover',
     body: 'Paxer drafts the dispute letter. You review it, send it to your provider or insurer, and Paxer tracks the deadline until the money comes back.',
   },

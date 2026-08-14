@@ -2,35 +2,27 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 /**
- * Paxer logo: a geometric "P" monogram in the accent blue paired with a clean
- * sans-serif wordmark — a single-color, scalable lockup (the mark doubles as the
- * favicon / app icon). Set `markOnly` to render just the glyph.
+ * Paxer logo: two overlapping discs (the "overlap" mark) in the brand blues,
+ * paired with the lowercase "paxer" wordmark — a flat, scalable lockup. The
+ * viewBox is cropped to the artwork so the mark sits tight against the word.
+ * Set `markOnly` to render just the glyph (e.g. compact / favicon contexts).
  */
 export function PaxerMark({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 32 32"
-      role="img"
-      aria-label="Paxer"
-      className={cn('text-accent', className)}
-    >
-      <rect width="32" height="32" rx="8" fill="currentColor" />
-      {/* Stem */}
-      <rect x="10.5" y="8" width="3.4" height="16" rx="1.5" fill="#fff" />
-      {/* Bowl with counter (evenodd punches the hole) */}
-      <path
-        fill="#fff"
-        fillRule="evenodd"
-        d="M10.5 8 H16 A5 5 0 0 1 16 18 H10.5 V8 Z M13.9 11 H15.6 A2.1 2.1 0 0 1 15.6 15.2 H13.9 Z"
-      />
+    <svg viewBox="13 18 38 28" role="img" aria-label="Paxer" className={className}>
+      <circle cx="27" cy="32" r="13" fill="#3D7DFF" />
+      <circle cx="37" cy="32" r="13" fill="#4FC3FF" />
+      {/* Overlap lens (darker blend of the two discs) */}
+      <path fill="#1E5FE0" d="M32 20 A13 13 0 0 1 32 44 A13 13 0 0 1 32 20 Z" />
     </svg>
   );
 }
 
+// Mark is sized by height (width auto) since the cropped viewBox isn't square.
 const SIZES = {
-  sm: { mark: 'h-[18px] w-[18px]', text: 'text-lg', gap: 'gap-2' },
-  base: { mark: 'h-[22px] w-[22px]', text: 'text-xl', gap: 'gap-2.5' },
-  lg: { mark: 'h-7 w-7', text: 'text-2xl', gap: 'gap-2.5' },
+  sm: { mark: 'h-[15px] w-auto', text: 'text-lg', gap: 'gap-1.5' },
+  base: { mark: 'h-[19px] w-auto', text: 'text-xl', gap: 'gap-1.5' },
+  lg: { mark: 'h-[23px] w-auto', text: 'text-2xl', gap: 'gap-2' },
 } as const;
 
 export function Wordmark({
@@ -50,7 +42,7 @@ export function Wordmark({
     <span className={cn('inline-flex items-center', s.gap, className)}>
       <PaxerMark className={s.mark} />
       {!markOnly && (
-        <span className={cn('font-sans font-semibold tracking-tight text-ink', s.text)}>Paxer</span>
+        <span className={cn('font-extrabold tracking-tight text-ink', s.text)}>Paxer</span>
       )}
     </span>
   );

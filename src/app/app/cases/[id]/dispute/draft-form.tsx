@@ -171,7 +171,10 @@ export function DraftForm({
                 onCheckedChange={() => toggle(f.id)}
                 id={`f-${f.id}`}
               />
-              <label htmlFor={`f-${f.id}`} className="flex flex-1 items-center justify-between gap-3">
+              <label
+                htmlFor={`f-${f.id}`}
+                className="flex flex-1 items-center justify-between gap-3"
+              >
                 <span className="flex items-center gap-2">
                   <StatusPill label={f.severity} tone={severityTone(f.severity)} />
                   <span className="text-sm">{f.title}</span>
@@ -192,7 +195,7 @@ export function DraftForm({
               type="button"
               onClick={() => setTarget(t)}
               className={`rounded-md border px-3 py-1 text-xs ${
-                target === t ? 'border-accent bg-accent/10 text-accent' : 'border-rule text-muted'
+                target === t ? 'border-ink bg-ink text-paper' : 'border-rule text-muted'
               }`}
             >
               {t === 'AUTO' ? 'Auto' : t === 'PROVIDER' ? 'Provider' : 'Insurer'}
@@ -211,7 +214,7 @@ export function DraftForm({
       <Card>
         <CardContent className="flex flex-col gap-6 pt-6">
           <div>
-            <h2 className="font-sans text-lg font-semibold">Your details</h2>
+            <h2 className="font-bold">Your details</h2>
             <p className="mt-1 text-sm text-muted">
               We use these to produce a finished letter with no blanks to fill in. Fields marked{' '}
               <span className="text-danger">*</span> are required.
@@ -221,20 +224,69 @@ export function DraftForm({
           <div className="flex flex-col gap-3">
             <span className="kicker">Your contact information</span>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Full name" value={details.senderName} onChange={setField('senderName')} placeholder="Jane Doe" required />
-              <Field label="Phone" value={details.senderPhone} onChange={setField('senderPhone')} placeholder="(555) 123-4567" required />
-              <Field label="Email" type="email" value={details.senderEmail} onChange={setField('senderEmail')} placeholder="you@example.com" required />
-              <Field label="Street address" value={details.senderAddress} onChange={setField('senderAddress')} placeholder="123 Main St, Apt 4" required />
-              <Field label="City, State ZIP" value={details.senderCityStateZip} onChange={setField('senderCityStateZip')} placeholder="Austin, TX 78701" required className="sm:col-span-2" />
+              <Field
+                label="Full name"
+                value={details.senderName}
+                onChange={setField('senderName')}
+                placeholder="Jane Doe"
+                required
+              />
+              <Field
+                label="Phone"
+                value={details.senderPhone}
+                onChange={setField('senderPhone')}
+                placeholder="(555) 123-4567"
+                required
+              />
+              <Field
+                label="Email"
+                type="email"
+                value={details.senderEmail}
+                onChange={setField('senderEmail')}
+                placeholder="you@example.com"
+                required
+              />
+              <Field
+                label="Street address"
+                value={details.senderAddress}
+                onChange={setField('senderAddress')}
+                placeholder="123 Main St, Apt 4"
+                required
+              />
+              <Field
+                label="City, State ZIP"
+                value={details.senderCityStateZip}
+                onChange={setField('senderCityStateZip')}
+                placeholder="Austin, TX 78701"
+                required
+                className="sm:col-span-2"
+              />
             </div>
           </div>
 
           <div className="flex flex-col gap-3">
             <span className="kicker">Send the letter to</span>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Recipient name" value={details.recipientName} onChange={setField('recipientName')} placeholder="Cigna Appeals Department" required className="sm:col-span-2" />
-              <Field label="Recipient street address" value={details.recipientAddress} onChange={setField('recipientAddress')} placeholder="PO Box 188061" />
-              <Field label="Recipient city, state ZIP" value={details.recipientCityStateZip} onChange={setField('recipientCityStateZip')} placeholder="Chattanooga, TN 37422" />
+              <Field
+                label="Recipient name"
+                value={details.recipientName}
+                onChange={setField('recipientName')}
+                placeholder="Cigna Appeals Department"
+                required
+                className="sm:col-span-2"
+              />
+              <Field
+                label="Recipient street address"
+                value={details.recipientAddress}
+                onChange={setField('recipientAddress')}
+                placeholder="PO Box 188061"
+              />
+              <Field
+                label="Recipient city, state ZIP"
+                value={details.recipientCityStateZip}
+                onChange={setField('recipientCityStateZip')}
+                placeholder="Chattanooga, TN 37422"
+              />
             </div>
           </div>
 
@@ -245,8 +297,18 @@ export function DraftForm({
               we&rsquo;ll simply omit them.
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Member ID" value={details.memberId} onChange={setField('memberId')} placeholder="U1234567801" />
-              <Field label="Claim number" value={details.claimNumber} onChange={setField('claimNumber')} placeholder="20-123456789" />
+              <Field
+                label="Member ID"
+                value={details.memberId}
+                onChange={setField('memberId')}
+                placeholder="U1234567801"
+              />
+              <Field
+                label="Claim number"
+                value={details.claimNumber}
+                onChange={setField('claimNumber')}
+                placeholder="20-123456789"
+              />
             </div>
           </div>
         </CardContent>

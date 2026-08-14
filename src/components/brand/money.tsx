@@ -25,8 +25,8 @@ export function Money({
   const sizeClass = {
     sm: 'text-sm',
     base: 'text-base',
-    lg: 'font-sans text-2xl',
-    xl: 'font-sans text-4xl',
+    lg: 'text-lg',
+    xl: 'text-2xl',
     inherit: '',
   }[size];
 
@@ -34,9 +34,7 @@ export function Money({
     <span className={cn('tabular-nums', sizeClass, className)}>
       {value === null ? '—' : formatUsd(value, { cents })}
       {estimate && value !== null && (
-        <span className="ml-1 align-baseline font-mono text-[0.6em] uppercase tracking-wider text-muted">
-          est
-        </span>
+        <span className="ml-1 align-baseline text-[0.7em] text-muted">est</span>
       )}
     </span>
   );

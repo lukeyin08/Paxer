@@ -52,7 +52,7 @@ export function RecordRecoveryForm({
       <CardContent className="flex flex-col gap-5 pt-6">
         <div>
           <Kicker className="mb-1">Record a recovery</Kicker>
-          <h2 className="font-sans text-xl font-semibold">Money returned to you</h2>
+          <h2 className="text-lg font-bold">Money returned to you</h2>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
@@ -83,7 +83,12 @@ export function RecordRecoveryForm({
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="notes">Notes (optional)</Label>
-          <Input id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Insurer reprocessed claim on appeal" />
+          <Input
+            id="notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Insurer reprocessed claim on appeal"
+          />
         </div>
 
         {/* Summary — payment processing is not wired up in v1 */}
@@ -92,9 +97,7 @@ export function RecordRecoveryForm({
           <div className="flex flex-col gap-1 text-sm">
             <Row label="Recovered for you" value={formatUsd(amt)} strong />
           </div>
-          <p className="mt-3 font-mono text-[0.65rem] uppercase tracking-wider text-accent2">
-            No contingency — you keep 100%.
-          </p>
+          <p className="mt-3 text-xs text-accent2">No contingency — you keep 100%.</p>
         </div>
 
         {error && <p className="text-sm text-danger">{error}</p>}

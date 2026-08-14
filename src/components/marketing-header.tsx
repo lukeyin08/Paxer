@@ -22,11 +22,7 @@ export function MarketingHeader() {
             so it only appears at lg+ where it can't collide with the edges. */}
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex">
           {LINKS.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="rounded-md px-3 py-2 text-sm text-muted transition-colors hover:text-ink focus-visible:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
+            <Link key={l.href} href={l.href} className="px-3 py-2 text-sm text-ink hover:underline">
               {l.label}
             </Link>
           ))}
@@ -36,10 +32,7 @@ export function MarketingHeader() {
             users and signs in returning ones. Kept as a quiet text link so
             "Request a demo" stays the single button in the bar. */}
         <div className="flex items-center gap-4 max-[459px]:gap-2">
-          <Link
-            href="/login"
-            className="rounded-md py-2 text-sm text-muted transition-colors hover:text-ink focus-visible:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring max-sm:hidden"
-          >
+          <Link href="/login" className="py-2 text-sm text-ink hover:underline max-sm:hidden">
             Sign in
           </Link>
           <Button asChild size="sm">

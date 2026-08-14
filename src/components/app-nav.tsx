@@ -25,10 +25,10 @@ export function AppNav({ email }: { email?: string | null }) {
         key={item.href}
         href={item.href}
         className={cn(
-          'whitespace-nowrap rounded-md px-3 py-1.5 text-sm transition-colors',
+          'whitespace-nowrap border-b-2 px-1 py-1.5 text-sm',
           active
-            ? 'bg-accent/10 text-ink ring-1 ring-inset ring-accent/20'
-            : 'text-muted hover:bg-soft hover:text-ink',
+            ? 'border-ink font-semibold text-ink'
+            : 'border-transparent text-muted hover:text-ink',
         )}
       >
         {item.label}
@@ -44,14 +44,14 @@ export function AppNav({ email }: { email?: string | null }) {
               tab is the app home. */}
           <Wordmark href="/" />
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-1 md:flex">{links}</nav>
+          <nav className="hidden items-center gap-5 md:flex">{links}</nav>
         </div>
         <div className="flex items-center gap-3">
           <UserMenu email={email} />
         </div>
       </div>
       {/* Mobile nav: horizontally scrollable strip so every section is reachable */}
-      <nav className="flex items-center gap-1 overflow-x-auto border-t border-rule px-4 py-2 md:hidden">
+      <nav className="flex items-center gap-5 overflow-x-auto border-t border-rule px-4 py-2 md:hidden">
         {links}
       </nav>
     </header>

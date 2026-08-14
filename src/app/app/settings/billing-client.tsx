@@ -38,7 +38,7 @@ export function BillingClient(props: BillingProps) {
         <p className="mt-1 text-xs text-muted">
           {props.used.toLocaleString()} / {props.quota.toLocaleString()} audits this month
         </p>
-        <div className="mt-2 h-1.5 w-44 overflow-hidden rounded-full bg-rule">
+        <div className="mt-2 h-1.5 w-44 overflow-hidden bg-rule">
           <div className="h-full bg-accent" style={{ width: `${pct}%` }} />
         </div>
       </div>
@@ -53,11 +53,18 @@ export function BillingClient(props: BillingProps) {
               disabled={pending || props.planId === p.id}
               onClick={() => go(() => startCheckout(p.id))}
             >
-              {props.planId === p.id ? `${p.label} — current` : `Upgrade to ${p.label} · ${p.priceLabel}`}
+              {props.planId === p.id
+                ? `${p.label} — current`
+                : `Upgrade to ${p.label} · ${p.priceLabel}`}
             </Button>
           ))}
           {props.hasSubscription && (
-            <Button size="sm" variant="ghost" disabled={pending} onClick={() => go(() => openBillingPortal())}>
+            <Button
+              size="sm"
+              variant="ghost"
+              disabled={pending}
+              onClick={() => go(() => openBillingPortal())}
+            >
               Manage billing
             </Button>
           )}
@@ -65,7 +72,10 @@ export function BillingClient(props: BillingProps) {
       ) : (
         <p className="text-xs text-muted">
           Self-serve billing is being set up. For higher volume or an SLA,{' '}
-          <a className="text-accent hover:underline" href="mailto:hello@paxer.app?subject=Paxer%20API%20upgrade">
+          <a
+            className="text-accent underline"
+            href="mailto:hello@paxer.app?subject=Paxer%20API%20upgrade"
+          >
             contact us
           </a>
           .

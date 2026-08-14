@@ -22,10 +22,10 @@ export function LegalLayout({
           {/* Wordmark already links to "/" — no outer <Link> (would nest <a>). */}
           <Wordmark size="sm" />
           <nav className="flex items-center gap-2 text-sm text-muted">
-            <Link href="/privacy" className="rounded-md px-2 py-2 hover:text-ink hover:underline">
+            <Link href="/privacy" className="px-2 py-2 underline hover:text-ink">
               Privacy
             </Link>
-            <Link href="/terms" className="rounded-md px-2 py-2 hover:text-ink hover:underline">
+            <Link href="/terms" className="px-2 py-2 underline hover:text-ink">
               Terms
             </Link>
           </nav>
@@ -35,7 +35,7 @@ export function LegalLayout({
       <main className="container max-w-3xl py-12">
         <div>
           <Kicker className="mb-2">{kicker}</Kicker>
-          <h1 className="font-sans text-3xl font-semibold">{title}</h1>
+          <h1 className="text-2xl font-bold">{title}</h1>
           <p className="mt-2 text-sm text-muted">Last updated: {lastUpdated}</p>
         </div>
 
@@ -47,10 +47,16 @@ export function LegalLayout({
   );
 }
 
-export function LegalSection({ heading, children }: { heading: string; children: React.ReactNode }) {
+export function LegalSection({
+  heading,
+  children,
+}: {
+  heading: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="font-sans text-lg font-semibold">{heading}</h2>
+      <h2 className="font-bold">{heading}</h2>
       <div className="flex flex-col gap-2 text-muted">{children}</div>
     </section>
   );

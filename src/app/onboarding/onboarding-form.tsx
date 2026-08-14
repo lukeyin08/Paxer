@@ -25,7 +25,13 @@ export function OnboardingForm({ defaultName }: { defaultName?: string }) {
     <form action={formAction} className="flex flex-col gap-5">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="name">Your name</Label>
-        <Input id="name" name="name" defaultValue={defaultName} placeholder="Jordan Rivera" required />
+        <Input
+          id="name"
+          name="name"
+          defaultValue={defaultName}
+          placeholder="Jordan Rivera"
+          required
+        />
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="state">State (optional)</Label>
@@ -38,7 +44,7 @@ export function OnboardingForm({ defaultName }: { defaultName?: string }) {
           I agree to Paxer&rsquo;s{' '}
           <Link
             href="/terms"
-            className="text-accent hover:underline"
+            className="text-accent underline"
             target="_blank"
             onClick={(e) => e.stopPropagation()}
           >
@@ -47,7 +53,7 @@ export function OnboardingForm({ defaultName }: { defaultName?: string }) {
           and{' '}
           <Link
             href="/privacy"
-            className="text-accent hover:underline"
+            className="text-accent underline"
             target="_blank"
             onClick={(e) => e.stopPropagation()}
           >

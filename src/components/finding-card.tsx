@@ -104,9 +104,7 @@ function BenchmarkWidget({ evidence }: { evidence: Record<string, unknown> }) {
         </span>
       </div>
       {sample !== null && (
-        <p className="mt-1 font-mono text-[0.65rem] uppercase tracking-wider text-muted">
-          Based on {sample} anonymized line items
-        </p>
+        <p className="mt-1 text-xs text-muted">Based on {sample} anonymized line items</p>
       )}
     </div>
   );
@@ -123,13 +121,14 @@ export function FindingCard({ finding }: { finding: FindingView }) {
     <Card className={dismissed ? 'opacity-60' : undefined}>
       <CardContent className="flex flex-col gap-3 pt-6">
         <div className="flex flex-wrap items-center gap-2">
-          <StatusPill label={severityLabel(finding.severity)} tone={severityTone(finding.severity)} />
+          <StatusPill
+            label={severityLabel(finding.severity)}
+            tone={severityTone(finding.severity)}
+          />
           <StatusPill label={findingTypeLabel(finding.type)} tone="muted" />
           <ConfidenceBadge confidence={finding.confidence} />
           {finding.detector !== 'RULE' && (
-            <span className="font-mono text-[0.6rem] uppercase tracking-wider text-muted">
-              {detectorLabel(finding.detector)}
-            </span>
+            <span className="text-xs text-muted">{detectorLabel(finding.detector)}</span>
           )}
           {finding.status !== 'OPEN' && (
             <StatusPill
@@ -142,7 +141,7 @@ export function FindingCard({ finding }: { finding: FindingView }) {
         </div>
 
         <div className="flex items-start justify-between gap-4">
-          <h3 className="font-sans text-lg font-semibold leading-snug">{finding.title}</h3>
+          <h3 className="font-bold leading-snug">{finding.title}</h3>
           {finding.estimatedRecovery !== null && (
             <div className="shrink-0 text-right">
               <p className="kicker">Est. recovery</p>
@@ -157,7 +156,7 @@ export function FindingCard({ finding }: { finding: FindingView }) {
         {finding.type === 'OTHER' && 'p75' in ev && <BenchmarkWidget evidence={ev} />}
 
         {nextStep && (
-          <p className="rounded-md border border-accent/20 bg-accent/5 px-3 py-2 text-sm text-ink">
+          <p className="border-l-2 border-ink pl-3 text-sm text-ink">
             <span className="font-medium">Recommended next step: </span>
             {nextStep}
           </p>

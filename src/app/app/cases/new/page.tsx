@@ -12,10 +12,8 @@ export default async function NewCasePage() {
     <div className="mx-auto flex max-w-3xl flex-col gap-8">
       <div>
         <Kicker className="mb-2">New case</Kicker>
-        <h1 className="font-sans text-3xl font-semibold">Add a case</h1>
-        <p className="mt-1 text-muted">
-          Upload a bill or EOB, or enter charges by hand.
-        </p>
+        <h1 className="text-2xl font-bold">Add a case</h1>
+        <p className="mt-1 text-muted">Upload a bill or EOB, or enter charges by hand.</p>
       </div>
 
       <Card>

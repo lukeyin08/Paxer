@@ -22,19 +22,10 @@ export function Disclaimer({
   }
   if (variant === 'callout') {
     return (
-      <div
-        className={cn(
-          'rounded-md border border-accent2/30 bg-accent2/5 px-4 py-3 text-xs text-accent2',
-          className,
-        )}
-      >
+      <div className={cn('border border-rule px-4 py-3 text-xs text-muted', className)}>
         {DISCLAIMER_TEXT}
       </div>
     );
   }
-  return (
-    <p className={cn('font-mono text-[0.7rem] leading-relaxed text-muted', className)}>
-      {DISCLAIMER_TEXT}
-    </p>
-  );
+  return <p className={cn('text-xs leading-relaxed text-muted', className)}>{DISCLAIMER_TEXT}</p>;
 }

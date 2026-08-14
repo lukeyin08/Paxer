@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import { cn } from '@/lib/utils';
-import { fontSans, fontMono } from '@/lib/fonts';
 import { CONSUMER_PLAN } from '@/lib/billing/consumer';
 import './globals.css';
 
@@ -94,9 +92,7 @@ const JSON_LD = {
   ],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <head>
@@ -109,11 +105,7 @@ export default function RootLayout({
         // Browser extensions (Grammarly, etc.) inject attributes onto <body>
         // before React hydrates; suppress that one-level attribute mismatch.
         suppressHydrationWarning
-        className={cn(
-          fontSans.variable,
-          fontMono.variable,
-          'min-h-screen bg-paper text-ink',
-        )}
+        className="min-h-screen bg-paper text-ink"
       >
         {children}
       </body>

@@ -17,77 +17,59 @@ const HEADLINE = [
   },
 ];
 
-const NUMBER_CLS =
-  'font-sans text-4xl font-semibold leading-none tracking-tight text-ink md:text-5xl';
-
-function StatCard({
-  stat,
-  accent = false,
-}: {
-  stat: { value: string; label: string; sub: string };
-  accent?: boolean;
-}) {
-  return (
-    <div
-      className={`flex flex-col rounded-xl border px-7 py-8 ${
-        accent ? 'border-accent/25 bg-accent/[0.05]' : 'border-rule bg-card'
-      }`}
-    >
-      <p className={NUMBER_CLS}>{stat.value}</p>
-      <p className="mt-4 font-sans text-base font-semibold text-ink">{stat.label}</p>
-      <p className="mt-1.5 text-sm leading-relaxed text-muted">{stat.sub}</p>
-    </div>
-  );
-}
-
-/** Revenue bar, sized to its share of the total. */
-function RevenueBar({ label, amount, pct }: { label: string; amount: string; pct: number }) {
-  return (
-    <div>
-      <div className="flex items-baseline justify-between gap-3 text-sm">
-        <span className="font-medium text-ink">{label}</span>
-        <span className="font-mono font-semibold text-ink">{amount}</span>
-      </div>
-      <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-rule">
-        <div className="h-full rounded-full bg-accent" style={{ width: `${pct}%` }} />
-      </div>
-    </div>
-  );
-}
+const REVENUE = [
+  { label: 'Employer & API partners', amount: '$13K ARR' },
+  { label: 'Paxer Plus subscriptions', amount: '$3K ARR' },
+];
 
 export function ResultsMetrics() {
   return (
     <>
       {/* Headline numbers */}
-      <section className="border-y border-rule bg-soft/40">
-        <div className="container grid grid-cols-1 gap-6 py-16 sm:grid-cols-2 lg:grid-cols-4">
-          {HEADLINE.map((s, i) => (
-            <StatCard key={s.label} stat={s} accent={i === 0} />
+      <section className="container border-t border-rule py-12">
+        <dl className="grid grid-cols-1 gap-x-12 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+          {HEADLINE.map((s) => (
+            <div key={s.label}>
+              <dt className="font-semibold text-ink">
+                <span className="tabular-nums">{s.value}</span> {s.label}
+              </dt>
+              <dd className="mt-1 text-sm leading-relaxed text-muted">{s.sub}</dd>
+            </div>
           ))}
-        </div>
+        </dl>
       </section>
 
       {/* Revenue */}
-      <section className="container py-20">
-        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
-          <div>
-            <p className="kicker mb-3">Revenue</p>
-            <h2 className="max-w-xl font-sans text-3xl font-semibold text-ink">
-              $16K annual run-rate, six months in.
-            </h2>
-            <p className="mt-4 max-w-xl leading-relaxed text-muted">
-              Business revenue leads, and the consumer subscription compounds underneath it. All of
-              it is flat-fee: Paxer never takes a percentage of what anyone recovers.
-            </p>
-          </div>
-          <div className="flex flex-col gap-6 rounded-xl border border-rule bg-card p-8">
-            <RevenueBar label="Employer & API partners" amount="$13K ARR" pct={100} />
-            <RevenueBar label="Paxer Plus subscriptions" amount="$3K ARR" pct={23} />
-            <p className="text-xs leading-relaxed text-muted">
-              Bar lengths are proportional to annualized recurring revenue.
-            </p>
-          </div>
-        </div>
+      <section className="container border-t border-rule py-14">
+        <h2 className="max-w-xl text-2xl font-bold text-ink">
+          $16K annual run-rate, six months in.
+        </h2>
+        <p className="mt-2 max-w-2xl leading-relaxed text-muted">
+          Business revenue leads, and the consumer subscription compounds underneath it. All of it
+          is flat-fee: Paxer never takes a percentage of what anyone recovers.
+        </p>
+
+        <table className="mt-6 w-full max-w-md border-collapse text-sm">
+          <caption className="sr-only">Annualized recurring revenue by source</caption>
+          <thead>
+            <tr className="border-b border-ink text-left">
+              <th scope="col" className="py-2 pr-4 font-semibold text-ink">
+                Source
+              </th>
+              <th scope="col" className="py-2 text-right font-semibold text-ink">
+                ARR
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {REVENUE.map((r) => (
+              <tr key={r.label} className="border-b border-rule">
+                <td className="py-2 pr-4 text-ink">{r.label}</td>
+                <td className="py-2 text-right tabular-nums text-ink">{r.amount}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
     </>
   );

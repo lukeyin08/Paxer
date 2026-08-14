@@ -67,18 +67,20 @@ export function ApiKeysClient({ keys, usage }: { keys: KeyRow[]; usage: Usage })
     <div className="flex flex-col gap-4">
       <p className="text-sm text-muted">
         Call the audit engine from your own systems. Authenticate with{' '}
-        <code className="rounded bg-soft px-1 py-0.5 font-mono text-xs">Authorization: Bearer &lt;key&gt;</code>.
-        Keys are shown once — store them securely.
+        <code className="rounded bg-soft px-1 py-0.5 font-mono text-xs">
+          Authorization: Bearer &lt;key&gt;
+        </code>
+        . Keys are shown once — store them securely.
       </p>
 
       {/* Usage / plan */}
       <div className="flex items-center justify-between gap-3 rounded-md border border-rule bg-soft/40 p-3">
         <div className="min-w-0">
           <p className="text-sm font-medium text-ink">
-            {usage.planLabel} plan · {usage.used.toLocaleString()} / {usage.quota.toLocaleString()} audits
-            this month
+            {usage.planLabel} plan · {usage.used.toLocaleString()} / {usage.quota.toLocaleString()}{' '}
+            audits this month
           </p>
-          <div className="mt-2 h-1.5 w-44 overflow-hidden rounded-full bg-rule">
+          <div className="mt-2 h-1.5 w-44 overflow-hidden bg-rule">
             <div
               className="h-full bg-accent"
               style={{
@@ -95,7 +97,7 @@ export function ApiKeysClient({ keys, usage }: { keys: KeyRow[]; usage: Usage })
       </div>
 
       {created && (
-        <div className="rounded-md border border-accent/40 bg-accent/5 p-3">
+        <div className="border border-ink p-3">
           <p className="text-sm font-medium text-ink">
             Your new API key — copy it now. You won’t be able to see it again.
           </p>
@@ -103,7 +105,13 @@ export function ApiKeysClient({ keys, usage }: { keys: KeyRow[]; usage: Usage })
             <code className="flex-1 overflow-x-auto whitespace-nowrap rounded bg-soft px-2 py-1.5 font-mono text-xs">
               {created}
             </code>
-            <Button type="button" size="sm" variant="outline" onClick={copy} aria-label="Copy API key">
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={copy}
+              aria-label="Copy API key"
+            >
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             </Button>
           </div>

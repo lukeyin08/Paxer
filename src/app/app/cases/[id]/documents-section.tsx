@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { FileText, ScanText } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { StatusPill } from '@/components/brand/status-pill';
@@ -43,13 +42,10 @@ function DocumentCard({ doc, aiConfigured }: { doc: DocRow; aiConfigured: boolea
     <Card>
       <CardContent className="flex flex-col gap-3 pt-6">
         <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <FileText className="h-5 w-5 text-muted" />
+          <div>
             <div>
               <p className="text-sm font-medium text-ink">{doc.fileName ?? 'Document'}</p>
-              <p className="font-mono text-[0.65rem] uppercase tracking-wider text-muted">
-                {doc.kind.replace(/_/g, ' ')}
-              </p>
+              <p className="text-xs text-muted">{doc.kind.replace(/_/g, ' ')}</p>
             </div>
           </div>
           <StatusPill label={doc.ingestStatus} tone={statusTone(doc.ingestStatus)} />
@@ -75,7 +71,6 @@ function DocumentCard({ doc, aiConfigured }: { doc: DocRow; aiConfigured: boolea
                 })
               }
             >
-              <ScanText className="h-4 w-4" />
               {pending ? 'Extracting…' : 'Extract line items'}
             </Button>
           )}

@@ -3,49 +3,52 @@
 @tailwind utilities;
 
 /*
- * Paxer brand tokens — a single "deep slate" dark colorway (dark only; the
- * toggle was removed). A few steps lighter than near-black so surfaces have
- * depth. Hex source values:
- *   ink (text) #E5EAF4   paper (bg) #0B101E   accent (blue) #3D7DFF
- *   accent2 (sky) #4FC3FF   muted #939EB4   rule #2B3447   soft #18222F
- *   card #131A2A   success #34D399   danger #F87171   warning #FBBF24
+ * Paxer tokens — plain light colorway. White paper, near-black ink, grey rules,
+ * and one dark blue for links and primary actions. No tinted surfaces, no
+ * rounded corners, no motion. Hex source values:
+ *   ink #1A1A1A   paper #FFFFFF   accent #163F70   muted #595959
+ *   rule #CFCFCF  soft #F5F5F5    success #1C6B45  danger #A32020  warning #8A5A0B
  * Stored as HSL triplets so Tailwind can apply opacity modifiers.
  */
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
+
+    /* System type — no webfonts, no display face. */
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
     /* Brand primitives */
-    --ink: 217 40% 93%;
-    --paper: 222 44% 8%;
-    --accent: 219 100% 62%;
+    --ink: 0 0% 10%;
+    --paper: 0 0% 100%;
+    --accent: 210 67% 26%;
     --accent-foreground: 0 0% 100%;
-    --accent2: 199 100% 65%;
-    --muted: 218 17% 65%;
-    --muted-foreground: 218 17% 65%;
-    --rule: 217 27% 23%;
-    --soft: 219 32% 14%;
-    --success: 158 64% 52%;
-    --danger: 0 91% 71%;
-    --warning: 43 96% 56%;
+    --accent2: 210 20% 30%;
+    --muted: 0 0% 35%;
+    --muted-foreground: 0 0% 35%;
+    --rule: 0 0% 81%;
+    --soft: 0 0% 96%;
+    --success: 154 59% 26%;
+    --danger: 0 67% 38%;
+    --warning: 36 85% 29%;
 
     /* Semantic aliases (mapped to brand) */
     --background: var(--paper);
     --foreground: var(--ink);
-    --card: 221 38% 12%;
+    --card: var(--paper);
     --card-foreground: var(--ink);
-    --popover: 221 40% 11%;
+    --popover: var(--paper);
     --popover-foreground: var(--ink);
-    --primary: var(--accent);
-    --primary-foreground: var(--accent-foreground);
+    --primary: var(--ink);
+    --primary-foreground: var(--paper);
     --secondary: var(--soft);
     --secondary-foreground: var(--ink);
     --destructive: var(--danger);
-    --destructive-foreground: 222 50% 5%;
+    --destructive-foreground: 0 0% 100%;
     --border: var(--rule);
     --input: var(--rule);
     --ring: var(--accent);
-    --radius: 0.625rem;
+    --radius: 0px;
   }
 }
 
@@ -54,62 +57,23 @@
     @apply border-border;
   }
   body {
-    @apply bg-paper text-ink font-sans antialiased;
-    font-feature-settings: 'liga' 1, 'calt' 1;
+    @apply bg-paper font-sans text-ink;
   }
   h1,
   h2,
   h3,
   h4 {
-    @apply font-sans font-semibold tracking-tight;
-  }
-  ::selection {
-    background-color: hsl(var(--accent) / 0.3);
-    color: hsl(var(--ink));
-  }
-  /* Slim, on-brand scrollbar */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: hsl(var(--rule)) transparent;
-  }
-  ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--rule));
-    border: 3px solid transparent;
-    background-clip: content-box;
-    border-radius: 9999px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--accent) / 0.6);
-  }
-
-  /* Respect users who ask for less motion (loading spinners, skeletons). */
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.001ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.001ms !important;
-    }
+    @apply font-sans font-bold;
   }
 }
 
 @layer components {
-  /* Mono kicker label, uppercase letter-spaced (Section 5) */
+  /* Small label above a section heading. Plain text, same size as body copy. */
   .kicker {
-    @apply font-mono text-xs uppercase tracking-[0.18em] text-muted;
+    @apply text-sm text-muted;
   }
   .hairline {
     @apply border-rule;
-  }
-
-  /* Opt-in card interaction: a plain border change on hover, nothing more. */
-  .card-hover {
-    @apply transition-colors hover:border-accent/40;
   }
 
   /* Dispute letter editor / preview typography */

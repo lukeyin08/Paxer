@@ -63,7 +63,7 @@ export default async function ConfirmSignInPage({
         <CardContent className="flex flex-col gap-5 pt-6 text-center">
           <div>
             <Kicker className="mb-2">Almost there</Kicker>
-            <h1 className="font-sans text-2xl font-semibold">Confirm your sign-in</h1>
+            <h1 className="text-xl font-bold">Confirm your sign-in</h1>
           </div>
 
           {href ? (
