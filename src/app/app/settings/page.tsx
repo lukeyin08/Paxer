@@ -45,12 +45,12 @@ export default async function SettingsPage() {
     <div className="mx-auto flex max-w-2xl flex-col gap-8">
       <div>
         <Kicker className="mb-2">Settings</Kicker>
-        <h1 className="font-sans text-3xl font-semibold">Account</h1>
+        <h1 className="text-2xl font-bold">Account</h1>
       </div>
 
       <Card>
         <CardContent className="flex flex-col gap-4 pt-6">
-          <h2 className="font-sans text-lg font-semibold">Profile</h2>
+          <h2 className="font-bold">Profile</h2>
           <div className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
             <div>
               <p className="kicker">Name</p>
@@ -68,7 +68,7 @@ export default async function SettingsPage() {
 
       <Card>
         <CardContent className="flex flex-col gap-2 pt-6">
-          <h2 className="font-sans text-lg font-semibold">Consent record</h2>
+          <h2 className="font-bold">Consent record</h2>
           <p className="text-sm text-muted">
             {user?.consentAt
               ? `You agreed to the Terms of Service and Privacy Policy on ${formatDate(user.consentAt)}.`
@@ -79,7 +79,7 @@ export default async function SettingsPage() {
 
       <Card>
         <CardContent className="flex flex-col gap-3 pt-6">
-          <h2 className="font-sans text-lg font-semibold">Your data</h2>
+          <h2 className="font-bold">Your data</h2>
           {myCases.length === 0 ? (
             <p className="text-sm text-muted">No cases to manage.</p>
           ) : (
@@ -98,7 +98,7 @@ export default async function SettingsPage() {
       <Card id="plus">
         <CardContent className="flex flex-col gap-4 pt-6">
           <div>
-            <h2 className="font-sans text-lg font-semibold">Paxer Plus</h2>
+            <h2 className="font-bold">Paxer Plus</h2>
             <p className="text-sm text-muted">
               Your first bill audit is free. Paxer Plus unlocks unlimited audits and dispute
               letters — a flat subscription, never a cut of what you recover.
@@ -117,7 +117,7 @@ export default async function SettingsPage() {
       <Card id="billing">
         <CardContent className="flex flex-col gap-4 pt-6">
           <div>
-            <h2 className="font-sans text-lg font-semibold">Audit API (for developers)</h2>
+            <h2 className="font-bold">Audit API (for developers)</h2>
             <p className="text-sm text-muted">
               Programmatic access to the audit engine, billed per API call. This is a separate
               product for businesses — not your Paxer Plus plan above.
@@ -142,7 +142,7 @@ export default async function SettingsPage() {
       <Card id="developers">
         <CardContent className="flex flex-col gap-4 pt-6">
           <div>
-            <h2 className="font-sans text-lg font-semibold">Developers — Audit API</h2>
+            <h2 className="font-bold">Developers — Audit API</h2>
             <p className="text-sm text-muted">
               Run Paxer’s deterministic audit engine on your own line items via API.
             </p>
