@@ -4,7 +4,7 @@ import { SiteFooter } from '@/components/site-footer';
 import { ResultsMetrics } from '@/components/results/results-metrics';
 
 const description =
-  'Six months after launch: $12K in reported recoveries, 240 bills audited, a paying employer and API partner, and a $16K annual run-rate.';
+  'Paxer results as of June 2026: $12,000 in reported recoveries, 240 bills audited, and a $16K annual run-rate.';
 
 export const metadata: Metadata = {
   title: 'Results',
@@ -21,14 +21,10 @@ export default function ResultsPage() {
         {/* Hero */}
         <section className="container py-12 md:py-16">
           <div className="max-w-3xl">
-            <h1 className="text-3xl font-bold text-ink">Six months in, it works.</h1>
+            <h1 className="text-3xl font-bold text-ink">Results</h1>
             <p className="mt-4 max-w-2xl leading-relaxed text-muted">
-              Paxer launched in December 2025. Since then, patients have used it to find real errors
-              on real bills and get real money back, and employers and platforms have started paying
-              to give it to their people.
-            </p>
-            <p className="mt-3 text-sm text-muted">
-              Launched December 2025 · Figures as of June 2026
+              Paxer launched in December 2025. The figures below are cumulative since launch and
+              current as of June 2026.
             </p>
           </div>
         </section>

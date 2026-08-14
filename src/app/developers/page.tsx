@@ -8,7 +8,7 @@ import { API_BUYERS } from '@/lib/marketing';
 import { API_PLANS } from '@/lib/billing/plans';
 
 const description =
-  'Paxer’s medical-bill audit engine as an API. Send line items, get back the errors: duplicates, cost-share mistakes, denials, balance billing, and more.';
+  'Paxer’s medical bill audit engine as an API. Send line items, get back the errors: duplicates, cost-share mistakes, denials, balance billing, and unbundling.';
 
 export const metadata: Metadata = {
   title: 'Developers',
@@ -93,13 +93,11 @@ export default function DevelopersPage() {
         {/* Hero */}
         <section className="container py-12 md:py-16">
           <div className="max-w-3xl">
-            <h1 className="text-3xl font-bold text-ink">
-              The medical-bill audit engine, as an API.
-            </h1>
+            <h1 className="text-3xl font-bold text-ink">Medical bill audit API</h1>
             <p className="mt-4 max-w-2xl leading-relaxed text-muted">
-              Send line items from a bill or EOB; get back the billing errors, with a plain-language
-              explanation and an estimated recoverable amount. The same deterministic engine that
-              powers Paxer for patients, available to your product.
+              Send the line items from a bill or EOB and get back the billing errors, each with a
+              plain-language explanation and an estimated recoverable amount. It is the same
+              deterministic engine Paxer runs for patients.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
@@ -121,13 +119,12 @@ export default function DevelopersPage() {
           <div className="container py-12">
             <h2 className="text-2xl font-bold text-ink">Who it’s for</h2>
             <p className="mt-3 max-w-3xl leading-relaxed text-ink">
-              Built for the buyers whose incentives align with the patient ({API_BUYERS}), plus
-              care-navigation and advocacy tools. Anywhere a bill needs an instant “is this
-              correct?” check before someone pays it.
+              Built for {API_BUYERS}, plus care-navigation and advocacy tools. Anywhere a bill needs
+              checking before someone pays it.
             </p>
             <p className="mt-3 max-w-3xl text-sm text-muted">
-              We don’t sell this to health plans as the primary buyer. The aligned parties are the
-              ones who win when a bill is corrected, not when a claim is denied.{' '}
+              We don’t sell this to health plans as the primary buyer, since a health plan benefits
+              when a claim is denied.{' '}
               <Link href="/pricing" className="text-accent underline">
                 See pricing
               </Link>
@@ -138,9 +135,7 @@ export default function DevelopersPage() {
 
         {/* What it detects */}
         <section className="container border-t border-rule py-14">
-          <h2 className="max-w-2xl text-2xl font-bold text-ink">
-            One call, every common billing error.
-          </h2>
+          <h2 className="text-2xl font-bold text-ink">What it detects</h2>
           <dl className="mt-6 grid grid-cols-1 gap-x-12 gap-y-6 sm:grid-cols-2">
             {DETECTS.map(([title, body]) => (
               <div key={title}>
@@ -158,7 +153,7 @@ export default function DevelopersPage() {
 
         {/* Errors & limits */}
         <section className="container border-t border-rule py-14">
-          <h2 className="max-w-2xl text-2xl font-bold text-ink">Predictable status codes.</h2>
+          <h2 className="text-2xl font-bold text-ink">Status codes</h2>
           <table className="mt-6 w-full border-collapse text-sm">
             <caption className="sr-only">Audit API status codes</caption>
             <tbody>
@@ -209,9 +204,7 @@ export default function DevelopersPage() {
 
         {/* CTA */}
         <section className="container border-t border-rule py-14">
-          <h2 className="max-w-2xl text-2xl font-bold text-ink">
-            Add bill-accuracy to your product.
-          </h2>
+          <h2 className="text-2xl font-bold text-ink">Get an API key</h2>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild size="lg">
               <Link href="/login?next=/app/settings">Get an API key</Link>

@@ -41,12 +41,11 @@ export function ResultsMetrics() {
 
       {/* Revenue */}
       <section className="container border-t border-rule py-14">
-        <h2 className="max-w-xl text-2xl font-bold text-ink">
-          $16K annual run-rate, six months in.
-        </h2>
+        <h2 className="text-2xl font-bold text-ink">Revenue</h2>
         <p className="mt-2 max-w-2xl leading-relaxed text-muted">
-          Business revenue leads, and the consumer subscription compounds underneath it. All of it
-          is flat-fee: Paxer never takes a percentage of what anyone recovers.
+          Annual run-rate is $16K. Most of that comes from business customers; the consumer
+          subscription is the smaller share. All pricing is flat-fee, so Paxer never takes a
+          percentage of what anyone recovers.
         </p>
 
         <table className="mt-6 w-full max-w-md border-collapse text-sm">

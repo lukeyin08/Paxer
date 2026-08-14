@@ -8,7 +8,7 @@ import { CONSUMER_PLAN } from '@/lib/billing/consumer';
 import { ERROR_TYPES } from '@/lib/marketing';
 
 const description =
-  'See how Paxer audits a medical bill, finds the errors, drafts a dispute letter, and helps you recover your money — including a worked example.';
+  'How Paxer audits a medical bill: what it checks, how it explains each finding, and how the dispute letter gets drafted. Includes a worked example and FAQ.';
 
 export const metadata: Metadata = {
   title: 'How it works',
@@ -52,7 +52,7 @@ const EXAMPLE_FINDINGS = [
 const FAQS = (priceLabel: string) => [
   {
     q: 'How much does Paxer cost?',
-    a: `Your first bill audit is free. After that, Paxer Plus is ${priceLabel}: a flat subscription (not a contingency fee) that unlocks unlimited audits and dispute letters. You keep 100% of anything you recover, and can cancel anytime.`,
+    a: `Your first bill audit is free. After that, Paxer Plus is ${priceLabel}: a flat subscription (not a contingency fee) that covers unlimited audits and dispute letters. You keep 100% of anything you recover, and can cancel anytime.`,
   },
   {
     q: 'Will Paxer contact my provider or insurer for me?',
@@ -100,11 +100,11 @@ export default function HowItWorksPage() {
         {/* Intro — orient in prose, then prove it with the worked example below */}
         <section className="container py-12 md:py-16">
           <div className="max-w-3xl">
-            <h1 className="text-3xl font-bold text-ink">See exactly what your bill is hiding.</h1>
+            <h1 className="text-3xl font-bold text-ink">How Paxer audits a bill</h1>
             <p className="mt-4 max-w-2xl leading-relaxed text-muted">
-              You add a bill, Paxer audits every charge against your plan and regional prices, flags
-              the errors with the math, and drafts the dispute letter you review and send, keeping
-              you in control the whole way. Here&rsquo;s what that looks like on a worked example.
+              You add a bill. Paxer checks every charge against your insurance plan and against
+              regional prices, then flags the ones that look wrong and shows the math behind each.
+              It drafts the dispute letter; you review it and send it. A worked example follows.
             </p>
           </div>
         </section>
@@ -112,9 +112,9 @@ export default function HowItWorksPage() {
         {/* Worked example */}
         <section className="border-t border-rule">
           <div className="container py-14">
-            <h2 className="max-w-2xl text-2xl font-bold text-ink">See it on an example ER bill.</h2>
+            <h2 className="text-2xl font-bold text-ink">A worked example</h2>
             <p className="mt-2 max-w-2xl text-muted">
-              Illustrative only, not a real patient. It shows the kinds of errors Paxer surfaces.
+              An ER bill. Illustrative only, not a real patient.
             </p>
 
             <WorkedExample lines={EXAMPLE_LINES} findings={EXAMPLE_FINDINGS} />
@@ -122,10 +122,9 @@ export default function HowItWorksPage() {
             <div className="mt-6 max-w-3xl">
               <p className="text-sm leading-relaxed text-muted">
                 <span className="font-semibold text-ink">Then Paxer drafts the letter.</span> It
-                cites each finding and the math, in plain language. You review and edit it, download
+                cites each finding and the math in plain language. You review and edit it, download
                 the PDF, and send it to your provider or insurer. Paxer tracks the response deadline
-                and reminds you, and when money comes back, you log the recovery and see exactly
-                what you keep.
+                and reminds you. When money comes back, you log the recovery against the case.
               </p>
             </div>
           </div>
@@ -146,7 +145,7 @@ export default function HowItWorksPage() {
 
         {/* CTA */}
         <section className="container border-t border-rule py-14">
-          <h2 className="max-w-2xl text-2xl font-bold text-ink">Put your bill to the test.</h2>
+          <h2 className="text-2xl font-bold text-ink">Check your first bill</h2>
           <div className="mt-6">
             <Button asChild size="lg">
               <Link href="/login">Audit your first bill</Link>

@@ -7,7 +7,7 @@ import { API_PLANS } from '@/lib/billing/plans';
 import { CONSUMER_PLAN } from '@/lib/billing/consumer';
 
 const description =
-  'Your first medical-bill audit is free. Paxer Plus unlocks unlimited audits and dispute letters: a flat subscription, keep 100% of recoveries.';
+  'Your first medical bill audit is free. Paxer Plus is a flat monthly subscription for unlimited audits and dispute letters. You keep 100% of recoveries.';
 
 export const metadata: Metadata = {
   title: 'Pricing',
@@ -64,9 +64,10 @@ export default function PricingPage() {
         <section className="container py-12 md:py-16">
           <div className="max-w-2xl">
             <h1 className="text-3xl font-bold text-ink">Your first audit is free.</h1>
-            <p className="mt-4 leading-relaxed text-muted">
-              Paxer Plus unlocks unlimited audits and dispute letters: a flat subscription, never a
-              cut of your recovery. The same engine is available to businesses as an API.
+            <p className="mt-4 max-w-2xl leading-relaxed text-muted">
+              After that, Paxer Plus is a flat monthly subscription for unlimited audits and dispute
+              letters. Paxer never takes a cut of what you recover. The same engine is available to
+              businesses as an API.
             </p>
           </div>
 
@@ -74,7 +75,7 @@ export default function PricingPage() {
             <Tier
               name="Paxer Plus"
               price={plusPrice}
-              sub="For patients. First audit free; Paxer Plus unlocks unlimited audits and dispute letters. Flat, no contingency."
+              sub="For patients. First audit free; Paxer Plus covers unlimited audits and dispute letters. Flat, no contingency."
               highlight
               features={[
                 'Unlimited bill audits',

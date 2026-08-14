@@ -16,10 +16,9 @@ const FINDINGS = [
 export function ProductShowcase() {
   return (
     <section className="container py-14">
-      <h2 className="text-2xl font-bold text-ink">Every finding, every dollar, in one place.</h2>
+      <h2 className="text-2xl font-bold text-ink">What a finished case looks like</h2>
       <p className="mt-2 max-w-2xl text-muted">
-        An example case: an outpatient surgery bill after the audit finished. Illustrative only, not
-        a real patient.
+        An outpatient surgery bill after the audit finished. Illustrative only, not a real patient.
       </p>
 
       <table className="mt-6 w-full max-w-2xl border-collapse text-sm">

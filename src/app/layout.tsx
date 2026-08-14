@@ -5,7 +5,7 @@ import './globals.css';
 const SITE_URL = process.env.AUTH_URL || 'https://paxer.app';
 const TITLE = 'Paxer: the advocate on the patient’s side of the bill';
 const DESCRIPTION =
-  'Paxer audits your medical bills and EOBs, finds the billing errors, and drafts the dispute letters to get your money back. Your first audit is free.';
+  'Paxer checks your medical bills and EOBs against your insurance plan, flags the charges that look wrong, and drafts the letter you send to dispute them. First audit free.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
