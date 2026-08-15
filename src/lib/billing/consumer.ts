@@ -66,23 +66,41 @@ export interface AuditEntitlement {
  * from audited-case count (incl. soft-deleted, so deleting a case can't refund the
  * free audit) — no separate counter column.
  */
-export async function getAuditEntitlement(userId: string, caseId: string): Promise<AuditEntitlement> {
+export async function getAuditEntitlement(
+  userId: string,
+  caseId: string,
+): Promise<AuditEntitlement> {
   const ent = await getConsumerEntitlement(userId);
   const freeLimit = env.PAXER_FREE_AUDIT_LIMIT;
   if (ent.isDemo || ent.hasActiveSub) {
-    return { canAudit: true, isDemo: ent.isDemo, hasActiveSub: ent.hasActiveSub, freeUsed: 0, freeLimit, reason: 'ok' };
+    return {
+      canAudit: true,
+      isDemo: ent.isDemo,
+      hasActiveSub: ent.hasActiveSub,
+      freeUsed: 0,
+      freeLimit,
+      reason: 'ok',
+    };
   }
   const [thisCase] = await db
     .select({ status: cases.status })
     .from(cases)
     .where(and(eq(cases.id, caseId), eq(cases.userId, userId)))
     .limit(1);
-  const alreadyAudited = !!thisCase && (AUDITED_STATUSES as readonly string[]).includes(thisCase.status);
+  const alreadyAudited =
+    !!thisCase && (AUDITED_STATUSES as readonly string[]).includes(thisCase.status);
   const counted = await db
     .select({ n: count() })
     .from(cases)
     .where(and(eq(cases.userId, userId), inArray(cases.status, [...AUDITED_STATUSES])));
   const freeUsed = Number(counted[0]?.n ?? 0);
   const canAudit = alreadyAudited || freeUsed < freeLimit;
-  return { canAudit, isDemo: false, hasActiveSub: false, freeUsed, freeLimit, reason: canAudit ? 'ok' : 'audit_limit' };
+  return {
+    canAudit,
+    isDemo: false,
+    hasActiveSub: false,
+    freeUsed,
+    freeLimit,
+    reason: canAudit ? 'ok' : 'audit_limit',
+  };
 }

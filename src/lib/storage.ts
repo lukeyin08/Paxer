@@ -56,9 +56,7 @@ export async function putFile(
   // so writing PHI to local disk both fails and is unsafe — refuse loudly in
   // production rather than silently corrupting an upload.
   if (process.env.NODE_ENV === 'production') {
-    throw new Error(
-      'File storage is not configured: set BLOB_READ_WRITE_TOKEN in production.',
-    );
+    throw new Error('File storage is not configured: set BLOB_READ_WRITE_TOKEN in production.');
   }
 
   // Local dev fallback: write under .uploads and serve via /api/documents/[id].

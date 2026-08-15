@@ -36,10 +36,7 @@ export interface CaseDetail {
 const SEVERITY_RANK: Record<Finding['severity'], number> = { HIGH: 0, MED: 1, LOW: 2 };
 
 /** A single case with its documents, line items, and plan benefits — ownership enforced. */
-export async function getCaseForUser(
-  userId: string,
-  caseId: string,
-): Promise<CaseDetail | null> {
+export async function getCaseForUser(userId: string, caseId: string): Promise<CaseDetail | null> {
   const [row] = await db
     .select()
     .from(cases)
@@ -127,10 +124,7 @@ export async function createCase(input: {
 
 /** Set a case's provider name (used by the connector import path). */
 export async function updateCaseProvider(caseId: string, providerName: string): Promise<void> {
-  await db
-    .update(cases)
-    .set({ providerName, updatedAt: new Date() })
-    .where(eq(cases.id, caseId));
+  await db.update(cases).set({ providerName, updatedAt: new Date() }).where(eq(cases.id, caseId));
 }
 
 export async function addDocument(input: {
@@ -240,7 +234,11 @@ export async function recomputeCaseTotals(caseId: string): Promise<void> {
  */
 export async function recomputeEstimatedRecoverable(caseId: string): Promise<number> {
   const inPlay = await db
-    .select({ amt: findings.estimatedRecovery, lineItemId: findings.lineItemId, type: findings.type })
+    .select({
+      amt: findings.estimatedRecovery,
+      lineItemId: findings.lineItemId,
+      type: findings.type,
+    })
     .from(findings)
     .where(
       and(
@@ -250,14 +248,22 @@ export async function recomputeEstimatedRecoverable(caseId: string): Promise<num
       ),
     );
   const items = await db
-    .select({ id: lineItems.id, pr: lineItems.patientResponsibility, charge: lineItems.chargeAmount })
+    .select({
+      id: lineItems.id,
+      pr: lineItems.patientResponsibility,
+      charge: lineItems.chargeAmount,
+    })
     .from(lineItems)
     .where(and(eq(lineItems.caseId, caseId), isNull(lineItems.deletedAt)));
 
   // Per-line + case cap (shared with the embedded /api/v1/audit response so the
   // two can never diverge). See capRecoverable for the exact rules.
   const total = capRecoverable(
-    inPlay.map((f) => ({ lineItemId: f.lineItemId, type: f.type, estimatedRecovery: Number(f.amt) })),
+    inPlay.map((f) => ({
+      lineItemId: f.lineItemId,
+      type: f.type,
+      estimatedRecovery: Number(f.amt),
+    })),
     items.map((i) => ({ id: i.id, charge: Number(i.charge), patientResponsibility: Number(i.pr) })),
   );
 

@@ -64,15 +64,34 @@
   body {
     @apply bg-paper font-sans text-ink;
   }
+  /* Headings carry the serif; weight and size do the ranking, so nothing needs
+     to shout. Optical sizing keeps the large sizes from looking spindly. */
   h1,
   h2,
   h3,
   h4 {
-    @apply font-sans font-bold;
+    @apply font-serif font-semibold;
+    font-optical-sizing: auto;
+  }
+  h1 {
+    @apply text-[2.75rem] leading-[1.08] tracking-[-0.015em];
+  }
+  h2 {
+    @apply text-[1.75rem] leading-[1.15] tracking-[-0.01em];
+  }
+  h3 {
+    @apply text-lg leading-snug;
   }
 }
 
 @layer components {
+  /* The page measure. Marketing pages and the legal shell share it so the
+     header, the copy, and the footer all sit on the same two edges. The app
+     keeps Tailwind's wider `container` for its tables. */
+  .measure {
+    @apply mx-auto w-full max-w-[54rem] px-6;
+  }
+
   /* Small label above a section heading. Plain text, same size as body copy. */
   .kicker {
     @apply text-sm text-muted;

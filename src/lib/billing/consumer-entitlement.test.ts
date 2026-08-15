@@ -7,7 +7,9 @@ import {
 import { DEMO_EMAIL } from '@/lib/auth/demo';
 
 describe('computeConsumerEntitlement', () => {
-  const row = (over: Partial<{ email: string | null; plan: string | null; status: string | null }>) => ({
+  const row = (
+    over: Partial<{ email: string | null; plan: string | null; status: string | null }>,
+  ) => ({
     email: 'patient@example.com',
     plan: 'free',
     status: null,
@@ -27,7 +29,9 @@ describe('computeConsumerEntitlement', () => {
   });
 
   it('past_due Plus keeps access (grace period)', () => {
-    expect(computeConsumerEntitlement(row({ plan: 'plus', status: 'past_due' })).canGenerateDraft).toBe(true);
+    expect(
+      computeConsumerEntitlement(row({ plan: 'plus', status: 'past_due' })).canGenerateDraft,
+    ).toBe(true);
   });
 
   it('canceled Plus loses access', () => {
@@ -37,7 +41,9 @@ describe('computeConsumerEntitlement', () => {
   });
 
   it('plan plus with null status is not active', () => {
-    expect(computeConsumerEntitlement(row({ plan: 'plus', status: null })).canGenerateDraft).toBe(false);
+    expect(computeConsumerEntitlement(row({ plan: 'plus', status: null })).canGenerateDraft).toBe(
+      false,
+    );
   });
 
   it('demo account bypasses the gate even on the free plan', () => {

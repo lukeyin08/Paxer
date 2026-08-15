@@ -26,7 +26,7 @@ export function ResultsMetrics() {
   return (
     <>
       {/* Headline numbers */}
-      <section className="container border-t border-rule py-12">
+      <section className="measure border-t border-rule py-12">
         <dl className="grid grid-cols-1 gap-x-12 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
           {HEADLINE.map((s) => (
             <div key={s.label}>
@@ -40,8 +40,8 @@ export function ResultsMetrics() {
       </section>
 
       {/* Revenue */}
-      <section className="container border-t border-rule py-14">
-        <h2 className="text-2xl font-bold text-ink">Revenue</h2>
+      <section className="measure border-t border-rule py-14">
+        <h2>Revenue</h2>
         <p className="mt-2 max-w-2xl leading-relaxed text-muted">
           Annual run-rate is $16K. Most of that comes from business customers; the consumer
           subscription is the smaller share. All pricing is flat-fee, so Paxer never takes a

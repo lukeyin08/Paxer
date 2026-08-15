@@ -154,7 +154,10 @@ async function seedDisputes(userId: string): Promise<void> {
       });
       const deadline = new Date();
       deadline.setDate(deadline.getDate() + 20);
-      await db.update(disputes).set({ status: 'SIMULATED_SENT', deadlineAt: deadline }).where(eq(disputes.id, d.id));
+      await db
+        .update(disputes)
+        .set({ status: 'SIMULATED_SENT', deadlineAt: deadline })
+        .where(eq(disputes.id, d.id));
       await addDisputeEvent(d.id, 'APPROVED');
       await addDisputeEvent(d.id, 'SIMULATED_SENT', { simulated: true, deadlineAt: deadline });
       console.log('✓ Simulated-sent dispute created (MRI case, deadline in 20 days)');
@@ -166,7 +169,11 @@ async function seedDisputes(userId: string): Promise<void> {
   if (denial) {
     const f = await openFindings(denial.id);
     if (f.length) {
-      const draft = await generateDraft({ userId, caseId: denial.id, findingIds: f.map((x) => x.id) });
+      const draft = await generateDraft({
+        userId,
+        caseId: denial.id,
+        findingIds: f.map((x) => x.id),
+      });
       const d = await createDispute({
         caseId: denial.id,
         findingIds: draft.findingIds,
@@ -221,7 +228,10 @@ async function seed() {
   const userId = await seedDemoUser();
   await seedBenchmarks();
 
-  const existingCases = await db.select({ id: cases.id }).from(cases).where(eq(cases.userId, userId));
+  const existingCases = await db
+    .select({ id: cases.id })
+    .from(cases)
+    .where(eq(cases.userId, userId));
   if (RESET && existingCases.length > 0) {
     await db.delete(cases).where(eq(cases.userId, userId));
     console.log(`✓ Reset: cleared ${existingCases.length} existing case(s)`);

@@ -19,7 +19,7 @@ export default function AppError({
   return (
     <div className="flex max-w-lg flex-col gap-6 py-16">
       <div>
-        <h1 className="text-xl font-bold text-ink">Something went wrong</h1>
+        <h1>Something went wrong</h1>
         <p className="mt-2 text-sm text-muted">
           We couldn’t load this view. Your cases and documents are unaffected.
         </p>

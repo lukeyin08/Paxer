@@ -54,14 +54,6 @@ export async function renderLetterPdf(letterHtml: string): Promise<Buffer> {
   const els = blocks.map((b, i) =>
     h(Text, { key: String(i), style: blockStyle(b.kind) }, (b.kind === 'li' ? '•  ' : '') + b.text),
   );
-  const doc = h(
-    Document,
-    null,
-    h(
-      Page,
-      { size: 'LETTER', style: styles.page },
-      ...els,
-    ),
-  );
+  const doc = h(Document, null, h(Page, { size: 'LETTER', style: styles.page }, ...els));
   return renderToBuffer(doc) as unknown as Promise<Buffer>;
 }

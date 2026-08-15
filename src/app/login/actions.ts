@@ -39,7 +39,8 @@ export async function sendMagicLink(
   // told the email was sent.
   const rl = await checkRateLimit(`magic-link:${email.toLowerCase()}`, 5, 900);
   if (!rl.ok) {
-    const wait = rl.retryAfterSec < 90 ? `${rl.retryAfterSec}s` : `${Math.ceil(rl.retryAfterSec / 60)} min`;
+    const wait =
+      rl.retryAfterSec < 90 ? `${rl.retryAfterSec}s` : `${Math.ceil(rl.retryAfterSec / 60)} min`;
     return { ok: false, message: `Too many sign-in emails. Please wait ${wait} and try again.` };
   }
   try {

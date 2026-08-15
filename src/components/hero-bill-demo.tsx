@@ -13,10 +13,10 @@ const LINES = [
  */
 export function HeroBillDemo() {
   return (
-    <div className="w-full max-w-lg border border-rule p-6">
-      <div className="flex items-baseline justify-between gap-4 border-b border-ink pb-2">
-        <span className="font-semibold text-ink">Riverside Medical Center</span>
-        <span className="text-sm text-muted">EOB</span>
+    <div className="w-full border border-t-2 border-rule border-t-accent bg-card p-6 sm:p-8">
+      <div className="flex items-baseline justify-between gap-4 border-b border-ink pb-2.5">
+        <span className="font-sans text-sm font-semibold text-ink">Riverside Medical Center</span>
+        <span className="font-sans text-xs text-muted">EOB</span>
       </div>
 
       <table className="mt-3 w-full border-collapse text-sm">

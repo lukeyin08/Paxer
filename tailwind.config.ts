@@ -57,10 +57,9 @@ const config: Config = {
         ring: 'hsl(var(--ring))',
       },
       fontFamily: {
-        // System type only — no webfonts. `serif` is kept as an alias of sans so
-        // any stray `font-serif` stays consistent.
+        // Body and UI on the system sans; headings on the one webfont.
         sans: ['var(--font-sans)'],
-        serif: ['var(--font-sans)'],
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
         mono: ['var(--font-mono)'],
       },
       // Square corners everywhere. `full` survives for the handful of genuinely

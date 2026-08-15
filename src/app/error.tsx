@@ -19,7 +19,7 @@ export default function Error({
   return (
     <main className="mx-auto flex min-h-screen max-w-lg flex-col justify-center gap-6 px-6">
       <div>
-        <h1 className="text-xl font-bold text-ink">Something went wrong</h1>
+        <h1>Something went wrong</h1>
         <p className="mt-2 text-sm text-muted">
           An unexpected error occurred. Your data is safe. Please try again.
         </p>

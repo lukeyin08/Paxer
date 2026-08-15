@@ -98,9 +98,9 @@ export default function HowItWorksPage() {
 
       <main className="flex-1">
         {/* Intro — orient in prose, then prove it with the worked example below */}
-        <section className="container py-12 md:py-16">
+        <section className="measure py-12 md:py-16">
           <div className="max-w-3xl">
-            <h1 className="text-3xl font-bold text-ink">How Paxer audits a bill</h1>
+            <h1>How Paxer audits a bill</h1>
             <p className="mt-4 max-w-2xl leading-relaxed text-muted">
               You add a bill. Paxer checks every charge against your plan and against regional
               prices, flags what looks wrong, and drafts the dispute letter you send.
@@ -110,8 +110,8 @@ export default function HowItWorksPage() {
 
         {/* Worked example */}
         <section className="border-t border-rule">
-          <div className="container py-14">
-            <h2 className="text-2xl font-bold text-ink">A worked example</h2>
+          <div className="measure py-14">
+            <h2>A worked example</h2>
             <p className="mt-2 max-w-2xl text-muted">
               An ER bill. Illustrative only, not a real patient.
             </p>
@@ -130,8 +130,8 @@ export default function HowItWorksPage() {
         </section>
 
         {/* FAQ */}
-        <section className="container border-t border-rule py-14">
-          <h2 className="text-2xl font-bold text-ink">Common questions</h2>
+        <section className="measure border-t border-rule py-14">
+          <h2>Common questions</h2>
           <dl className="mt-6 grid grid-cols-1 gap-x-12 gap-y-6 md:grid-cols-2">
             {FAQS(plusPrice).map((f) => (
               <div key={f.q}>
@@ -143,8 +143,8 @@ export default function HowItWorksPage() {
         </section>
 
         {/* CTA */}
-        <section className="container border-t border-rule py-14">
-          <h2 className="text-2xl font-bold text-ink">Check your first bill</h2>
+        <section className="measure border-t border-rule py-14">
+          <h2>Check your first bill</h2>
           <div className="mt-6">
             <Button asChild size="lg">
               <Link href="/login">Audit your first bill</Link>

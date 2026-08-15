@@ -141,7 +141,7 @@ export function FindingCard({ finding }: { finding: FindingView }) {
         </div>
 
         <div className="flex items-start justify-between gap-4">
-          <h3 className="font-bold leading-snug">{finding.title}</h3>
+          <h3>{finding.title}</h3>
           {finding.estimatedRecovery !== null && (
             <div className="shrink-0 text-right">
               <p className="kicker">Est. recovery</p>

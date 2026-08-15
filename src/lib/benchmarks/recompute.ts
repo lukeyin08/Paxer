@@ -14,7 +14,10 @@ function percentile(sorted: number[], p: number): number {
  * line items to the owning user's state, groups by (code, region), and upserts
  * AGGREGATE benchmarks. This is the compounding-dataset moat.
  */
-export async function recomputeBenchmarks(): Promise<{ codesUpdated: number; lineItemsUsed: number }> {
+export async function recomputeBenchmarks(): Promise<{
+  codesUpdated: number;
+  lineItemsUsed: number;
+}> {
   // Anonymized projection: code, region (user state), amount only.
   const rows = await db
     .select({

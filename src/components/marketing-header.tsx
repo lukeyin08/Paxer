@@ -14,7 +14,7 @@ const LINKS = [
 export function MarketingHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-rule bg-paper">
-      <div className="container relative flex h-16 items-center justify-between gap-3 max-[359px]:gap-2">
+      <div className="measure relative flex h-16 items-center justify-between gap-3 max-[359px]:gap-2">
         <Wordmark />
 
         {/* Centered primary nav (funnel order: learn → proof → cost → build) so
@@ -22,7 +22,11 @@ export function MarketingHeader() {
             so it only appears at lg+ where it can't collide with the edges. */}
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex">
           {LINKS.map((l) => (
-            <Link key={l.href} href={l.href} className="px-3 py-2 text-sm text-ink hover:underline">
+            <Link
+              key={l.href}
+              href={l.href}
+              className="px-3 py-2 text-sm text-ink hover:text-accent hover:underline"
+            >
               {l.label}
             </Link>
           ))}
@@ -32,7 +36,10 @@ export function MarketingHeader() {
             users and signs in returning ones. Kept as a quiet text link so
             "Request a demo" stays the single button in the bar. */}
         <div className="flex items-center gap-4 max-[459px]:gap-2">
-          <Link href="/login" className="py-2 text-sm text-ink hover:underline max-sm:hidden">
+          <Link
+            href="/login"
+            className="py-2 text-sm text-ink hover:text-accent hover:underline max-sm:hidden"
+          >
             Sign in
           </Link>
           <Button asChild size="sm">

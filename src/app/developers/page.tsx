@@ -91,9 +91,9 @@ export default function DevelopersPage() {
       <MarketingHeader />
       <main className="flex-1">
         {/* Hero */}
-        <section className="container py-12 md:py-16">
+        <section className="measure py-12 md:py-16">
           <div className="max-w-3xl">
-            <h1 className="text-3xl font-bold text-ink">Medical bill audit API</h1>
+            <h1>Medical bill audit API</h1>
             <p className="mt-4 max-w-2xl leading-relaxed text-muted">
               Send the line items from a bill or EOB, get back the billing errors with an
               explanation and an estimated recoverable amount.
@@ -110,9 +110,9 @@ export default function DevelopersPage() {
         </section>
 
         {/* Who it's for */}
-        <section className="border-t border-rule">
-          <div className="container py-12">
-            <h2 className="text-2xl font-bold text-ink">Who it’s for</h2>
+        <section className="measure border-t border-rule py-12">
+          <div>
+            <h2>Who it’s for</h2>
             <p className="mt-3 max-w-3xl leading-relaxed text-ink">
               Built for {API_BUYERS}, plus care-navigation and advocacy tools. Anywhere a bill needs
               checking before someone pays it.
@@ -129,8 +129,8 @@ export default function DevelopersPage() {
         </section>
 
         {/* What it detects */}
-        <section className="container border-t border-rule py-14">
-          <h2 className="text-2xl font-bold text-ink">What it detects</h2>
+        <section className="measure border-t border-rule py-14">
+          <h2>What it detects</h2>
           <dl className="mt-6 grid grid-cols-1 gap-x-12 gap-y-6 sm:grid-cols-2">
             {DETECTS.map(([title, body]) => (
               <div key={title}>
@@ -142,13 +142,11 @@ export default function DevelopersPage() {
         </section>
 
         {/* Example request & response */}
-        <section className="border-t border-rule">
-          <CodeDemo request={CURL} response={RESPONSE} />
-        </section>
+        <CodeDemo request={CURL} response={RESPONSE} />
 
         {/* Errors & limits */}
-        <section className="container border-t border-rule py-14">
-          <h2 className="text-2xl font-bold text-ink">Status codes</h2>
+        <section className="measure border-t border-rule py-14">
+          <h2>Status codes</h2>
           <table className="mt-6 w-full border-collapse text-sm">
             <caption className="sr-only">Audit API status codes</caption>
             <tbody>
@@ -173,8 +171,8 @@ export default function DevelopersPage() {
         </section>
 
         {/* CTA */}
-        <section className="container border-t border-rule py-14">
-          <h2 className="text-2xl font-bold text-ink">Get an API key</h2>
+        <section className="measure border-t border-rule py-14">
+          <h2>Get an API key</h2>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild size="lg">
               <Link href="/login?next=/app/settings">Get an API key</Link>

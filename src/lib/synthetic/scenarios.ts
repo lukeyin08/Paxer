@@ -46,18 +46,56 @@ export const SCENARIOS: Scenario[] = [
         kind: 'ITEMIZED_BILL',
         fileName: 'st-marin-itemized-bill.pdf',
         lineItems: [
-          li({ description: 'Emergency department visit, high severity', cptHcpcsCode: '99285', chargeAmount: 1850, dateOfService: '2025-11-12' }),
-          li({ description: 'CT scan, head, without contrast', cptHcpcsCode: '70450', chargeAmount: 1240, dateOfService: '2025-11-12' }),
+          li({
+            description: 'Emergency department visit, high severity',
+            cptHcpcsCode: '99285',
+            chargeAmount: 1850,
+            dateOfService: '2025-11-12',
+          }),
+          li({
+            description: 'CT scan, head, without contrast',
+            cptHcpcsCode: '70450',
+            chargeAmount: 1240,
+            dateOfService: '2025-11-12',
+          }),
           // Duplicate of the CT line (same code, date, amount)
-          li({ description: 'CT scan, head, without contrast', cptHcpcsCode: '70450', chargeAmount: 1240, dateOfService: '2025-11-12' }),
-          li({ description: 'Metabolic panel, comprehensive', cptHcpcsCode: '80053', chargeAmount: 220, dateOfService: '2025-11-12' }),
+          li({
+            description: 'CT scan, head, without contrast',
+            cptHcpcsCode: '70450',
+            chargeAmount: 1240,
+            dateOfService: '2025-11-12',
+          }),
+          li({
+            description: 'Metabolic panel, comprehensive',
+            cptHcpcsCode: '80053',
+            chargeAmount: 220,
+            dateOfService: '2025-11-12',
+          }),
           // Basic metabolic panel billed separately alongside the comprehensive panel (unbundling).
-          li({ description: 'Metabolic panel, basic', cptHcpcsCode: '80048', chargeAmount: 130, dateOfService: '2025-11-12' }),
-          li({ description: 'IV infusion, hydration, first hour', cptHcpcsCode: '96360', chargeAmount: 410, dateOfService: '2025-11-12' }),
+          li({
+            description: 'Metabolic panel, basic',
+            cptHcpcsCode: '80048',
+            chargeAmount: 130,
+            dateOfService: '2025-11-12',
+          }),
+          li({
+            description: 'IV infusion, hydration, first hour',
+            cptHcpcsCode: '96360',
+            chargeAmount: 410,
+            dateOfService: '2025-11-12',
+          }),
         ],
       },
     ],
-    planBenefits: { deductible: 2000, deductibleMet: 2000, coinsuranceRate: 0.2, copay: 0, oopMax: 8000, oopMet: 3200, inNetwork: true },
+    planBenefits: {
+      deductible: 2000,
+      deductibleMet: 2000,
+      coinsuranceRate: 0.2,
+      copay: 0,
+      oopMax: 8000,
+      oopMet: 3200,
+      inNetwork: true,
+    },
     expectedFindings: ['DUPLICATE_CHARGE', 'UNBUNDLING_NCCI'],
   },
   {
@@ -85,7 +123,15 @@ export const SCENARIOS: Scenario[] = [
         ],
       },
     ],
-    planBenefits: { deductible: 1500, deductibleMet: 1500, coinsuranceRate: 0.2, copay: 0, oopMax: 6000, oopMet: 2100, inNetwork: true },
+    planBenefits: {
+      deductible: 1500,
+      deductibleMet: 1500,
+      coinsuranceRate: 0.2,
+      copay: 0,
+      oopMax: 6000,
+      oopMet: 2100,
+      inNetwork: true,
+    },
     expectedFindings: ['COST_SHARE_ERROR'],
   },
   {
@@ -114,7 +160,15 @@ export const SCENARIOS: Scenario[] = [
     ],
     // OOP already near the cap, so this large balance bill also pushes the
     // patient past their out-of-pocket maximum.
-    planBenefits: { deductible: 1500, deductibleMet: 1500, coinsuranceRate: 0.2, copay: 0, oopMax: 6000, oopMet: 4200, inNetwork: false },
+    planBenefits: {
+      deductible: 1500,
+      deductibleMet: 1500,
+      coinsuranceRate: 0.2,
+      copay: 0,
+      oopMax: 6000,
+      oopMet: 4200,
+      inNetwork: false,
+    },
     expectedFindings: ['BALANCE_BILLING_NSA', 'OOP_MAX_OVERRUN'],
   },
   {
@@ -140,7 +194,15 @@ export const SCENARIOS: Scenario[] = [
         ],
       },
     ],
-    planBenefits: { deductible: 1500, deductibleMet: 900, coinsuranceRate: 0.2, copay: 0, oopMax: 6000, oopMet: 1800, inNetwork: false },
+    planBenefits: {
+      deductible: 1500,
+      deductibleMet: 900,
+      coinsuranceRate: 0.2,
+      copay: 0,
+      oopMax: 6000,
+      oopMet: 1800,
+      inNetwork: false,
+    },
     expectedFindings: ['NON_COVERED_BILLED_TO_PATIENT'],
   },
   {
@@ -168,7 +230,15 @@ export const SCENARIOS: Scenario[] = [
         ],
       },
     ],
-    planBenefits: { deductible: 2000, deductibleMet: 2000, coinsuranceRate: 0.2, copay: 0, oopMax: 8000, oopMet: 3200, inNetwork: true },
+    planBenefits: {
+      deductible: 2000,
+      deductibleMet: 2000,
+      coinsuranceRate: 0.2,
+      copay: 0,
+      oopMax: 8000,
+      oopMet: 3200,
+      inNetwork: true,
+    },
     expectedFindings: ['CROSS_PROVIDER_DUPLICATE'],
   },
 ];

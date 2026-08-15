@@ -91,10 +91,7 @@ export async function confirmExtractionAction(documentId: string): Promise<{ ok:
   if (doc.ingestStatus !== 'NEEDS_REVIEW') return { ok: false };
 
   await db.update(documents).set({ ingestStatus: 'DONE' }).where(eq(documents.id, doc.id));
-  await db
-    .update(lineItems)
-    .set({ sourceConfidence: 1 })
-    .where(eq(lineItems.documentId, doc.id));
+  await db.update(lineItems).set({ sourceConfidence: 1 }).where(eq(lineItems.documentId, doc.id));
 
   await writeAuditLog({
     userId: user.id,

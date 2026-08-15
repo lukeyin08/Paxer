@@ -53,7 +53,13 @@ export function findingTypeLabel(type: string): string {
     UPCODING: 'Possible upcoding',
     OTHER: 'Flagged charge',
   };
-  return map[type] ?? type.replace(/_/g, ' ').toLowerCase().replace(/^./, (c) => c.toUpperCase());
+  return (
+    map[type] ??
+    type
+      .replace(/_/g, ' ')
+      .toLowerCase()
+      .replace(/^./, (c) => c.toUpperCase())
+  );
 }
 
 /** Plain-English label for a finding's status. */

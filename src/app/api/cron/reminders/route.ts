@@ -59,7 +59,8 @@ export async function GET(req: NextRequest) {
   // Bound the work per invocation. Disputes nearest their deadline first so the
   // most urgent ones are never the ones dropped when there are more than the cap.
   const ordered = [...open].sort(
-    (a, b) => (a.dispute.deadlineAt?.getTime() ?? Infinity) - (b.dispute.deadlineAt?.getTime() ?? Infinity),
+    (a, b) =>
+      (a.dispute.deadlineAt?.getTime() ?? Infinity) - (b.dispute.deadlineAt?.getTime() ?? Infinity),
   );
   const batch = ordered.slice(0, MAX_PER_RUN);
   const deferred = ordered.length - batch.length;
@@ -94,7 +95,16 @@ export async function GET(req: NextRequest) {
   }
 
   if (deferred > 0) {
-    console.warn(`[cron/reminders] processed ${batch.length}/${open.length}; ${deferred} deferred to next run.`);
+    console.warn(
+      `[cron/reminders] processed ${batch.length}/${open.length}; ${deferred} deferred to next run.`,
+    );
   }
-  return NextResponse.json({ ok: true, checked: batch.length, total: open.length, reminders, escalated, deferred });
+  return NextResponse.json({
+    ok: true,
+    checked: batch.length,
+    total: open.length,
+    reminders,
+    escalated,
+    deferred,
+  });
 }

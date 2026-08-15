@@ -46,8 +46,18 @@ describe('detectDuplicates', () => {
   it('flags an identical code+date+amount appearing twice', () => {
     const d = new Date('2025-11-12');
     const items = [
-      li({ description: 'CT head', cptHcpcsCode: '70450', dateOfService: d, chargeAmount: '1240.00' }),
-      li({ description: 'CT head', cptHcpcsCode: '70450', dateOfService: d, chargeAmount: '1240.00' }),
+      li({
+        description: 'CT head',
+        cptHcpcsCode: '70450',
+        dateOfService: d,
+        chargeAmount: '1240.00',
+      }),
+      li({
+        description: 'CT head',
+        cptHcpcsCode: '70450',
+        dateOfService: d,
+        chargeAmount: '1240.00',
+      }),
     ];
     const findings = detectDuplicates(ctx(items));
     expect(findings).toHaveLength(1);
@@ -100,12 +110,28 @@ describe('detectCostShareErrors', () => {
 describe('detectNonCoveredBilled (denial / COB)', () => {
   // Plan paid $0 and the full allowed amount landed on the patient.
   const denialLine = () =>
-    li({ description: 'Procedure', cptHcpcsCode: '67028', allowedAmount: '900', planPaid: '0', patientResponsibility: '900' });
+    li({
+      description: 'Procedure',
+      cptHcpcsCode: '67028',
+      allowedAmount: '900',
+      planPaid: '0',
+      patientResponsibility: '900',
+    });
   const pb = (deductible: string, met: string) =>
-    ({ deductible, deductibleMet: met, coinsuranceRate: null, copay: null, oopMax: null, oopMet: null, inNetwork: true }) as PlanBenefit;
+    ({
+      deductible,
+      deductibleMet: met,
+      coinsuranceRate: null,
+      copay: null,
+      oopMax: null,
+      oopMet: null,
+      inNetwork: true,
+    }) as PlanBenefit;
 
   it('fires on a PR-22 reason code (even with no plan benefits) and names the COB denial', () => {
-    const f = detectNonCoveredBilled(ctx([li({ ...denialLine(), adjustmentCodes: ['PR-22'] })], null));
+    const f = detectNonCoveredBilled(
+      ctx([li({ ...denialLine(), adjustmentCodes: ['PR-22'] })], null),
+    );
     expect(f).toHaveLength(1);
     expect(f[0]!.type).toBe('NON_COVERED_BILLED_TO_PATIENT');
     expect(f[0]!.estimatedRecovery).toBe(900);

@@ -33,7 +33,13 @@ export async function revokeApiKeyAction(id: string): Promise<{ ok: boolean }> {
   const user = await requireUser();
   const ok = await revokeApiKey(user.id, id);
   if (ok) {
-    await writeAuditLog({ userId: user.id, entity: 'user', entityId: user.id, action: 'api_key.revoked', diff: { id } });
+    await writeAuditLog({
+      userId: user.id,
+      entity: 'user',
+      entityId: user.id,
+      action: 'api_key.revoked',
+      diff: { id },
+    });
     revalidatePath('/app/settings');
   }
   return { ok };

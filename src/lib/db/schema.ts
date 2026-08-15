@@ -91,11 +91,7 @@ export const disputeEventType = pgEnum('dispute_event_type', [
   'RESOLVED',
 ]);
 
-export const recoveryKind = pgEnum('recovery_kind', [
-  'BILL_REDUCTION',
-  'REFUND',
-  'CLAIM_PAID',
-]);
+export const recoveryKind = pgEnum('recovery_kind', ['BILL_REDUCTION', 'REFUND', 'CLAIM_PAID']);
 
 export const benchmarkSource = pgEnum('benchmark_source', ['SEED', 'AGGREGATE']);
 
@@ -296,7 +292,10 @@ export const lineItems = pgTable(
     ...timestamps,
     deletedAt: timestamp('deleted_at', { withTimezone: true }),
   },
-  (t) => [index('line_items_case_id_idx').on(t.caseId), index('line_items_code_idx').on(t.cptHcpcsCode)],
+  (t) => [
+    index('line_items_case_id_idx').on(t.caseId),
+    index('line_items_code_idx').on(t.cptHcpcsCode),
+  ],
 );
 
 // ---------------------------------------------------------------------------

@@ -50,7 +50,7 @@ export function MarketingMobileMenu({
         hidden={!open}
         className="absolute inset-x-0 top-full border-b border-rule bg-paper"
       >
-        <div className="container flex flex-col py-3">
+        <div className="measure flex flex-col py-3">
           {links.map((l) => (
             <Link
               key={l.href}

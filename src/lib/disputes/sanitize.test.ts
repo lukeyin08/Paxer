@@ -17,7 +17,9 @@ describe('sanitizeLetterHtml', () => {
   });
 
   it('keeps safe formatting tags and a safe href', () => {
-    const out = sanitizeLetterHtml('<ol><li><strong>A</strong></li></ol><a href="https://x.com">link</a>');
+    const out = sanitizeLetterHtml(
+      '<ol><li><strong>A</strong></li></ol><a href="https://x.com">link</a>',
+    );
     expect(out).toContain('<ol><li><strong>A</strong></li></ol>');
     expect(out).toContain('href="https://x.com"');
   });

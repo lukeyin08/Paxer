@@ -18,7 +18,7 @@ export function LegalLayout({
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-40 border-b border-rule bg-paper">
-        <div className="container flex items-center justify-between py-5">
+        <div className="measure flex items-center justify-between py-5">
           {/* Wordmark already links to "/" — no outer <Link> (would nest <a>). */}
           <Wordmark size="sm" />
           <nav className="flex items-center gap-2 text-sm text-muted">
@@ -32,10 +32,10 @@ export function LegalLayout({
         </div>
       </header>
 
-      <main className="container max-w-3xl py-12">
+      <main className="measure py-12">
         <div>
           <Kicker className="mb-2">{kicker}</Kicker>
-          <h1 className="text-2xl font-bold">{title}</h1>
+          <h1>{title}</h1>
           <p className="mt-2 text-sm text-muted">Last updated: {lastUpdated}</p>
         </div>
 
@@ -56,7 +56,7 @@ export function LegalSection({
 }) {
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="font-bold">{heading}</h2>
+      <h2>{heading}</h2>
       <div className="flex flex-col gap-2 text-muted">{children}</div>
     </section>
   );

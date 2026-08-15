@@ -30,7 +30,10 @@ export async function runAudit(userId: string, caseId: string): Promise<AuditOut
   if (!caseRow) throw new Error('Case not found.');
 
   const [items, [plan], [user]] = await Promise.all([
-    db.select().from(lineItems).where(and(eq(lineItems.caseId, caseId), isNull(lineItems.deletedAt))),
+    db
+      .select()
+      .from(lineItems)
+      .where(and(eq(lineItems.caseId, caseId), isNull(lineItems.deletedAt))),
     db.select().from(planBenefits).where(eq(planBenefits.caseId, caseId)).limit(1),
     db.select().from(users).where(eq(users.id, userId)).limit(1),
   ]);
@@ -115,7 +118,9 @@ export async function runAudit(userId: string, caseId: string): Promise<AuditOut
   const existingNonOpen = await db
     .select({ type: findings.type, lineItemId: findings.lineItemId })
     .from(findings)
-    .where(and(eq(findings.caseId, caseId), ne(findings.status, 'OPEN'), isNull(findings.deletedAt)));
+    .where(
+      and(eq(findings.caseId, caseId), ne(findings.status, 'OPEN'), isNull(findings.deletedAt)),
+    );
   // Key on (type, lineItem) — a stable identity per issue. Titles are
   // AI-generated and vary run-to-run, so they must not be part of the key.
   const keyOf = (t: string, li: string | null) => `${t}|${li ?? ''}`;
@@ -125,9 +130,7 @@ export async function runAudit(userId: string, caseId: string): Promise<AuditOut
   // Replace prior OPEN findings; keep user-actioned ones. Atomic so a failed
   // insert can't leave the case with its findings deleted and not rebuilt.
   await db.transaction(async (tx) => {
-    await tx
-      .delete(findings)
-      .where(and(eq(findings.caseId, caseId), eq(findings.status, 'OPEN')));
+    await tx.delete(findings).where(and(eq(findings.caseId, caseId), eq(findings.status, 'OPEN')));
 
     if (toInsert.length > 0) {
       await tx.insert(findings).values(
@@ -157,9 +160,7 @@ export async function runAudit(userId: string, caseId: string): Promise<AuditOut
     await tx
       .update(cases)
       .set({ status: 'AUDITED', updatedAt: new Date() })
-      .where(
-        and(eq(cases.id, caseId), inArray(cases.status, ['DRAFT', 'INGESTING', 'AUDITED'])),
-      );
+      .where(and(eq(cases.id, caseId), inArray(cases.status, ['DRAFT', 'INGESTING', 'AUDITED'])));
   });
 
   // Roll up the case estimate from all findings still in play (shared helper).

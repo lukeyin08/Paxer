@@ -38,8 +38,10 @@ function Tier({
   return (
     <div className="flex h-full flex-col gap-4 border border-rule p-6">
       <div>
-        <h2 className="text-lg font-bold text-ink">{name}</h2>
-        <p className="mt-1 text-xl font-bold tabular-nums text-ink">{price}</p>
+        {/* Card title, not a section heading: keep it a step below the page h1
+            so three tiers sit level and "Employers & TPAs" doesn't wrap. */}
+        <h2 className="text-lg leading-snug">{name}</h2>
+        <p className="mt-2 font-sans text-2xl font-semibold tabular-nums text-ink">{price}</p>
         <p className="mt-2 text-sm leading-relaxed text-muted">{sub}</p>
       </div>
       <ul className="flex flex-1 list-disc flex-col gap-1.5 pl-5 text-sm text-muted">
@@ -61,9 +63,9 @@ export default function PricingPage() {
     <div className="flex min-h-screen flex-col">
       <MarketingHeader />
       <main className="flex-1">
-        <section className="container py-12 md:py-16">
+        <section className="measure py-12 md:py-16">
           <div className="max-w-2xl">
-            <h1 className="text-3xl font-bold text-ink">Your first audit is free.</h1>
+            <h1>Your first audit is free.</h1>
             <p className="mt-4 max-w-2xl leading-relaxed text-muted">
               After that, Paxer Plus is a flat monthly subscription. Paxer never takes a cut of what
               you recover.

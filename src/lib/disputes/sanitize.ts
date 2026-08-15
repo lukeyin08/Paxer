@@ -6,8 +6,26 @@
  * (except a safe href on <a>), and script/style/embedding blocks are deleted.
  */
 const ALLOWED_TAGS = new Set([
-  'p', 'br', 'strong', 'em', 'b', 'i', 'u', 'ol', 'ul', 'li',
-  'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'div', 'a', 'blockquote',
+  'p',
+  'br',
+  'strong',
+  'em',
+  'b',
+  'i',
+  'u',
+  'ol',
+  'ul',
+  'li',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'span',
+  'div',
+  'a',
+  'blockquote',
 ]);
 
 const DANGEROUS_BLOCKS = /<(script|style|iframe|object|embed|noscript|template)[\s\S]*?<\/\1>/gi;
@@ -26,26 +44,27 @@ export function sanitizeLetterHtml(html: string): string {
   out = out.replace(
     /<(\/?)([a-zA-Z][a-zA-Z0-9]*)((?:"[^"]*"|'[^']*'|[^>])*)>/g,
     (_m, slash: string, rawName: string, attrs: string) => {
-    const name = rawName.toLowerCase();
-    if (!ALLOWED_TAGS.has(name)) return ''; // drop the tag markup, keep inner text
-    if (slash === '/') return `</${name}>`;
-    if (name === 'a') {
-      const hrefMatch = attrs.match(/\bhref\s*=\s*("([^"]*)"|'([^']*)')/i);
-      const href = (hrefMatch?.[2] ?? hrefMatch?.[3] ?? '').trim();
-      if (/^(https?:|mailto:)/i.test(href)) {
-        // Escape HTML metacharacters so the value can't break out of the
-        // attribute/tag context.
-        const safeHref = href
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
-        return `<a href="${safeHref}" rel="noreferrer">`;
+      const name = rawName.toLowerCase();
+      if (!ALLOWED_TAGS.has(name)) return ''; // drop the tag markup, keep inner text
+      if (slash === '/') return `</${name}>`;
+      if (name === 'a') {
+        const hrefMatch = attrs.match(/\bhref\s*=\s*("([^"]*)"|'([^']*)')/i);
+        const href = (hrefMatch?.[2] ?? hrefMatch?.[3] ?? '').trim();
+        if (/^(https?:|mailto:)/i.test(href)) {
+          // Escape HTML metacharacters so the value can't break out of the
+          // attribute/tag context.
+          const safeHref = href
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+          return `<a href="${safeHref}" rel="noreferrer">`;
+        }
+        return '<a>';
       }
-      return '<a>';
-    }
-    return `<${name}>`;
-  });
+      return `<${name}>`;
+    },
+  );
 
   return out;
 }

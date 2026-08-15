@@ -11,7 +11,9 @@ export async function sendEmail(input: {
   text: string;
 }): Promise<{ sent: boolean }> {
   if (!env.RESEND_API_KEY) {
-    console.log(`\n📧 [dev email] to=${input.to}\n   subject: ${input.subject}\n   ${input.text}\n`);
+    console.log(
+      `\n📧 [dev email] to=${input.to}\n   subject: ${input.subject}\n   ${input.text}\n`,
+    );
     return { sent: false };
   }
   try {

@@ -16,16 +16,16 @@ export default function TermsPage() {
   return (
     <LegalLayout kicker="Legal" title="Terms of Service" lastUpdated="June 2026">
       <p>
-        These Terms of Service (&ldquo;Terms&rdquo;) govern your use of Paxer. By creating an account
-        or using the service, you agree to these Terms.
+        These Terms of Service (&ldquo;Terms&rdquo;) govern your use of Paxer. By creating an
+        account or using the service, you agree to these Terms.
       </p>
 
       <LegalSection heading="1. What Paxer does">
         <p>
           Paxer helps patients review their own medical bills and Explanation of Benefits documents,
-          identifies potential billing errors, and generates draft dispute letters for the patient to
-          review and send. Paxer is a tool to assist you; you remain responsible for reviewing all
-          findings and letters and for deciding whether and how to act on them.
+          identifies potential billing errors, and generates draft dispute letters for the patient
+          to review and send. Paxer is a tool to assist you; you remain responsible for reviewing
+          all findings and letters and for deciding whether and how to act on them.
         </p>
       </LegalSection>
 
@@ -47,16 +47,16 @@ export default function TermsPage() {
         </p>
         <p>
           <strong>Auto-renewal &amp; cancellation.</strong> A Paxer Plus subscription renews
-          automatically at the end of each billing period at the then-current price until you cancel.
-          You may cancel at any time from Settings → Paxer Plus (or the billing portal); cancellation
-          stops future renewals, and your access continues through the end of the period you have
-          already paid for.
+          automatically at the end of each billing period at the then-current price until you
+          cancel. You may cancel at any time from Settings → Paxer Plus (or the billing portal);
+          cancellation stops future renewals, and your access continues through the end of the
+          period you have already paid for.
         </p>
         <p>
           <strong>Refunds.</strong> Subscription fees are generally non-refundable except where
-          required by applicable law; contact support for any billing issue and we will work with you
-          in good faith. Prices and any changes will be disclosed before they take effect. Business
-          use of the Audit API is subject to the separate API plan you select.
+          required by applicable law; contact support for any billing issue and we will work with
+          you in good faith. Prices and any changes will be disclosed before they take effect.
+          Business use of the Audit API is subject to the separate API plan you select.
         </p>
       </LegalSection>
 

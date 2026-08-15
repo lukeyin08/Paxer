@@ -7,7 +7,12 @@ const styles = StyleSheet.create({
   h1: { fontSize: 16, marginBottom: 4, fontFamily: 'Helvetica-Bold' },
   meta: { marginBottom: 12, color: '#333' },
   row: { flexDirection: 'row', borderBottom: '1 solid #ccc', paddingVertical: 4 },
-  head: { flexDirection: 'row', borderBottom: '1.5 solid #000', paddingVertical: 4, fontFamily: 'Helvetica-Bold' },
+  head: {
+    flexDirection: 'row',
+    borderBottom: '1.5 solid #000',
+    paddingVertical: 4,
+    fontFamily: 'Helvetica-Bold',
+  },
   cDesc: { width: '46%' },
   cCode: { width: '18%' },
   cCharge: { width: '18%', textAlign: 'right' },
@@ -34,7 +39,11 @@ export async function renderFixturePdf(fx: Fixture): Promise<Buffer> {
       h(Text, { style: styles.cDesc }, l.description),
       h(Text, { style: styles.cCode }, l.cptHcpcsCode ?? ''),
       h(Text, { style: styles.cCharge }, usd(l.charge)),
-      h(Text, { style: styles.cResp }, l.patientResponsibility != null ? usd(l.patientResponsibility) : ''),
+      h(
+        Text,
+        { style: styles.cResp },
+        l.patientResponsibility != null ? usd(l.patientResponsibility) : '',
+      ),
     ),
   );
 

@@ -95,7 +95,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // Preserve a developer/business post-sign-in destination (e.g. /app/settings)
         // when one was requested. Strip any origin, allow only same-site /app paths,
         // and omit it for the default so the patient flow is unchanged.
-        const cbTarget = (cbUrl.searchParams.get('callbackUrl') ?? '').replace(/^https?:\/\/[^/]+/, '');
+        const cbTarget = (cbUrl.searchParams.get('callbackUrl') ?? '').replace(
+          /^https?:\/\/[^/]+/,
+          '',
+        );
         if (cbTarget.startsWith('/app') && !cbTarget.startsWith('//') && cbTarget !== '/app') {
           confirmUrl.searchParams.set('next', cbTarget);
         }

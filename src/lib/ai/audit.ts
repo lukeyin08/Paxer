@@ -123,7 +123,11 @@ export async function runAiAuditPass(input: {
       severity: 'LOW',
       title: u.title,
       explanationPlain: u.explanationPlain,
-      evidence: { description: li.description, code: li.cptHcpcsCode, charge: money(li.chargeAmount) },
+      evidence: {
+        description: li.description,
+        code: li.cptHcpcsCode,
+        charge: money(li.chargeAmount),
+      },
       estimatedRecovery: est,
       confidence: Math.min(0.5, clampConfidence(u.confidence)), // upcoding stays low-confidence
       detector: 'AI',
@@ -148,7 +152,9 @@ export async function runAiAuditPass(input: {
     if (benchmarkedLines.has(li.id) || flaggedExcessive.has(li.id)) continue;
     flaggedExcessive.add(li.id);
     const est =
-      typeof x.estimatedRecovery === 'number' && x.estimatedRecovery >= 0 ? x.estimatedRecovery : null;
+      typeof x.estimatedRecovery === 'number' && x.estimatedRecovery >= 0
+        ? x.estimatedRecovery
+        : null;
     merged.push({
       type: 'OTHER',
       severity: 'MED',

@@ -25,6 +25,7 @@ export function getStripe(): Stripe {
 
 /** Where Stripe checkout / portal should return the user. */
 export function billingReturnUrl(): string {
-  const base = env.STRIPE_PORTAL_RETURN_URL || `${env.AUTH_URL ?? 'https://paxer.app'}/app/settings`;
+  const base =
+    env.STRIPE_PORTAL_RETURN_URL || `${env.AUTH_URL ?? 'https://paxer.app'}/app/settings`;
   return base;
 }

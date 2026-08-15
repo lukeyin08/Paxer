@@ -36,7 +36,8 @@ export async function POST(req: NextRequest) {
       case 'checkout.session.completed': {
         const s = event.data.object as Stripe.Checkout.Session;
         const customerId = customerIdOf(s.customer);
-        const subId = typeof s.subscription === 'string' ? s.subscription : (s.subscription?.id ?? null);
+        const subId =
+          typeof s.subscription === 'string' ? s.subscription : (s.subscription?.id ?? null);
         if (customerId && subId) {
           const sub = await getStripe().subscriptions.retrieve(subId);
           const priceId = sub.items.data[0]?.price.id;

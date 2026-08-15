@@ -39,7 +39,12 @@ export const API_PLANS: Record<ApiPlan, PlanDef> = {
   },
   // Custom / contact — not self-serve. The high quota just means an enterprise
   // account is never quota-blocked; real limits are contract-defined.
-  enterprise: { id: 'enterprise', label: 'Enterprise', monthlyQuota: 1_000_000, priceLabel: 'Custom' },
+  enterprise: {
+    id: 'enterprise',
+    label: 'Enterprise',
+    monthlyQuota: 1_000_000,
+    priceLabel: 'Custom',
+  },
 };
 
 export function planFor(plan: string | null | undefined): PlanDef {
