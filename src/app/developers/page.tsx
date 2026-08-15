@@ -95,9 +95,8 @@ export default function DevelopersPage() {
           <div className="max-w-3xl">
             <h1 className="text-3xl font-bold text-ink">Medical bill audit API</h1>
             <p className="mt-4 max-w-2xl leading-relaxed text-muted">
-              Send the line items from a bill or EOB and get back the billing errors, each with a
-              plain-language explanation and an estimated recoverable amount. It is the same
-              deterministic engine Paxer runs for patients.
+              Send the line items from a bill or EOB, get back the billing errors with an
+              explanation and an estimated recoverable amount.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
@@ -107,10 +106,6 @@ export default function DevelopersPage() {
                 <a href="mailto:hello@paxer.app?subject=Paxer%20Audit%20API">Talk to us</a>
               </Button>
             </div>
-            <p className="mt-3 text-sm text-muted">
-              Create a key in <span className="text-ink">Settings → Developers</span> after signing
-              in.
-            </p>
           </div>
         </section>
 
@@ -175,31 +170,6 @@ export default function DevelopersPage() {
             surprise overage charges. Usage resets on the 1st. Keys are created and revoked in
             Settings → Developers.
           </p>
-        </section>
-
-        {/* Practical notes */}
-        <section className="container border-t border-rule py-14">
-          <dl className="grid grid-cols-1 gap-x-12 gap-y-6 md:grid-cols-3">
-            {[
-              [
-                'Stateless & private',
-                'Nothing you send is stored. No data is retained or shared, and responses contain only findings.',
-              ],
-              [
-                'Authentication',
-                'Bearer API keys, created and revoked in Settings → Developers. Keys are shown once and stored hashed.',
-              ],
-              [
-                'Limits & pricing',
-                'Free to start, rate-limited per key. For production volume or an SLA, get in touch about Enterprise pricing.',
-              ],
-            ].map(([title, body]) => (
-              <div key={title}>
-                <dt className="font-semibold text-ink">{title}</dt>
-                <dd className="mt-1 text-sm leading-relaxed text-muted">{body}</dd>
-              </div>
-            ))}
-          </dl>
         </section>
 
         {/* CTA */}

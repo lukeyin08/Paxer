@@ -65,9 +65,8 @@ export default function PricingPage() {
           <div className="max-w-2xl">
             <h1 className="text-3xl font-bold text-ink">Your first audit is free.</h1>
             <p className="mt-4 max-w-2xl leading-relaxed text-muted">
-              After that, Paxer Plus is a flat monthly subscription for unlimited audits and dispute
-              letters. Paxer never takes a cut of what you recover. The same engine is available to
-              businesses as an API.
+              After that, Paxer Plus is a flat monthly subscription. Paxer never takes a cut of what
+              you recover.
             </p>
           </div>
 
@@ -75,13 +74,12 @@ export default function PricingPage() {
             <Tier
               name="Paxer Plus"
               price={plusPrice}
-              sub="For patients. First audit free; Paxer Plus covers unlimited audits and dispute letters. Flat, no contingency."
+              sub="For patients."
               highlight
               features={[
                 'Unlimited bill audits',
-                'AI-drafted dispute letters (you review & send)',
-                'Track outcomes and recoveries',
-                'Keep 100% of what you recover, no contingency',
+                'Dispute letters you review and send',
+                'Keep 100% of what you recover',
                 'Cancel anytime',
               ]}
               cta="Get started free"
@@ -90,13 +88,12 @@ export default function PricingPage() {
             <Tier
               name="Audit API"
               price={`Free → ${API_PLANS.scale.priceLabel}`}
-              sub="For developers: embed the audit engine in your own software. Self-serve monthly plans, sized by call volume."
+              sub="For developers. Monthly plans sized by call volume."
               features={[
-                'Embedded /api/v1/audit endpoint: your code calls it',
-                `Free to start: ${API_PLANS.free.monthlyQuota} API calls/mo`,
+                `Free: ${API_PLANS.free.monthlyQuota} calls/mo`,
                 `Pro: ${API_PLANS.pro.priceLabel} for ${API_PLANS.pro.monthlyQuota.toLocaleString()} calls`,
                 `Scale: ${API_PLANS.scale.priceLabel} for ${API_PLANS.scale.monthlyQuota.toLocaleString()} calls`,
-                'Enterprise volume & SLA: contact us',
+                'Enterprise volume and SLA: contact us',
               ]}
               cta="Get a free API key"
               href="/login?next=/app/settings"
@@ -104,13 +101,12 @@ export default function PricingPage() {
             <Tier
               name="Employers & TPAs"
               price="Let’s talk"
-              sub="Give your workforce Paxer as a benefit: per-member (PEPM), sales-led."
+              sub="Paxer as an employee benefit."
               features={[
-                'Bill-review benefit for your whole population',
                 'Per-member pricing (PEPM)',
-                'Aggregate savings reporting for your population',
-                'Member roster import & rollout',
-                'Dedicated support · design-partner program now onboarding',
+                'Aggregate savings reporting',
+                'Member roster import',
+                'Dedicated support',
               ]}
               cta="Contact us"
               href="mailto:hello@paxer.app?subject=Paxer%20for%20employers"

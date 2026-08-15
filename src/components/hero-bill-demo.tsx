@@ -37,15 +37,13 @@ export function HeroBillDemo() {
       </table>
 
       <div className="mt-4 border-l-2 border-ink pl-4 text-sm leading-relaxed">
-        <p className="font-semibold text-ink">MRI, lumbar spine: overcharged</p>
-        <p className="mt-1 text-muted">
-          You were billed at 60% coinsurance. Your plan says 20%. You were charged {formatUsd(720)};
-          your correct share is {formatUsd(240)}.
+        <p className="text-ink">
+          <span className="font-semibold">Overcharged by {formatUsd(480)}.</span> Billed at 60%
+          coinsurance; your plan says 20%.
         </p>
-        <p className="mt-2 text-ink">Overcharged by {formatUsd(480)}.</p>
       </div>
 
-      <p className="mt-4 text-sm text-muted">Illustrative example, not a real bill.</p>
+      <p className="mt-4 text-sm text-muted">Example, not a real bill.</p>
     </div>
   );
 }

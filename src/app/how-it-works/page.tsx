@@ -102,9 +102,8 @@ export default function HowItWorksPage() {
           <div className="max-w-3xl">
             <h1 className="text-3xl font-bold text-ink">How Paxer audits a bill</h1>
             <p className="mt-4 max-w-2xl leading-relaxed text-muted">
-              You add a bill. Paxer checks every charge against your insurance plan and against
-              regional prices, then flags the ones that look wrong and shows the math behind each.
-              It drafts the dispute letter; you review it and send it. A worked example follows.
+              You add a bill. Paxer checks every charge against your plan and against regional
+              prices, flags what looks wrong, and drafts the dispute letter you send.
             </p>
           </div>
         </section>

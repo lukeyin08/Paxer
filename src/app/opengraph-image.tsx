@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const alt = 'Paxer: the advocate on the patient’s side of the bill';
+export const alt = 'Paxer: check your medical bills for billing errors';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -15,32 +15,34 @@ export default function OpengraphImage() {
         flexDirection: 'column',
         justifyContent: 'center',
         padding: '80px',
-        background: '#ffffff',
-        color: '#1a1a1a',
+        background: '#FBFAF7',
+        color: '#1A1A18',
         fontFamily: 'Helvetica, Arial, sans-serif',
       }}
     >
-      <div style={{ display: 'flex', fontSize: '40px', fontWeight: 700 }}>Paxer</div>
+      <div style={{ display: 'flex', fontSize: '40px', fontWeight: 700, color: '#1E5138' }}>
+        Paxer
+      </div>
       <div
         style={{
           display: 'flex',
           marginTop: '24px',
           paddingTop: '32px',
-          borderTop: '2px solid #1a1a1a',
+          borderTop: '2px solid #1E5138',
           fontSize: '56px',
           fontWeight: 700,
           lineHeight: 1.15,
           maxWidth: '960px',
         }}
       >
-        The advocate on the patient’s side of the bill.
+        Check your medical bills for billing errors.
       </div>
       <div
         style={{
           display: 'flex',
           marginTop: '28px',
           fontSize: '28px',
-          color: '#595959',
+          color: '#57554E',
           maxWidth: '900px',
         }}
       >

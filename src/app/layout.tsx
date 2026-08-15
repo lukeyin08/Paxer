@@ -3,7 +3,7 @@ import { CONSUMER_PLAN } from '@/lib/billing/consumer';
 import './globals.css';
 
 const SITE_URL = process.env.AUTH_URL || 'https://paxer.app';
-const TITLE = 'Paxer: the advocate on the patient’s side of the bill';
+const TITLE = 'Paxer: check your medical bills for billing errors';
 const DESCRIPTION =
   'Paxer checks your medical bills and EOBs against your insurance plan, flags the charges that look wrong, and drafts the letter you send to dispute them. First audit free.';
 

@@ -8,17 +8,17 @@ export const PROCESS_STEPS = [
   {
     step: '1',
     title: 'Add your bill',
-    body: 'Upload a medical bill or EOB, or enter the charges by hand. Paxer reads the document and pulls out every line item.',
+    body: 'Upload a bill or EOB, or type the charges in.',
   },
   {
     step: '2',
     title: 'See the findings',
-    body: 'The audit engine checks each charge against your plan and regional benchmarks, and flags errors with the evidence and the math behind each one.',
+    body: 'Each charge is checked against your plan and regional prices, with the math shown.',
   },
   {
     step: '3',
     title: 'Send & recover',
-    body: 'Paxer drafts the dispute letter. You review it, send it to your provider or insurer, and Paxer tracks the deadline until the money comes back.',
+    body: 'Paxer drafts the letter. You send it, and Paxer tracks the deadline.',
   },
 ] as const;
 
@@ -38,18 +38,18 @@ export const REQUEST_DEMO_URL = 'https://calendar.app.google/JNSip5vZvhQBQgiTA';
 export const ERROR_TYPES = [
   {
     title: 'Duplicate & unbundled charges',
-    body: 'The same service billed twice, or one procedure split into separately billed parts to inflate the total.',
+    body: 'The same service billed twice, or one procedure split into separate charges.',
   },
   {
     title: 'Cost-share miscalculations',
-    body: 'Your deductible, coinsurance, and out-of-pocket max recomputed from your real plan, then checked against what you were charged.',
+    body: 'Deductible, coinsurance, and out-of-pocket max recomputed from your plan.',
   },
   {
     title: 'Balance billing & surprise bills',
-    body: 'Out-of-network and emergency charges billed above your in-network cost-share, a likely No Surprises Act violation.',
+    body: 'Out-of-network charges above your in-network cost-share (No Surprises Act).',
   },
   {
     title: 'Upcoding & overruns',
-    body: 'Higher-intensity codes than the service described, and charges above the regional benchmark for the same code.',
+    body: 'Codes billed higher than the service described, or prices above the regional benchmark.',
   },
 ] as const;

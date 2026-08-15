@@ -3,11 +3,16 @@
 @tailwind utilities;
 
 /*
- * Paxer tokens — plain light colorway. White paper, near-black ink, grey rules,
- * and one dark blue for links and primary actions. No tinted surfaces, no
- * rounded corners, no motion. Hex source values:
- *   ink #1A1A1A   paper #FFFFFF   accent #163F70   muted #595959
- *   rule #CFCFCF  soft #F5F5F5    success #1C6B45  danger #A32020  warning #8A5A0B
+ * Paxer tokens — warm paper, near-black ink, one deep green.
+ *
+ * Green rather than blue on purpose: blue/indigo is the default accent of every
+ * generated template, and green already carries meaning here (money recovered),
+ * so `success` and `accent` are the same value instead of two competing hues.
+ * Red is reserved for the one thing that is genuinely wrong: a flagged charge.
+ * Hex source values:
+ *   ink #1A1A18    paper #FBFAF7   accent/success #1E5138   accent2 #2F6B4C
+ *   muted #57554E  rule #D7D3C9    soft #F1EEE6
+ *   danger #9B2C2C warning #8A5A0B
  * Stored as HSL triplets so Tailwind can apply opacity modifiers.
  */
 @layer base {
@@ -19,28 +24,28 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
     /* Brand primitives */
-    --ink: 0 0% 10%;
-    --paper: 0 0% 100%;
-    --accent: 210 67% 26%;
-    --accent-foreground: 0 0% 100%;
-    --accent2: 210 20% 30%;
-    --muted: 0 0% 35%;
-    --muted-foreground: 0 0% 35%;
-    --rule: 0 0% 81%;
-    --soft: 0 0% 96%;
-    --success: 154 59% 26%;
-    --danger: 0 67% 38%;
+    --ink: 60 5% 10%;
+    --paper: 40 33% 98%;
+    --accent: 154 46% 22%;
+    --accent-foreground: 40 33% 98%;
+    --accent2: 152 39% 30%;
+    --muted: 47 5% 32%;
+    --muted-foreground: 47 5% 32%;
+    --rule: 43 20% 82%;
+    --soft: 43 30% 93%;
+    --success: 154 46% 22%;
+    --danger: 0 55% 39%;
     --warning: 36 85% 29%;
 
     /* Semantic aliases (mapped to brand) */
     --background: var(--paper);
     --foreground: var(--ink);
-    --card: var(--paper);
+    --card: 0 0% 100%;
     --card-foreground: var(--ink);
-    --popover: var(--paper);
+    --popover: 0 0% 100%;
     --popover-foreground: var(--ink);
-    --primary: var(--ink);
-    --primary-foreground: var(--paper);
+    --primary: var(--accent);
+    --primary-foreground: var(--accent-foreground);
     --secondary: var(--soft);
     --secondary-foreground: var(--ink);
     --destructive: var(--danger);
