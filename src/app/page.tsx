@@ -57,9 +57,7 @@ export default function LandingPage() {
         {/* Split explainer: statement on the left, the detail on the right. */}
         <section className="border-t border-rule">
           <div className="measure grid grid-cols-1 gap-8 py-14 md:grid-cols-2 md:gap-16">
-            <h2 className="max-w-[18ch] text-balance">
-              Every charge, checked against your actual plan
-            </h2>
+            <h2 className="max-w-[18ch] text-balance">Every charge is checked against your plan</h2>
             <div className="leading-relaxed text-muted">
               <p>
                 Paxer reads a bill or EOB and recomputes your deductible, coinsurance, and
