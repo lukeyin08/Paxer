@@ -30,12 +30,12 @@ export default function LandingPage() {
             href="/pricing"
             className="inline-flex items-center gap-2 bg-ink px-4 py-2 text-xs text-paper hover:text-accent"
           >
-            Your first bill audit is free.
+            Your first bill audit is free
             <span aria-hidden>&rsaquo;</span>
           </Link>
 
           <h1 className="mx-auto mt-10 max-w-[16ch] text-balance">
-            Your medical bill is probably <span className="hl">wrong</span>.
+            Your medical bill is probably <span className="hl">wrong</span>
           </h1>
 
           <p className="mx-auto mt-8 max-w-[46ch] text-lg leading-snug text-muted md:text-xl">
@@ -58,7 +58,7 @@ export default function LandingPage() {
         <section className="border-t border-rule">
           <div className="measure grid grid-cols-1 gap-8 py-14 md:grid-cols-2 md:gap-16">
             <h2 className="max-w-[18ch] text-balance">
-              Every charge, checked against your actual plan.
+              Every charge, checked against your actual plan
             </h2>
             <div className="leading-relaxed text-muted">
               <p>
@@ -83,14 +83,14 @@ export default function LandingPage() {
 
         <section className="border-t border-rule">
           <div className="measure py-14">
-            <h2>What it catches.</h2>
+            <h2>What it catches</h2>
             <ErrorTypes />
           </div>
         </section>
 
         <section className="border-t border-rule">
           <div className="measure py-14">
-            <h2>Three steps.</h2>
+            <h2>Three steps</h2>
             <ProcessSteps />
             <p className="mt-8 text-sm">
               <Link href="/how-it-works" className="link">
@@ -102,7 +102,7 @@ export default function LandingPage() {
 
         <section className="border-t border-rule">
           <div className="measure grid grid-cols-1 gap-8 py-14 md:grid-cols-2 md:gap-16">
-            <h2 className="max-w-[18ch] text-balance">The same engine, as an API.</h2>
+            <h2 className="max-w-[18ch] text-balance">The same engine, as an API</h2>
             <div className="leading-relaxed text-muted">
               <p>
                 Send a bill&rsquo;s line items, get back the errors with an explanation and an

@@ -65,7 +65,7 @@ export default function PricingPage() {
       <main className="flex-1">
         <section className="measure py-12 md:py-16">
           <div className="max-w-2xl">
-            <h1>Your first audit is free.</h1>
+            <h1>Your first audit is free</h1>
             <p className="mt-4 max-w-2xl leading-relaxed text-muted">
               After that, Paxer Plus is a flat monthly subscription. Paxer never takes a cut of what
               you recover.
