@@ -18,44 +18,52 @@ const HEADLINE = [
 ];
 
 const REVENUE = [
-  { label: 'Employer & API partners', amount: '$13K ARR' },
-  { label: 'Paxer Plus subscriptions', amount: '$3K ARR' },
+  { label: 'Employer & API partners', amount: '$13K' },
+  { label: 'Paxer Plus subscriptions', amount: '$3K' },
 ];
 
+/**
+ * The figures in ruled compartments rather than a bare list — the same
+ * cell-and-hairline structure as the nav bar, so each number reads as its own
+ * unit instead of running into the next.
+ */
 export function ResultsMetrics() {
   return (
     <>
-      {/* Headline numbers */}
       <section className="measure border-t border-rule py-12">
-        <dl className="grid grid-cols-1 gap-x-12 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+        <h2>Since launch</h2>
+        <ul className="mt-8 grid grid-cols-1 border-t border-ink sm:grid-cols-2 lg:grid-cols-4">
           {HEADLINE.map((s) => (
-            <div key={s.label}>
-              <dt className="font-semibold text-ink">
-                <span className="tabular-nums">{s.value}</span> {s.label}
-              </dt>
-              <dd className="mt-1 text-sm leading-relaxed text-muted">{s.sub}</dd>
-            </div>
+            <li
+              key={s.label}
+              className="border-b border-rule py-6 sm:px-6 sm:first:pl-0 lg:border-r lg:last:border-r-0 lg:last:pr-0"
+            >
+              <p className="text-[2rem] font-bold tabular-nums leading-none tracking-[-0.03em] text-ink">
+                {s.value}
+              </p>
+              <p className="mt-3 font-semibold text-ink">{s.label}</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted">{s.sub}</p>
+            </li>
           ))}
-        </dl>
+        </ul>
       </section>
 
-      {/* Revenue */}
-      <section className="measure border-t border-rule py-14">
+      <section className="measure border-t border-rule py-12">
         <h2>Revenue</h2>
-        <p className="mt-2 max-w-2xl leading-relaxed text-muted">
+        <p className="mt-3 max-w-[58ch] leading-relaxed text-muted">
           Annual run-rate is $16K. Most of that comes from business customers; the consumer
           subscription is the smaller share. All pricing is flat-fee, so Paxer never takes a
           percentage of what anyone recovers.
         </p>
 
-        <table className="mt-6 w-full max-w-md border-collapse text-sm">
+        <table className="mt-8 w-full border-collapse text-sm">
           <caption className="sr-only">Annualized recurring revenue by source</caption>
           <thead>
-            <tr className="border-b border-ink text-left">
-              <th scope="col" className="py-2 pr-4 font-semibold text-ink">
+            <tr className="border-y border-ink text-left">
+              <th scope="col" className="py-3 pr-4 font-semibold text-ink">
                 Source
               </th>
-              <th scope="col" className="py-2 text-right font-semibold text-ink">
+              <th scope="col" className="py-3 text-right font-semibold text-ink">
                 ARR
               </th>
             </tr>
@@ -63,8 +71,8 @@ export function ResultsMetrics() {
           <tbody>
             {REVENUE.map((r) => (
               <tr key={r.label} className="border-b border-rule">
-                <td className="py-2 pr-4 text-ink">{r.label}</td>
-                <td className="py-2 text-right tabular-nums text-ink">{r.amount}</td>
+                <td className="py-3 pr-4 text-ink">{r.label}</td>
+                <td className="py-3 text-right font-mono tabular-nums text-ink">{r.amount}</td>
               </tr>
             ))}
           </tbody>

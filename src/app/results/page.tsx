@@ -18,11 +18,10 @@ export default function ResultsPage() {
     <div className="flex min-h-screen flex-col">
       <MarketingHeader />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="measure py-12 md:py-16">
-          <div className="max-w-3xl">
+        <section className="measure py-14">
+          <div>
             <h1>Results</h1>
-            <p className="mt-4 max-w-2xl leading-relaxed text-muted">
+            <p className="mt-5 max-w-[58ch] text-lg leading-snug text-muted">
               Paxer launched in December 2025. The figures below are cumulative since launch and
               current as of June 2026.
             </p>
@@ -33,7 +32,7 @@ export default function ResultsPage() {
 
         {/* Footnotes */}
         <section className="measure border-t border-rule py-8">
-          <p className="max-w-3xl text-sm leading-relaxed text-muted">
+          <p className="max-w-[70ch] text-xs leading-relaxed text-muted">
             Figures are cumulative since launch unless noted, and rounded. Recoveries are reported
             by users and not independently verified; past results don&rsquo;t guarantee any
             individual outcome.
