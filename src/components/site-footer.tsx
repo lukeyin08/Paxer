@@ -24,6 +24,11 @@ export function SiteFooter() {
             </li>
           ))}
         </ul>
+        {/* Sponsor credit. Deliberately a plain statement of the relationship
+            and not a logo or an endorsement claim: university marks carry usage
+            rules, and "sponsored by" is a fact about funding, whereas a crest or
+            "backed by" reads as the institution vouching for the product. */}
+        <p className="text-sm text-ink">Sponsored by Northwestern University.</p>
         <Disclaimer />
       </div>
     </footer>
