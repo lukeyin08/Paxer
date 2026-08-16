@@ -8,42 +8,56 @@ const LINES = [
 
 /**
  * Illustrative hero visual — a sample EOB with one error Paxer caught (a
- * cost-share overcharge), set as a plain table with the finding written out
- * underneath it. Labelled as an example.
+ * cost-share overcharge).
+ *
+ * Set as a statement, not a card: hard ink border on the page ground rather
+ * than a white panel floating above it, a black header strip matching the nav
+ * bar, and every figure in tabular mono so the columns line up the way they do
+ * on a real printed EOB. Labelled as an example.
  */
 export function HeroBillDemo() {
   return (
-    <div className="w-full border border-t-2 border-rule border-t-accent bg-card p-6 sm:p-8">
-      <div className="flex items-baseline justify-between gap-4 border-b border-ink pb-2.5">
-        <span className="font-sans text-sm font-semibold text-ink">Riverside Medical Center</span>
-        <span className="font-sans text-xs text-muted">EOB</span>
-      </div>
+    <figure className="w-full border border-ink">
+      <figcaption className="flex items-center justify-between gap-4 bg-ink px-5 py-2.5 text-paper">
+        <span className="text-xs font-bold uppercase tracking-[0.1em]">
+          Riverside Medical Center
+        </span>
+        <span className="font-mono text-xs text-paper/60">EOB</span>
+      </figcaption>
 
-      <table className="mt-3 w-full border-collapse text-sm">
+      <table className="w-full border-collapse text-sm">
         <caption className="sr-only">Example explanation of benefits</caption>
         <tbody>
           {LINES.map((l) => (
             <tr key={l.code} className="border-b border-rule">
-              <td className="py-2 pr-4 text-ink">
-                {l.desc} <span className="font-mono text-xs text-muted">{l.code}</span>
+              <td className="py-3 pl-5 pr-4">
+                <span className="text-ink">{l.desc}</span>{' '}
+                <span className="font-mono text-xs text-muted">{l.code}</span>
+                {l.flagged && (
+                  <span className="ml-3 bg-accent px-1.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-wider text-accent-foreground">
+                    Flagged
+                  </span>
+                )}
               </td>
-              <td className="py-2 text-right tabular-nums text-ink">
-                {formatUsd(l.amount)}
-                {l.flagged && <span className="ml-2 text-muted">(flagged)</span>}
+              <td className="py-3 pr-5 text-right font-mono tabular-nums text-ink">
+                {formatUsd(l.amount, { cents: true })}
               </td>
             </tr>
           ))}
         </tbody>
+        <tfoot>
+          <tr className="border-t-2 border-ink">
+            <td className="py-3 pl-5 pr-4 font-semibold text-ink">Overcharged by</td>
+            <td className="py-3 pr-5 text-right font-mono font-semibold tabular-nums text-ink">
+              {formatUsd(480, { cents: true })}
+            </td>
+          </tr>
+        </tfoot>
       </table>
 
-      <div className="mt-4 border-l-2 border-ink pl-4 text-sm leading-relaxed">
-        <p className="text-ink">
-          <span className="font-semibold">Overcharged by {formatUsd(480)}.</span> Billed at 60%
-          coinsurance; your plan says 20%.
-        </p>
-      </div>
-
-      <p className="mt-4 text-sm text-muted">Example, not a real bill.</p>
-    </div>
+      <p className="border-t border-rule px-5 py-3 text-sm text-muted">
+        Billed at 60% coinsurance; your plan says 20%. Example, not a real bill.
+      </p>
+    </figure>
   );
 }

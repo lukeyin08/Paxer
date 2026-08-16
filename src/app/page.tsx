@@ -82,23 +82,21 @@ export default function LandingPage() {
         </section>
 
         <section className="border-t border-rule">
-          <div className="measure grid grid-cols-1 gap-8 py-14 md:grid-cols-2 md:gap-16">
-            <h2 className="max-w-[14ch] text-balance">What it catches.</h2>
+          <div className="measure py-14">
+            <h2>What it catches.</h2>
             <ErrorTypes />
           </div>
         </section>
 
         <section className="border-t border-rule">
-          <div className="measure grid grid-cols-1 gap-8 py-14 md:grid-cols-2 md:gap-16">
-            <h2 className="max-w-[14ch] text-balance">Three steps.</h2>
-            <div>
-              <ProcessSteps />
-              <p className="mt-8 text-sm">
-                <Link href="/how-it-works" className="link">
-                  Full walkthrough and FAQ
-                </Link>
-              </p>
-            </div>
+          <div className="measure py-14">
+            <h2>Three steps.</h2>
+            <ProcessSteps />
+            <p className="mt-8 text-sm">
+              <Link href="/how-it-works" className="link">
+                Full walkthrough and FAQ
+              </Link>
+            </p>
           </div>
         </section>
 
