@@ -1,55 +1,59 @@
 import Link from 'next/link';
-import { Wordmark } from '@/components/brand/wordmark';
-import { Button } from '@/components/ui/button';
 import { MarketingMobileMenu } from '@/components/marketing-mobile-menu';
-import { REQUEST_DEMO_URL } from '@/lib/marketing';
 
 const LINKS = [
+  { href: '/how-it-works', label: 'How it works' },
   { href: '/results', label: 'Results' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/developers', label: 'Developers' },
 ];
 
-/** Shared public/marketing top bar so every public page exposes the same nav. */
+/**
+ * Full-bleed black bar, cell-ruled: the wordmark, each nav item, and the CTA sit
+ * in their own compartment separated by vertical hairlines, with the CTA flush
+ * to the right edge on the accent green. No inner measure — the bar spans the
+ * viewport so the rules run edge to edge.
+ */
 export function MarketingHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-rule bg-paper">
-      <div className="measure relative flex h-16 items-center justify-between gap-3 max-[359px]:gap-2">
-        <Wordmark />
+    <header className="sticky top-0 z-40 bg-ink text-paper">
+      <div className="flex h-11 items-stretch text-sm">
+        <Link
+          href="/"
+          aria-label="Paxer home"
+          className="flex shrink-0 items-center gap-2 border-r border-paper/15 px-5 font-bold uppercase tracking-[0.1em] hover:text-accent"
+        >
+          Paxer
+        </Link>
 
-        {/* Centered primary nav (funnel order: learn → proof → cost → build) so
-            the bar doesn't pile everything up on the right. Centered absolutely,
-            so it only appears at lg+ where it can't collide with the edges. */}
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex">
+        <nav className="hidden items-stretch md:flex">
           {LINKS.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className="px-3 py-2 text-sm text-ink hover:text-accent hover:underline"
+              className="flex items-center border-r border-paper/15 px-6 hover:text-accent"
             >
               {l.label}
             </Link>
           ))}
         </nav>
 
-        {/* Sign in is the self-serve path — the magic link both registers new
-            users and signs in returning ones. Kept as a quiet text link so
-            "Request a demo" stays the single button in the bar. */}
-        <div className="flex items-center gap-4 max-[459px]:gap-2">
-          <Link
-            href="/login"
-            className="py-2 text-sm text-ink hover:text-accent hover:underline max-sm:hidden"
-          >
-            Sign in
-          </Link>
-          <Button asChild size="sm">
-            <a href={REQUEST_DEMO_URL} target="_blank" rel="noopener noreferrer">
-              Request a demo
-              <span className="sr-only"> (opens in a new tab)</span>
-            </a>
-          </Button>
-          <MarketingMobileMenu links={LINKS} />
-        </div>
+        {/* Spacer cell carries the rule across the empty middle. */}
+        <div className="flex-1 border-r border-paper/15" />
+
+        <Link
+          href="/login"
+          className="hidden items-center border-r border-paper/15 px-6 hover:text-accent sm:flex"
+        >
+          Sign in
+        </Link>
+        <Link
+          href="/login"
+          className="flex shrink-0 items-center bg-accent px-6 font-medium text-accent-foreground hover:bg-paper hover:text-ink"
+        >
+          Get started
+        </Link>
+        <MarketingMobileMenu links={LINKS} />
       </div>
     </header>
   );

@@ -37,7 +37,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
     <div className="flex flex-col gap-10">
       {/* Header */}
       <div className="flex flex-col gap-4">
-        <Link href="/app" className="text-sm text-accent underline">
+        <Link href="/app" className="link text-sm">
           ← Dashboard
         </Link>
         <div className="flex flex-wrap items-start justify-between gap-4">

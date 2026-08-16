@@ -120,7 +120,7 @@ export default function DevelopersPage() {
             <p className="mt-3 max-w-3xl text-sm text-muted">
               We don’t sell this to health plans as the primary buyer, since a health plan benefits
               when a claim is denied.{' '}
-              <Link href="/pricing" className="text-accent underline">
+              <Link href="/pricing" className="link">
                 See pricing
               </Link>
               .

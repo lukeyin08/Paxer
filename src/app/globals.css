@@ -3,38 +3,41 @@
 @tailwind utilities;
 
 /*
- * Paxer tokens — warm paper, near-black ink, one deep green.
+ * Paxer tokens — cream paper, black ink, one bright green.
  *
- * Green rather than blue on purpose: blue/indigo is the default accent of every
- * generated template, and green already carries meaning here (money recovered),
- * so `success` and `accent` are the same value instead of two competing hues.
- * Red is reserved for the one thing that is genuinely wrong: a flagged charge.
- * Hex source values:
- *   ink #1A1A18    paper #FBFAF7   accent/success #1E5138   accent2 #2F6B4C
- *   muted #57554E  rule #D7D3C9    soft #F1EEE6
- *   danger #9B2C2C warning #8A5A0B
+ * Two greens, doing different jobs. `accent` is the bright spring green: it is a
+ * HIGHLIGHT, used at display size (the emphasised headline word) and as a solid
+ * block behind short label text. It is deliberately never used for body links or
+ * small text, where it would fail contrast on cream. `accent2` is a deep green
+ * that does pass, and carries links, focus rings, and hover.
+ *
+ * Actions are black, not green, so the one bright colour on the page stays rare
+ * enough to still read as emphasis. Hex source values:
+ *   ink #101010    paper #F7F5EF   accent #3FD98A   accent2 #17603C
+ *   muted #6B6862  rule #DCD7C9    soft #EFEBE0
+ *   danger #A32626 warning #8A5A0B
  * Stored as HSL triplets so Tailwind can apply opacity modifiers.
  */
 @layer base {
   :root {
     color-scheme: light;
 
-    /* System type — no webfonts, no display face. */
-    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    /* One display family for everything, with a system fallback stack. */
+    --font-sans: var(--font-display), 'Helvetica Neue', Helvetica, Arial, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
     /* Brand primitives */
-    --ink: 60 5% 10%;
-    --paper: 40 33% 98%;
-    --accent: 154 46% 22%;
-    --accent-foreground: 40 33% 98%;
-    --accent2: 152 39% 30%;
-    --muted: 47 5% 32%;
-    --muted-foreground: 47 5% 32%;
-    --rule: 43 20% 82%;
-    --soft: 43 30% 93%;
-    --success: 154 46% 22%;
-    --danger: 0 55% 39%;
+    --ink: 0 0% 6%;
+    --paper: 45 30% 95%;
+    --accent: 154 68% 55%;
+    --accent-foreground: 0 0% 6%;
+    --accent2: 150 62% 23%;
+    --muted: 45 5% 40%;
+    --muted-foreground: 45 5% 40%;
+    --rule: 45 21% 83%;
+    --soft: 43 27% 91%;
+    --success: 150 62% 23%;
+    --danger: 0 61% 39%;
     --warning: 36 85% 29%;
 
     /* Semantic aliases (mapped to brand) */
@@ -44,15 +47,15 @@
     --card-foreground: var(--ink);
     --popover: 0 0% 100%;
     --popover-foreground: var(--ink);
-    --primary: var(--accent);
-    --primary-foreground: var(--accent-foreground);
+    --primary: var(--ink);
+    --primary-foreground: 0 0% 100%;
     --secondary: var(--soft);
     --secondary-foreground: var(--ink);
     --destructive: var(--danger);
     --destructive-foreground: 0 0% 100%;
     --border: var(--rule);
     --input: var(--rule);
-    --ring: var(--accent);
+    --ring: var(--accent2);
     --radius: 0px;
   }
 }
@@ -64,23 +67,22 @@
   body {
     @apply bg-paper font-sans text-ink;
   }
-  /* Headings carry the serif; weight and size do the ranking, so nothing needs
-     to shout. Optical sizing keeps the large sizes from looking spindly. */
+  /* Headings: one grotesk, bold, tracked in hard. The display sizes are where
+     this typeface earns its keep, so h1 is set very large and very tight. */
   h1,
   h2,
   h3,
   h4 {
-    @apply font-serif font-semibold;
-    font-optical-sizing: auto;
+    @apply font-sans font-bold tracking-[-0.03em];
   }
   h1 {
-    @apply text-[2.75rem] leading-[1.08] tracking-[-0.015em];
+    @apply text-[clamp(2.5rem,6.5vw,4.5rem)] leading-[1.02];
   }
   h2 {
-    @apply text-[1.75rem] leading-[1.15] tracking-[-0.01em];
+    @apply text-[clamp(1.75rem,3.2vw,2.5rem)] leading-[1.06];
   }
   h3 {
-    @apply text-lg leading-snug;
+    @apply text-xl leading-snug tracking-[-0.02em];
   }
 }
 
@@ -89,7 +91,18 @@
      header, the copy, and the footer all sit on the same two edges. The app
      keeps Tailwind's wider `container` for its tables. */
   .measure {
-    @apply mx-auto w-full max-w-[54rem] px-6;
+    @apply mx-auto w-full max-w-[64rem] px-6;
+  }
+
+  /* Body links. Ink, not `accent` — the bright green is a display highlight and
+     would fail contrast at this size. Green arrives on hover. */
+  .link {
+    @apply text-ink underline underline-offset-2 hover:text-accent2;
+  }
+
+  /* The emphasised word in a display headline. */
+  .hl {
+    @apply text-accent;
   }
 
   /* Small label above a section heading. Plain text, same size as body copy. */

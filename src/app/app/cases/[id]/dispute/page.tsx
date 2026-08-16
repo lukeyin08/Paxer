@@ -32,7 +32,7 @@ export default async function DisputeDraftPage({
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-8">
       <div>
-        <Link href={`/app/cases/${id}`} className="text-sm text-accent underline">
+        <Link href={`/app/cases/${id}`} className="link text-sm">
           ← Back to case
         </Link>
         <Kicker className="mb-2 mt-3">New dispute</Kicker>

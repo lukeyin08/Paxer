@@ -21,7 +21,11 @@ export function Wordmark({
   href?: string | null;
   size?: 'sm' | 'base' | 'lg';
 }) {
-  const lockup = <span className={cn('font-bold text-accent', SIZES[size], className)}>Paxer</span>;
+  const lockup = (
+    <span className={cn('font-bold uppercase tracking-[0.1em] text-ink', SIZES[size], className)}>
+      Paxer
+    </span>
+  );
 
   if (href === null) return lockup;
   return (

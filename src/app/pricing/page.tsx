@@ -118,10 +118,7 @@ export default function PricingPage() {
 
           <p className="mt-8 text-sm text-muted">
             Questions about pricing?{' '}
-            <a
-              className="text-accent underline"
-              href="mailto:hello@paxer.app?subject=Paxer%20pricing"
-            >
+            <a className="link" href="mailto:hello@paxer.app?subject=Paxer%20pricing">
               hello@paxer.app
             </a>
           </p>

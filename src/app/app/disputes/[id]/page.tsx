@@ -17,7 +17,7 @@ export default async function DisputePage({ params }: { params: Promise<{ id: st
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-6">
       <div>
-        <Link href={`/app/cases/${dispute.caseId}`} className="text-sm text-accent underline">
+        <Link href={`/app/cases/${dispute.caseId}`} className="link text-sm">
           ← Back to case
         </Link>
         <Kicker className="mb-2 mt-3">Dispute</Kicker>

@@ -47,17 +47,17 @@ export default async function LoginPage({
       <div className="flex w-full max-w-md flex-col gap-3">
         <p className="text-xs text-muted">
           By signing in you agree to our{' '}
-          <Link href="/terms" className="text-accent underline">
+          <Link href="/terms" className="link">
             Terms
           </Link>{' '}
           and{' '}
-          <Link href="/privacy" className="text-accent underline">
+          <Link href="/privacy" className="link">
             Privacy Policy
           </Link>
           .
         </p>
         <Disclaimer />
-        <Link href="/" className="text-sm text-accent underline">
+        <Link href="/" className="link text-sm">
           Back to home
         </Link>
       </div>

@@ -42,18 +42,13 @@ export function OnboardingForm({ defaultName }: { defaultName?: string }) {
         <Checkbox id="consent" name="consent" className="mt-0.5" />
         <span className="text-muted">
           I agree to Paxer&rsquo;s{' '}
-          <Link
-            href="/terms"
-            className="text-accent underline"
-            target="_blank"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <Link href="/terms" className="link" target="_blank" onClick={(e) => e.stopPropagation()}>
             Terms of Service
           </Link>{' '}
           and{' '}
           <Link
             href="/privacy"
-            className="text-accent underline"
+            className="link"
             target="_blank"
             onClick={(e) => e.stopPropagation()}
           >

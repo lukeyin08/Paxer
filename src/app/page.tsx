@@ -1,13 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
 import { HeroBillDemo } from '@/components/hero-bill-demo';
 import { ErrorTypes } from '@/components/landing/error-types';
 import { ProcessSteps } from '@/components/landing/process-steps';
 import { DEMO_ENABLED } from '@/lib/auth/demo';
-import { REQUEST_DEMO_URL } from '@/lib/marketing';
 
 // The homepage canonical lives here (not in the root layout) so other routes
 // don't inherit a canonical pointing at "/".
@@ -17,9 +15,7 @@ export const metadata: Metadata = {
 
 // The magic link both registers new users and signs in returning ones. The
 // in-app instant demo (?demo=1) only exists outside production.
-const SELF_SERVE = DEMO_ENABLED
-  ? { href: '/login?demo=1', label: 'Try the demo' }
-  : { href: '/login', label: 'Sign in' };
+const SELF_SERVE = DEMO_ENABLED ? '/login?demo=1' : '/login';
 
 export default function LandingPage() {
   return (
@@ -27,61 +23,110 @@ export default function LandingPage() {
       <MarketingHeader />
 
       <main className="flex-1">
-        {/* The headline sets the measure; the sample bill sits under it at full
-            width rather than beside it, so neither column is left half-empty. */}
-        <section className="measure pb-14 pt-16">
-          <h1 className="max-w-[19ch] text-balance">
-            Check your medical bills for billing errors.
-          </h1>
-          <p className="mt-5 max-w-[58ch] text-lg leading-relaxed text-muted">
-            Paxer checks a bill or EOB against your insurance plan, shows the math on anything that
-            looks wrong, and drafts the dispute letter for you to send.
-          </p>
-          <div className="mt-7 flex flex-wrap items-center gap-3">
-            <Button asChild size="lg">
-              <Link href={SELF_SERVE.href}>{SELF_SERVE.label}</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <a href={REQUEST_DEMO_URL} target="_blank" rel="noopener noreferrer">
-                Request a demo
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
-            </Button>
-          </div>
+        {/* Centred display hero: eyebrow pill, oversized headline with one word
+            carrying the accent, one-line positioning statement, single CTA. */}
+        <section className="measure py-16 text-center md:py-24">
+          <Link
+            href="/pricing"
+            className="inline-flex items-center gap-2 bg-ink px-4 py-2 text-xs text-paper hover:text-accent"
+          >
+            Your first bill audit is free.
+            <span aria-hidden>&rsaquo;</span>
+          </Link>
 
-          <div className="mt-14">
+          <h1 className="mx-auto mt-10 max-w-[16ch] text-balance">
+            Your medical bill is probably <span className="hl">wrong</span>.
+          </h1>
+
+          <p className="mx-auto mt-8 max-w-[46ch] text-lg leading-snug text-muted md:text-xl">
+            Paxer audits medical bills and EOBs for patients, employers, and the platforms that
+            serve them.
+          </p>
+
+          <div className="mt-10">
+            <Link
+              href={SELF_SERVE}
+              className="inline-flex items-center gap-3 bg-ink px-8 py-4 font-medium text-paper hover:bg-accent hover:text-accent-foreground"
+            >
+              Audit your first bill
+              <span aria-hidden>&#8599;</span>
+            </Link>
+          </div>
+        </section>
+
+        {/* Split explainer: statement on the left, the detail on the right. */}
+        <section className="border-t border-rule">
+          <div className="measure grid grid-cols-1 gap-8 py-14 md:grid-cols-2 md:gap-16">
+            <h2 className="max-w-[18ch] text-balance">
+              Every charge, checked against your actual plan.
+            </h2>
+            <div className="leading-relaxed text-muted">
+              <p>
+                Paxer reads a bill or EOB and recomputes your deductible, coinsurance, and
+                out-of-pocket maximum from your real plan. Anything that does not line up gets
+                flagged with the arithmetic behind it, so you can see exactly where the number went
+                wrong.
+              </p>
+              <p className="mt-4">
+                Where a charge is disputable, Paxer drafts the letter and tracks the response
+                deadline. You review it and send it. Paxer never takes a cut of what you recover.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-rule">
+          <div className="measure py-14">
             <HeroBillDemo />
           </div>
         </section>
 
-        <section className="measure border-t border-rule py-12">
-          <h2>What it checks</h2>
-          <ErrorTypes />
+        <section className="border-t border-rule">
+          <div className="measure grid grid-cols-1 gap-8 py-14 md:grid-cols-2 md:gap-16">
+            <h2 className="max-w-[14ch] text-balance">What it catches.</h2>
+            <ErrorTypes />
+          </div>
         </section>
 
-        <section className="measure border-t border-rule py-12">
-          <h2>How it works</h2>
-          <ProcessSteps />
-          <p className="mt-8 text-sm">
-            <Link href="/how-it-works" className="text-accent underline">
-              Full walkthrough and FAQ
-            </Link>
-          </p>
+        <section className="border-t border-rule">
+          <div className="measure grid grid-cols-1 gap-8 py-14 md:grid-cols-2 md:gap-16">
+            <h2 className="max-w-[14ch] text-balance">Three steps.</h2>
+            <div>
+              <ProcessSteps />
+              <p className="mt-8 text-sm">
+                <Link href="/how-it-works" className="link">
+                  Full walkthrough and FAQ
+                </Link>
+              </p>
+            </div>
+          </div>
         </section>
 
-        <section className="measure border-t border-rule py-12">
-          <h2>For developers</h2>
-          <p className="mt-3 max-w-[58ch] leading-relaxed text-muted">
-            The same audit engine is available as an API. Send a bill&rsquo;s line items, get back
-            the errors. Free to start.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild variant="outline">
-              <Link href="/developers">Read the docs</Link>
-            </Button>
-            <Button asChild variant="outline">
-              <Link href="/pricing">Pricing</Link>
-            </Button>
+        <section className="border-t border-rule">
+          <div className="measure grid grid-cols-1 gap-8 py-14 md:grid-cols-2 md:gap-16">
+            <h2 className="max-w-[18ch] text-balance">The same engine, as an API.</h2>
+            <div className="leading-relaxed text-muted">
+              <p>
+                Send a bill&rsquo;s line items, get back the errors with an explanation and an
+                estimated recoverable amount. Free to start, then monthly plans sized by call
+                volume.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href="/developers"
+                  className="inline-flex items-center gap-2 bg-ink px-6 py-3 text-sm font-medium text-paper hover:bg-accent hover:text-accent-foreground"
+                >
+                  Read the docs
+                  <span aria-hidden>&#8599;</span>
+                </Link>
+                <Link
+                  href="/pricing"
+                  className="inline-flex items-center border border-ink px-6 py-3 text-sm font-medium text-ink hover:bg-soft"
+                >
+                  Pricing
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
       </main>

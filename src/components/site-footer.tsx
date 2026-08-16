@@ -18,7 +18,7 @@ export function SiteFooter() {
         <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
           {LINKS.map((l) => (
             <li key={l.href}>
-              <Link href={l.href} className="text-accent underline">
+              <Link href={l.href} className="link">
                 {l.label}
               </Link>
             </li>

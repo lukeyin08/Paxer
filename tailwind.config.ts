@@ -57,9 +57,9 @@ const config: Config = {
         ring: 'hsl(var(--ring))',
       },
       fontFamily: {
-        // Body and UI on the system sans; headings on the one webfont.
+        // One grotesk for everything; `serif` aliases it so strays stay on-brand.
         sans: ['var(--font-sans)'],
-        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        serif: ['var(--font-sans)'],
         mono: ['var(--font-mono)'],
       },
       // Square corners everywhere. `full` survives for the handful of genuinely

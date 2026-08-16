@@ -32,7 +32,7 @@ export function MarketingMobileMenu({
   }, [open]);
 
   return (
-    <div className="lg:hidden">
+    <div className="flex items-stretch md:hidden">
       <button
         ref={buttonRef}
         type="button"
@@ -40,7 +40,7 @@ export function MarketingMobileMenu({
         aria-controls="marketing-mobile-nav"
         aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
         onClick={() => setOpen((v) => !v)}
-        className="flex h-10 w-10 items-center justify-center border border-ink text-ink"
+        className="flex w-12 items-center justify-center border-l border-paper/15 text-paper hover:text-accent"
       >
         {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>

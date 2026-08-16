@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { fontSerif } from '@/lib/fonts';
+import { fontSans } from '@/lib/fonts';
 import { CONSUMER_PLAN } from '@/lib/billing/consumer';
 import './globals.css';
 
@@ -95,7 +95,7 @@ const JSON_LD = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={fontSerif.variable}>
+    <html lang="en" className={fontSans.variable}>
       <head>
         <script
           type="application/ld+json"
