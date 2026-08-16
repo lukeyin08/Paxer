@@ -104,7 +104,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
         const link = confirmUrl.toString();
         if (!env.RESEND_API_KEY) {
-          console.log(`\n🔗 Paxer magic link for ${identifier}:\n${link}\n`);
+          console.log(`\nPaxer magic link for ${identifier}:\n${link}\n`);
           return;
         }
         const { Resend: ResendClient } = await import('resend');

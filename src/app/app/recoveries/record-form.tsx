@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Money } from '@/components/brand/money';
-import { Kicker } from '@/components/brand/kicker';
 import { formatUsd } from '@/lib/utils';
 import { recordRecoveryAction } from './actions';
 
@@ -51,7 +50,6 @@ export function RecordRecoveryForm({
     <Card>
       <CardContent className="flex flex-col gap-5 pt-6">
         <div>
-          <Kicker className="mb-1">Record a recovery</Kicker>
           <h2 className="text-lg font-bold">Money returned to you</h2>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

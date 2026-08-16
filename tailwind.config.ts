@@ -20,6 +20,7 @@ const config: Config = {
           foreground: 'hsl(var(--accent-foreground))',
         },
         accent2: 'hsl(var(--accent2))',
+        hl: 'hsl(var(--hl))',
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',

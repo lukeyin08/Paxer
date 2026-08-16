@@ -5,7 +5,6 @@ import { cases } from '@/lib/db/schema';
 import { requireUser } from '@/lib/auth/session';
 import { getDisputesForUser } from '@/lib/disputes/repo';
 import { getRecoveriesForUser, sumRecoveries } from '@/lib/recoveries/repo';
-import { Kicker } from '@/components/brand/kicker';
 import { StatBlock } from '@/components/brand/stat-block';
 import { StatusPill } from '@/components/brand/status-pill';
 import { Money } from '@/components/brand/money';
@@ -45,7 +44,6 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-col gap-10">
       <div>
-        <Kicker className="mb-2">Your dashboard</Kicker>
         <h1 className="text-2xl font-bold">Overview</h1>
       </div>
 

@@ -1,7 +1,6 @@
 import { requireUser } from '@/lib/auth/session';
 import { getRecoveriesForUser, sumRecoveries } from '@/lib/recoveries/repo';
 import { getDisputeForUser } from '@/lib/disputes/repo';
-import { Kicker } from '@/components/brand/kicker';
 import { StatBlock } from '@/components/brand/stat-block';
 import { Money } from '@/components/brand/money';
 import { EmptyState } from '@/components/brand/empty-state';
@@ -39,7 +38,6 @@ export default async function RecoveriesPage({
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <Kicker className="mb-2">Recoveries</Kicker>
         <h1 className="text-2xl font-bold">Recoveries</h1>
       </div>
 

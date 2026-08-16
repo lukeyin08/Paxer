@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <LegalLayout kicker="Legal" title="Privacy Policy" lastUpdated="June 2026">
+    <LegalLayout title="Privacy Policy" lastUpdated="June 2026">
       <p>
         This Privacy Policy describes how Paxer (&ldquo;Paxer,&rdquo; &ldquo;we,&rdquo;
         &ldquo;us&rdquo;) collects, uses, and shares information when you use our medical-bill audit

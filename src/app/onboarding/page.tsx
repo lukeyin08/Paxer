@@ -4,7 +4,6 @@ import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
 import { requireUser } from '@/lib/auth/session';
 import { Wordmark } from '@/components/brand/wordmark';
-import { Kicker } from '@/components/brand/kicker';
 import type { Metadata } from 'next';
 import { Card, CardContent } from '@/components/ui/card';
 import { OnboardingForm } from './onboarding-form';
@@ -26,7 +25,6 @@ export default async function OnboardingPage() {
       <Card className="w-full max-w-md">
         <CardContent className="flex flex-col gap-6 pt-6">
           <div>
-            <Kicker className="mb-2">A few details</Kicker>
             <h1 className="text-xl font-bold">Set up your account</h1>
             <p className="mt-1 text-sm text-muted">
               This takes a moment and helps Paxer audit your bills accurately.

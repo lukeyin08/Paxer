@@ -7,7 +7,6 @@ import {
   consumerBillingConfigured,
   CONSUMER_PLAN,
 } from '@/lib/billing/consumer';
-import { Kicker } from '@/components/brand/kicker';
 import { EmptyState } from '@/components/brand/empty-state';
 import { Button } from '@/components/ui/button';
 import { DraftForm } from './draft-form';
@@ -35,7 +34,6 @@ export default async function DisputeDraftPage({
         <Link href={`/app/cases/${id}`} className="link text-sm">
           ← Back to case
         </Link>
-        <Kicker className="mb-2 mt-3">New dispute</Kicker>
         <h1 className="text-2xl font-bold">Draft a dispute</h1>
         <p className="mt-1 text-muted">
           Choose the findings to include. Paxer drafts a letter you can edit and approve, then

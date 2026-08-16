@@ -2,7 +2,6 @@ import { desc } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { benchmarks } from '@/lib/db/schema';
 import { requireUser } from '@/lib/auth/session';
-import { Kicker } from '@/components/brand/kicker';
 import { StatBlock } from '@/components/brand/stat-block';
 import { EmptyState } from '@/components/brand/empty-state';
 import { StatusPill } from '@/components/brand/status-pill';
@@ -20,7 +19,6 @@ export default async function BenchmarksPage() {
     <div className="flex flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <Kicker className="mb-2">Benchmarks</Kicker>
           <h1 className="text-2xl font-bold">Price benchmarks</h1>
           <p className="mt-1 max-w-2xl text-muted">
             Anonymized prices collected across cases: billing code, region, and amount only, with no

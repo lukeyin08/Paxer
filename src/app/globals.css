@@ -3,19 +3,21 @@
 @tailwind utilities;
 
 /*
- * Paxer tokens — cream paper, black ink, one bright green.
+ * Paxer tokens — cream paper, black ink, three greens.
  *
- * Two greens, doing different jobs. `accent` is the bright spring green: it is a
- * HIGHLIGHT, used at display size (the emphasised headline word) and as a solid
- * block behind short label text. It is deliberately never used for body links or
- * small text, where it would fail contrast on cream. `accent2` is a deep green
- * that does pass, and carries links, focus rings, and hover.
+ * Three, because one green cannot do all three jobs at accessible contrast, and
+ * the split is by CONTRAST ROLE, not by taste:
+ *   --accent   #3EDA97  bright. BACKGROUND ONLY, always with ink text on it
+ *                       (10.7:1). As text on cream it is 1.6:1 and fails even
+ *                       the 3:1 large-text floor, so it is never used for type.
+ *   --hl       #1D9A64  mid. Display-size text only: the emphasised headline
+ *                       word. 3.3:1 on cream, clears the large-text floor.
+ *   --accent2  #165F3B  deep. Small text: links, hover, focus, indices. 7.0:1.
  *
- * Actions are black, not green, so the one bright colour on the page stays rare
- * enough to still read as emphasis. Hex source values:
- *   ink #101010    paper #F7F5EF   accent #3FD98A   accent2 #17603C
- *   muted #6B6862  rule #DCD7C9    soft #EFEBE0
- *   danger #A32626 warning #8A5A0B
+ * Actions are black, not green, so the bright green stays rare enough to still
+ * read as emphasis. Hex source values:
+ *   ink #0F0F0F    paper #F6F4EE   muted #6B6961  rule #D2CCBC
+ *   soft #EEEBE2   danger #A02727  warning #89570B
  * Stored as HSL triplets so Tailwind can apply opacity modifiers.
  */
 @layer base {
@@ -31,10 +33,11 @@
     --paper: 45 30% 95%;
     --accent: 154 68% 55%;
     --accent-foreground: 0 0% 6%;
+    --hl: 154 68% 36%;
     --accent2: 150 62% 23%;
     --muted: 45 5% 40%;
     --muted-foreground: 45 5% 40%;
-    --rule: 45 21% 83%;
+    --rule: 45 18% 78%;
     --soft: 43 27% 91%;
     --success: 150 62% 23%;
     --danger: 0 61% 39%;
@@ -54,7 +57,7 @@
     --destructive: var(--danger);
     --destructive-foreground: 0 0% 100%;
     --border: var(--rule);
-    --input: var(--rule);
+    --input: 45 10% 48%;
     --ring: var(--accent2);
     --radius: 0px;
   }
@@ -102,7 +105,7 @@
 
   /* The emphasised word in a display headline. */
   .hl {
-    @apply text-accent;
+    @apply text-hl;
   }
 
   /* Small label above a section heading. Plain text, same size as body copy. */

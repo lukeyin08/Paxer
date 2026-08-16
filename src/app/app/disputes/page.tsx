@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { requireUser } from '@/lib/auth/session';
 import { getDisputesForUser } from '@/lib/disputes/repo';
-import { Kicker } from '@/components/brand/kicker';
 import { EmptyState } from '@/components/brand/empty-state';
 import { StatusPill } from '@/components/brand/status-pill';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,7 +15,6 @@ export default async function DisputesPage() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <Kicker className="mb-2">Disputes</Kicker>
         <h1 className="text-2xl font-bold">Your disputes</h1>
       </div>
 

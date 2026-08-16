@@ -38,7 +38,7 @@ export function AppNav({ email }: { email?: string | null }) {
 
   return (
     <header className="sticky top-0 z-20 border-b border-rule bg-paper">
-      <div className="container flex h-16 items-center justify-between gap-4">
+      <div className="measure flex h-16 items-center justify-between gap-4">
         <div className="flex min-w-0 items-center gap-8">
           {/* Logo returns to the public homepage (always visible); the Dashboard
               tab is the app home. */}

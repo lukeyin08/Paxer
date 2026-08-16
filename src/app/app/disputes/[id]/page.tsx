@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireUser } from '@/lib/auth/session';
 import { getDisputeForUser } from '@/lib/disputes/repo';
-import { Kicker } from '@/components/brand/kicker';
 import { DisputeWorkspace } from './workspace';
 
 export default async function DisputePage({ params }: { params: Promise<{ id: string }> }) {
@@ -20,7 +19,6 @@ export default async function DisputePage({ params }: { params: Promise<{ id: st
         <Link href={`/app/cases/${dispute.caseId}`} className="link text-sm">
           ← Back to case
         </Link>
-        <Kicker className="mb-2 mt-3">Dispute</Kicker>
         <h1 className="text-2xl font-bold">
           {dispute.target === 'INSURER' ? 'Insurer appeal' : 'Provider letter'}
         </h1>

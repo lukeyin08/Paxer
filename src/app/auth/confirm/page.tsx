@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Wordmark } from '@/components/brand/wordmark';
-import { Kicker } from '@/components/brand/kicker';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -62,7 +61,6 @@ export default async function ConfirmSignInPage({
       <Card className="w-full max-w-md">
         <CardContent className="flex flex-col gap-5 pt-6 text-center">
           <div>
-            <Kicker className="mb-2">Almost there</Kicker>
             <h1 className="text-xl font-bold">Confirm your sign-in</h1>
           </div>
 

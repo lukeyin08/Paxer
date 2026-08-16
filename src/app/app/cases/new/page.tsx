@@ -1,5 +1,4 @@
 import { requireUser } from '@/lib/auth/session';
-import { Kicker } from '@/components/brand/kicker';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ManualCaseForm } from './manual-case-form';
@@ -11,7 +10,6 @@ export default async function NewCasePage() {
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-8">
       <div>
-        <Kicker className="mb-2">New case</Kicker>
         <h1 className="text-2xl font-bold">Add a case</h1>
         <p className="mt-1 text-muted">Upload a bill or EOB, or enter charges by hand.</p>
       </div>

@@ -23,7 +23,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex min-h-screen flex-col">
       <AppNav email={row.email} />
-      <main className="container flex-1 py-10">{children}</main>
+      <main className="measure flex-1 py-10">{children}</main>
       <SiteFooter />
     </div>
   );

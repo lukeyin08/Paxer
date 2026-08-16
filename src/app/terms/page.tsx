@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <LegalLayout kicker="Legal" title="Terms of Service" lastUpdated="June 2026">
+    <LegalLayout title="Terms of Service" lastUpdated="June 2026">
       <p>
         These Terms of Service (&ldquo;Terms&rdquo;) govern your use of Paxer. By creating an
         account or using the service, you agree to these Terms.

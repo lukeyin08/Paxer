@@ -39,8 +39,8 @@ export default function LandingPage() {
           </h1>
 
           <p className="mx-auto mt-8 max-w-[46ch] text-lg leading-snug text-muted md:text-xl">
-            Paxer audits medical bills and EOBs for patients, employers, and the platforms that
-            serve them.
+            Paxer audits medical bills and EOBs. Built for patients, and for the employers and
+            platforms that cover them.
           </p>
 
           <div className="mt-10">

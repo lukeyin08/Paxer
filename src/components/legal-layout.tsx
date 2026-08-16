@@ -1,17 +1,14 @@
 import Link from 'next/link';
 import { Wordmark } from '@/components/brand/wordmark';
-import { Kicker } from '@/components/brand/kicker';
 import { SiteFooter } from '@/components/site-footer';
 
 /** Shared shell for the legal pages (Privacy, Terms). */
 export function LegalLayout({
   title,
-  kicker,
   lastUpdated,
   children,
 }: {
   title: string;
-  kicker: string;
   lastUpdated: string;
   children: React.ReactNode;
 }) {
@@ -34,7 +31,6 @@ export function LegalLayout({
 
       <main className="measure py-12">
         <div>
-          <Kicker className="mb-2">{kicker}</Kicker>
           <h1>{title}</h1>
           <p className="mt-2 text-sm text-muted">Last updated: {lastUpdated}</p>
         </div>

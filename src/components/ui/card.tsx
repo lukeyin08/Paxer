@@ -1,14 +1,11 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-// Cards use thin rule borders on white/paper, not heavy shadows (Section 5).
+// Flat blocks on the page ground, not white panels floating above it — same
+// treatment as the sample-bill statement on the marketing pages.
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn('rounded-lg border border-rule bg-card text-card-foreground', className)}
-      {...props}
-    />
+    <div ref={ref} className={cn('border border-rule bg-paper text-ink', className)} {...props} />
   ),
 );
 Card.displayName = 'Card';
@@ -22,7 +19,7 @@ CardHeader.displayName = 'CardHeader';
 
 const CardTitle = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('text-lg font-bold leading-tight', className)} {...props} />
+    <div ref={ref} className={cn('text-lg font-bold leading-snug', className)} {...props} />
   ),
 );
 CardTitle.displayName = 'CardTitle';

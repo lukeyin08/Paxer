@@ -8,7 +8,6 @@ import {
   CONSUMER_PLAN,
 } from '@/lib/billing/consumer';
 import { caseStatusTone } from '@/lib/cases/status';
-import { Kicker } from '@/components/brand/kicker';
 import { StatBlock } from '@/components/brand/stat-block';
 import { Money } from '@/components/brand/money';
 import { StatusPill } from '@/components/brand/status-pill';
@@ -42,7 +41,6 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
         </Link>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <Kicker className="mb-2">Case</Kicker>
             <h1 className="text-2xl font-bold">{c.title}</h1>
             <p className="mt-1 text-muted">
               {c.providerName ?? 'Unknown provider'} · {c.payerName ?? 'Unknown payer'}
