@@ -102,12 +102,12 @@ export default function LandingPage() {
 
         <section className="border-t border-rule">
           <div className="measure grid grid-cols-1 gap-8 py-14 md:grid-cols-2 md:gap-16">
-            <h2 className="max-w-[18ch] text-balance">The same engine, as an API</h2>
+            <h2>Audit API</h2>
             <div className="leading-relaxed text-muted">
               <p>
-                Send a bill&rsquo;s line items, get back the errors with an explanation and an
-                estimated recoverable amount. Free to start, then monthly plans sized by call
-                volume.
+                The engine that audits bills for patients also runs behind an API. Send a
+                bill&rsquo;s line items, get back the errors with an explanation and an estimated
+                recoverable amount. Free to start, then monthly plans sized by call volume.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
