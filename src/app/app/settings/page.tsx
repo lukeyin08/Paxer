@@ -6,7 +6,6 @@ import { listApiKeys } from '@/lib/api-keys/repo';
 import { usageSnapshot } from '@/lib/billing/usage';
 import { checkoutPlans, billingConfigured, planFor } from '@/lib/billing/plans';
 import { consumerBillingConfigured, CONSUMER_PLAN } from '@/lib/billing/consumer';
-import { Kicker } from '@/components/brand/kicker';
 import { Card, CardContent } from '@/components/ui/card';
 import { Disclaimer } from '@/components/brand/disclaimer';
 import { formatDate } from '@/lib/utils';
@@ -47,7 +46,6 @@ export default async function SettingsPage() {
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-8">
       <div>
-        <Kicker className="mb-2">Settings</Kicker>
         <h1 className="text-2xl font-bold">Account</h1>
       </div>
 
@@ -56,11 +54,11 @@ export default async function SettingsPage() {
           <h2 className="font-bold">Profile</h2>
           <div className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
             <div>
-              <p className="kicker">Name</p>
+              <p className="label-sm">Name</p>
               <p>{user?.name ?? '—'}</p>
             </div>
             <div>
-              <p className="kicker">Email</p>
+              <p className="label-sm">Email</p>
               <p>{user?.email}</p>
             </div>
           </div>
