@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
 import { HeroBillDemo } from '@/components/hero-bill-demo';
-import { SponsorCredit } from '@/components/brand/sponsor-credit';
+import { AffiliationCredit } from '@/components/brand/affiliation-credit';
 import { ErrorTypes } from '@/components/landing/error-types';
 import { ProcessSteps } from '@/components/landing/process-steps';
 import { DEMO_ENABLED } from '@/lib/auth/demo';
@@ -55,12 +55,12 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Sponsor gets its own band rather than sitting under the CTA, where it
-            read as a badge on the call to action. First section past the hero,
-            so it is still early without crowding it. */}
+        {/* Its own band rather than sitting under the CTA, where it read as a
+            badge on the call to action. First section past the hero, so it is
+            still early without crowding it. */}
         <section className="border-t border-rule">
           <div className="measure flex justify-center py-10">
-            <SponsorCredit logoClassName="h-12" />
+            <AffiliationCredit logoClassName="h-12" />
           </div>
         </section>
 
