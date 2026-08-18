@@ -4,20 +4,16 @@ import { cn } from '@/lib/utils';
 /**
  * University affiliation credit.
  *
- * Wording is load-bearing here, and has been through three versions:
+ * Wording is load-bearing and has been revised several times; current text is
+ * "Partnered with", set by the owner.
  *
- *   "Sponsored by X"        — reads, in a product context, as the sponsor being
- *                             behind the product itself.
- *   "With support from X"   — accurate for funding, but undersells actual
- *                             collaboration and implies money only.
- *   "Developed with faculty at X"  <- current
- *
- * The last one is the accurate claim: faculty collaborated on development. It
- * credits the people who did the work rather than the institution, which
- * matters — a professor collaborating acts as an individual, not as the
- * university, and universities are strict about not implying that a department
- * built, tested, or endorsed a commercial product. "faculty at" carries that
- * distinction; "by Northwestern University" would not.
+ * Note for whoever edits this next: "Partnered with X" asserts an
+ * organisation-to-organisation relationship, which is a stronger claim than
+ * naming the individuals involved. If what exists is faculty collaboration
+ * rather than a signed agreement with the university, "Developed with faculty
+ * at X" is the accurate form, because a professor collaborating acts as an
+ * individual and not as the institution. Confirm before weakening or
+ * strengthening this line.
  *
  * The lockup already contains the university's name, so the visible label stops
  * before it; the name is carried in `alt` for screen readers.
@@ -31,7 +27,7 @@ export function AffiliationCredit({
 }) {
   return (
     <div className={cn('flex items-center gap-3', className)}>
-      <span className="text-sm text-ink">Developed with faculty at</span>
+      <span className="text-sm text-ink">Partnered with</span>
       <Image
         src="/northwestern.png"
         alt="Northwestern University"
