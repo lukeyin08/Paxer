@@ -53,10 +53,15 @@ export default function LandingPage() {
               <span aria-hidden>&#8599;</span>
             </Link>
           </div>
+        </section>
 
-          {/* Above the fold on the highest-traffic page. The footer credit only
-              reaches visitors who scroll to the bottom, which most do not. */}
-          <SponsorCredit className="mt-14 justify-center" logoClassName="h-10" />
+        {/* Sponsor gets its own band rather than sitting under the CTA, where it
+            read as a badge on the call to action. First section past the hero,
+            so it is still early without crowding it. */}
+        <section className="border-t border-rule">
+          <div className="measure flex justify-center py-10">
+            <SponsorCredit logoClassName="h-12" />
+          </div>
         </section>
 
         {/* Split explainer: statement on the left, the detail on the right. */}
