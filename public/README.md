@@ -8,9 +8,9 @@ reachable at `/foo.svg`.
 The footer sponsor credit is currently text only. To show Northwestern's mark
 beside it, drop the asset here as:
 
-    public/northwestern.svg      (preferred — scales cleanly at the ~20px the
-                                  footer needs, and stays crisp on retina)
-    public/northwestern.png      (fallback — supply @2x, i.e. ~40px tall)
+    public/northwestern.png      (in place: 600x145, transparent, downscaled from a
+                                  10417x2514 original — 488K to 72K)
+
 
 Requirements:
   - Must be a version you have clearance to display in a sponsorship context.
