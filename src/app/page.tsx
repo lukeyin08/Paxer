@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { MarketingHeader } from '@/components/marketing-header';
 import { SiteFooter } from '@/components/site-footer';
 import { HeroBillDemo } from '@/components/hero-bill-demo';
+import { SponsorCredit } from '@/components/brand/sponsor-credit';
 import { ErrorTypes } from '@/components/landing/error-types';
 import { ProcessSteps } from '@/components/landing/process-steps';
 import { DEMO_ENABLED } from '@/lib/auth/demo';
@@ -52,6 +53,10 @@ export default function LandingPage() {
               <span aria-hidden>&#8599;</span>
             </Link>
           </div>
+
+          {/* Above the fold on the highest-traffic page. The footer credit only
+              reaches visitors who scroll to the bottom, which most do not. */}
+          <SponsorCredit className="mt-14 justify-center" logoClassName="h-10" />
         </section>
 
         {/* Split explainer: statement on the left, the detail on the right. */}

@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { Disclaimer } from '@/components/brand/disclaimer';
+import { SponsorCredit } from '@/components/brand/sponsor-credit';
 
 const LINKS = [
   { label: 'How it works', href: '/how-it-works' },
@@ -25,21 +25,7 @@ export function SiteFooter() {
             </li>
           ))}
         </ul>
-        {/* Sponsor credit. The mark is reproduced at its own colour, not
-            recoloured to the Paxer palette — brand guidelines universally forbid
-            recolouring a third-party trademark, so the purple is a deliberate
-            exception to the two-colour system. "Sponsored by" states the funding
-            relationship; it is not an endorsement claim. */}
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-ink">Sponsored by</span>
-          <Image
-            src="/northwestern.png"
-            alt="Northwestern University"
-            width={600}
-            height={145}
-            className="h-9 w-auto"
-          />
-        </div>
+        <SponsorCredit />
         <Disclaimer />
       </div>
     </footer>
