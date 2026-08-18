@@ -43,15 +43,9 @@ export function MarketingHeader() {
 
         <Link
           href="/login"
-          className="hidden items-center border-r border-paper/15 px-6 hover:text-accent sm:flex"
-        >
-          Sign in
-        </Link>
-        <Link
-          href="/login"
           className="flex shrink-0 items-center bg-accent px-6 font-medium text-accent-foreground hover:bg-paper hover:text-ink"
         >
-          Get started
+          Sign in
         </Link>
         <MarketingMobileMenu links={LINKS} />
       </div>

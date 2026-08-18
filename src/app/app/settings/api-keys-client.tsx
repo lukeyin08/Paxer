@@ -120,7 +120,7 @@ export function ApiKeysClient({ keys, usage }: { keys: KeyRow[]; usage: Usage })
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
         <div className="flex-1">
-          <label htmlFor="key-name" className="kicker mb-1 block">
+          <label htmlFor="key-name" className="label-sm mb-1 block">
             New key name
           </label>
           <Input
@@ -165,7 +165,7 @@ export function ApiKeysClient({ keys, usage }: { keys: KeyRow[]; usage: Usage })
       )}
 
       <div>
-        <p className="kicker mb-2">Example request</p>
+        <p className="label-sm mb-2">Example request</p>
         <pre className="overflow-x-auto whitespace-pre-wrap break-all rounded-md border border-rule bg-soft/30 p-3 font-mono text-xs text-muted">{`curl -X POST ${origin}/api/v1/audit \\
   -H "Authorization: Bearer pax_live_..." \\
   -H "Content-Type: application/json" \\

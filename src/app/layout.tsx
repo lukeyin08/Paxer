@@ -13,8 +13,10 @@ export const metadata: Metadata = {
   // Tab titles are just the section name (e.g. "Pricing"); the home tab is
   // "Paxer". Richer phrasing lives in the OG/Twitter title for social cards.
   title: {
-    default: 'Paxer',
-    template: '%s',
+    default: 'Paxer: check your medical bills for billing errors',
+    // Section pages carry the brand so a tab or a search result is
+    // self-identifying — "Results" alone said nothing about who it belonged to.
+    template: '%s · Paxer',
   },
   description: DESCRIPTION,
   applicationName: 'Paxer',

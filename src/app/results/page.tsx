@@ -16,8 +16,11 @@ export const metadata: Metadata = {
 export default function ResultsPage() {
   return (
     <div className="flex min-h-screen flex-col">
+      <a href="#content" className="skip-link">
+        Skip to content
+      </a>
       <MarketingHeader />
-      <main className="flex-1">
+      <main id="content" className="flex-1">
         <section className="measure py-14">
           <div>
             <h1>Results</h1>

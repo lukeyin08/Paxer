@@ -88,8 +88,11 @@ const ERROR_CODES: [string, string][] = [
 export default function DevelopersPage() {
   return (
     <div className="flex min-h-screen flex-col">
+      <a href="#content" className="skip-link">
+        Skip to content
+      </a>
       <MarketingHeader />
-      <main className="flex-1">
+      <main id="content" className="flex-1">
         {/* Hero */}
         <section className="measure py-12 md:py-16">
           <div className="max-w-3xl">
@@ -103,7 +106,7 @@ export default function DevelopersPage() {
                 <Link href="/login?next=/app/settings">Get an API key</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <a href="mailto:hello@paxer.app?subject=Paxer%20Audit%20API">Talk to us</a>
+                <a href="mailto:hello@paxer.app?subject=Paxer%20Audit%20API">Contact us</a>
               </Button>
             </div>
           </div>
@@ -113,11 +116,35 @@ export default function DevelopersPage() {
         <section className="measure border-t border-rule py-12">
           <div>
             <h2>Who it’s for</h2>
-            <p className="mt-3 max-w-3xl leading-relaxed text-ink">
-              Built for {API_BUYERS}, plus care-navigation and advocacy tools. Anywhere a bill needs
-              checking before someone pays it.
-            </p>
-            <p className="mt-3 max-w-3xl text-sm text-muted">
+            <dl className="mt-8 border-t border-ink">
+              {[
+                [
+                  'Patient-billing platforms',
+                  'Check a bill for errors before it is presented for payment.',
+                ],
+                [
+                  'TPAs and self-insured employers',
+                  'Screen claims on behalf of the population you cover.',
+                ],
+                [
+                  'HSA/FSA administrators',
+                  'Flag a charge before the account holder spends against it.',
+                ],
+                [
+                  'Care navigation and advocacy',
+                  'Give advocates the arithmetic behind each finding.',
+                ],
+              ].map(([title, body]) => (
+                <div
+                  key={title}
+                  className="grid grid-cols-1 gap-x-10 gap-y-1 border-b border-rule py-5 md:grid-cols-[1fr_1.6fr]"
+                >
+                  <dt className="font-semibold text-ink">{title}</dt>
+                  <dd className="leading-relaxed text-muted">{body}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-6 max-w-[70ch] text-sm text-muted">
               We don’t sell this to health plans as the primary buyer, since a health plan benefits
               when a claim is denied.{' '}
               <Link href="/pricing" className="link">
@@ -147,8 +174,18 @@ export default function DevelopersPage() {
         {/* Errors & limits */}
         <section className="measure border-t border-rule py-14">
           <h2>Status codes</h2>
-          <table className="mt-6 w-full border-collapse text-sm">
+          <table className="mt-8 w-full border-collapse text-sm">
             <caption className="sr-only">Audit API status codes</caption>
+            <thead>
+              <tr className="border-y border-ink text-left">
+                <th scope="col" className="w-16 py-3 pr-4 font-semibold text-ink">
+                  Code
+                </th>
+                <th scope="col" className="py-3 font-semibold text-ink">
+                  Meaning
+                </th>
+              </tr>
+            </thead>
             <tbody>
               {ERROR_CODES.map(([code, desc]) => (
                 <tr key={code} className="border-b border-rule align-baseline">
@@ -172,7 +209,7 @@ export default function DevelopersPage() {
 
         {/* CTA */}
         <section className="measure border-t border-rule py-14">
-          <h2>Get an API key</h2>
+          <h2>Start building</h2>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild size="lg">
               <Link href="/login?next=/app/settings">Get an API key</Link>

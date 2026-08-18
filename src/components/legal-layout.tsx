@@ -14,6 +14,9 @@ export function LegalLayout({
 }) {
   return (
     <div className="min-h-screen">
+      <a href="#content" className="skip-link">
+        Skip to content
+      </a>
       <header className="sticky top-0 z-40 border-b border-rule bg-paper">
         <div className="measure flex items-center justify-between py-5">
           {/* Wordmark already links to "/" — no outer <Link> (would nest <a>). */}
@@ -29,7 +32,7 @@ export function LegalLayout({
         </div>
       </header>
 
-      <main className="measure py-12">
+      <main id="content" className="measure py-12">
         <div>
           <h1>{title}</h1>
           <p className="mt-2 text-sm text-muted">Last updated: {lastUpdated}</p>

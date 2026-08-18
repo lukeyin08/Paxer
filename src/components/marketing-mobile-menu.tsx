@@ -61,15 +61,6 @@ export function MarketingMobileMenu({
               {l.label}
             </Link>
           ))}
-          {/* Mirrors the bar's Sign in link, which is hidden on the smallest
-              screens to keep the bar from overflowing. */}
-          <Link
-            href="/login"
-            onClick={() => setOpen(false)}
-            className="mt-1 border-t border-rule px-2 pb-2 pt-4 text-base text-ink hover:underline sm:hidden"
-          >
-            Sign in
-          </Link>
         </div>
       </nav>
     </div>

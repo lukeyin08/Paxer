@@ -12,7 +12,7 @@ export function WorkedExample({ lines, findings }: { lines: Line[]; findings: Fi
   const totalFound = findings.reduce((s, f) => s + f.amount, 0);
 
   return (
-    <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
+    <div className="mt-8 grid grid-cols-1 items-start gap-10 lg:grid-cols-[1fr_1.15fr]">
       {/* The bill */}
       <div>
         <h3 className="mb-3 font-semibold text-ink">The bill</h3>

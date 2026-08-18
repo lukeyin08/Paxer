@@ -5,7 +5,7 @@ const LINKS = [
   { label: 'How it works', href: '/how-it-works' },
   { label: 'Results', href: '/results' },
   { label: 'Pricing', href: '/pricing' },
-  { label: 'Audit API', href: '/developers' },
+  { label: 'Developers', href: '/developers' },
   { label: 'Privacy', href: '/privacy' },
   { label: 'Terms', href: '/terms' },
   { label: 'hello@paxer.app', href: 'mailto:hello@paxer.app' },

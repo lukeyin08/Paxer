@@ -91,7 +91,7 @@ export function RecordRecoveryForm({
 
         {/* Summary — payment processing is not wired up in v1 */}
         <div className="rounded-md border border-rule bg-soft/40 p-4">
-          <p className="kicker mb-2">Summary</p>
+          <p className="label-sm mb-2">Summary</p>
           <div className="flex flex-col gap-1 text-sm">
             <Row label="Recovered for you" value={formatUsd(amt)} strong />
           </div>

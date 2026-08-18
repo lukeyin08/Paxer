@@ -89,7 +89,7 @@ function BenchmarkWidget({ evidence }: { evidence: Record<string, unknown> }) {
   if (charge === null || p75 === null) return null;
   return (
     <div className="mt-3 rounded-md border border-rule bg-soft/30 p-3 text-sm">
-      <p className="kicker mb-2">Regional benchmark</p>
+      <p className="label-sm mb-2">Regional benchmark</p>
       <div className="flex flex-wrap gap-x-6 gap-y-1">
         <span>
           This charge: <strong className="tabular-nums">{formatUsd(charge)}</strong>
@@ -144,7 +144,7 @@ export function FindingCard({ finding }: { finding: FindingView }) {
           <h3>{finding.title}</h3>
           {finding.estimatedRecovery !== null && (
             <div className="shrink-0 text-right">
-              <p className="kicker">Est. recovery</p>
+              <p className="label-sm">Est. recovery</p>
               <Money amount={finding.estimatedRecovery} estimate size="lg" />
             </div>
           )}

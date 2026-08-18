@@ -175,7 +175,7 @@ export function DisputeWorkspace({
         )}
         {(status === 'SIMULATED_SENT' || status === 'RESPONSE_RECEIVED') && !partialMode && (
           <>
-            <span className="kicker">Log the response:</span>
+            <span className="label-sm">Log the response:</span>
             <Button
               size="sm"
               onClick={() => run(() => logResponseAction(dispute.id, 'WON'), 'WON')}

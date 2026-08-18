@@ -38,6 +38,9 @@ export function AffiliationCredit({
         width={600}
         height={145}
         className={cn('w-auto', logoClassName)}
+        // Renders at 36-48px tall (~150-200px wide); without this Next requests
+        // the 1200px candidate.
+        sizes="220px"
         priority
       />
     </div>

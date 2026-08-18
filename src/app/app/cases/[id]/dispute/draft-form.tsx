@@ -188,7 +188,7 @@ export function DraftForm({
 
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
-          <span className="kicker">Send to</span>
+          <span className="label-sm">Send to</span>
           {(['AUTO', 'PROVIDER', 'INSURER'] as const).map((t) => (
             <button
               key={t}
@@ -203,7 +203,7 @@ export function DraftForm({
           ))}
         </div>
         <div className="ml-auto text-right">
-          <span className="kicker">Total estimated</span>
+          <span className="label-sm">Total estimated</span>
           <div>
             <Money amount={total} estimate size="lg" />
           </div>
@@ -222,7 +222,7 @@ export function DraftForm({
           </div>
 
           <div className="flex flex-col gap-3">
-            <span className="kicker">Your contact information</span>
+            <span className="label-sm">Your contact information</span>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field
                 label="Full name"
@@ -265,7 +265,7 @@ export function DraftForm({
           </div>
 
           <div className="flex flex-col gap-3">
-            <span className="kicker">Send the letter to</span>
+            <span className="label-sm">Send the letter to</span>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field
                 label="Recipient name"
@@ -291,7 +291,7 @@ export function DraftForm({
           </div>
 
           <div className="flex flex-col gap-3">
-            <span className="kicker">Claim details</span>
+            <span className="label-sm">Claim details</span>
             <p className="text-xs text-muted">
               From your insurance card and Explanation of Benefits. Leave blank if not applicable
               and they will be omitted.

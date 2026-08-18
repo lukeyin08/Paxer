@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 // Illustrative example (not a real patient). Dollar figures are made up to show
 // the kinds of errors Paxer surfaces.
 const EXAMPLE_LINES = [
-  { desc: 'CT scan, head (70450)', charge: 1200, note: 'billed twice' },
+  { desc: 'CT scan, head (70450)', charge: 1200, note: '' },
   { desc: 'CT scan, head (70450)', charge: 1200, note: 'duplicate' },
   { desc: 'ER facility fee', charge: 1400, note: '' },
   { desc: 'Emergency physician (out-of-network)', charge: 400, note: '' },
@@ -60,7 +60,7 @@ const FAQS = (priceLabel: string) => [
   },
   {
     q: 'What kinds of errors does it find?',
-    a: `${ERROR_TYPES.map((e) => e.title).join(', ')}. The worked example shows several of these on a single ER bill.`,
+    a: 'Duplicate and unbundled charges, cost-share miscalculations, balance and surprise billing, and upcoding or charges above the regional benchmark. The worked example above shows several of these on one ER bill.',
   },
   {
     q: 'Is my information secure?',
@@ -94,9 +94,12 @@ export default function HowItWorksPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
       />
+      <a href="#content" className="skip-link">
+        Skip to content
+      </a>
       <MarketingHeader />
 
-      <main className="flex-1">
+      <main id="content" className="flex-1">
         {/* Intro — orient in prose, then prove it with the worked example below */}
         <section className="measure py-12 md:py-16">
           <div className="max-w-3xl">
@@ -144,7 +147,7 @@ export default function HowItWorksPage() {
 
         {/* CTA */}
         <section className="measure border-t border-rule py-14">
-          <h2>Check your first bill</h2>
+          <h2>Audit your first bill</h2>
           <div className="mt-6">
             <Button asChild size="lg">
               <Link href="/login">Audit your first bill</Link>

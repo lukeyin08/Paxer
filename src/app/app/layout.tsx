@@ -22,8 +22,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex min-h-screen flex-col">
+      <a href="#content" className="skip-link">
+        Skip to content
+      </a>
       <AppNav email={row.email} />
-      <main className="measure flex-1 py-10">{children}</main>
+      <main id="content" className="measure flex-1 py-10">
+        {children}
+      </main>
       <SiteFooter />
     </div>
   );

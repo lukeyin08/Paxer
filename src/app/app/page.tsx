@@ -94,7 +94,7 @@ export default async function DashboardPage() {
 
         {myCases.length === 0 ? (
           <EmptyState
-            kicker="Nothing here yet"
+            label="Nothing here yet"
             title="Start your first case"
             description="Upload a medical bill or EOB, or enter charges by hand. Paxer reads the document and audits every line."
             action={

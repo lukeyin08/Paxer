@@ -79,7 +79,7 @@ export default async function RecoveriesPage({
                   </div>
                   <div className="flex items-center gap-4 text-right">
                     <div>
-                      <p className="kicker">Recovered</p>
+                      <p className="label-sm">Recovered</p>
                       <Money amount={Number(recovery.amount)} size="sm" />
                     </div>
                     <StatusPill label="recorded" tone="success" />

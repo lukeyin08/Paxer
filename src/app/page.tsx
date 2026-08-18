@@ -21,9 +21,12 @@ const SELF_SERVE = DEMO_ENABLED ? '/login?demo=1' : '/login';
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col">
+      <a href="#content" className="skip-link">
+        Skip to content
+      </a>
       <MarketingHeader />
 
-      <main className="flex-1">
+      <main id="content" className="flex-1">
         {/* Centred display hero: eyebrow pill, oversized headline with one word
             carrying the accent, one-line positioning statement, single CTA. */}
         <section className="measure py-16 text-center md:py-24">
@@ -36,7 +39,7 @@ export default function LandingPage() {
           </Link>
 
           <h1 className="mx-auto mt-10 max-w-[16ch] text-balance">
-            Your medical bill is probably <span className="hl">wrong</span>
+            Your medical bill might be <span className="hl">wrong</span>
           </h1>
 
           <p className="mx-auto mt-8 max-w-[46ch] text-lg leading-snug text-muted md:text-xl">

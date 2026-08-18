@@ -1,7 +1,6 @@
 import { cn } from '@/lib/utils';
-import { Kicker } from './kicker';
 
-/** Big sans number with a mono kicker label (Section 5). */
+/** A labelled figure: small label above, tabular number below. */
 export function StatBlock({
   label,
   value,
@@ -15,7 +14,7 @@ export function StatBlock({
 }) {
   return (
     <div className={cn('flex flex-col gap-1', className)}>
-      <Kicker>{label}</Kicker>
+      <p className="label-sm">{label}</p>
       <div className="text-xl font-bold tabular-nums text-ink">{value}</div>
       {hint && <p className="text-sm text-muted">{hint}</p>}
     </div>

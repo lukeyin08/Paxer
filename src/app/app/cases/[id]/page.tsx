@@ -110,14 +110,14 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
           <Card>
             <CardContent className="grid grid-cols-2 gap-4 pt-6 text-sm sm:grid-cols-4">
               <div>
-                <p className="kicker">Deductible</p>
+                <p className="label-sm">Deductible</p>
                 <p>
                   {formatUsd(Number(plan.deductibleMet ?? 0))} /{' '}
                   {formatUsd(Number(plan.deductible ?? 0))}
                 </p>
               </div>
               <div>
-                <p className="kicker">Coinsurance</p>
+                <p className="label-sm">Coinsurance</p>
                 <p>
                   {plan.coinsuranceRate !== null
                     ? `${Math.round(plan.coinsuranceRate * 100)}%`
@@ -125,13 +125,13 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
                 </p>
               </div>
               <div>
-                <p className="kicker">Out-of-pocket max</p>
+                <p className="label-sm">Out-of-pocket max</p>
                 <p>
                   {formatUsd(Number(plan.oopMet ?? 0))} / {formatUsd(Number(plan.oopMax ?? 0))}
                 </p>
               </div>
               <div>
-                <p className="kicker">Network</p>
+                <p className="label-sm">Network</p>
                 <p>{plan.inNetwork ? 'In-network' : 'Out-of-network'}</p>
               </div>
             </CardContent>
