@@ -7,8 +7,14 @@ import { cn } from '@/lib/utils';
  * trademark to match the palette is forbidden by essentially every brand
  * guideline, so the exception is deliberate.
  *
+ * Wording is deliberate. "Sponsored by" reads, in a product context, as the
+ * sponsor being behind the product itself — i.e. that Northwestern staff built
+ * or validated it. "With support from" is the standard formulation for funding
+ * or programme backing and carries no claim of authorship, testing, or
+ * endorsement.
+ *
  * The lockup already contains the university's name, so the visible label is
- * just "Sponsored by"; the name is carried in `alt` for screen readers.
+ * just the preposition; the name is carried in `alt` for screen readers.
  */
 export function SponsorCredit({
   className,
@@ -19,7 +25,7 @@ export function SponsorCredit({
 }) {
   return (
     <div className={cn('flex items-center gap-3', className)}>
-      <span className="text-sm text-ink">Sponsored by</span>
+      <span className="text-sm text-ink">With support from</span>
       <Image
         src="/northwestern.png"
         alt="Northwestern University"

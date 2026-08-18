@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { Disclaimer } from '@/components/brand/disclaimer';
-import { SponsorCredit } from '@/components/brand/sponsor-credit';
 
 const LINKS = [
   { label: 'How it works', href: '/how-it-works' },
@@ -25,7 +24,6 @@ export function SiteFooter() {
             </li>
           ))}
         </ul>
-        <SponsorCredit />
         <Disclaimer />
       </div>
     </footer>
